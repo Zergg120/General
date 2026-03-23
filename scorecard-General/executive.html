@@ -8,8 +8,9 @@
   <title>Scorecard General — Panel ejecutivo</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
   <link rel="manifest" href="manifest.json" />
-  <link rel="preload" href="audio/nastelbom-ambient-495893.mp3" as="audio" type="audio/mpeg" />
-  <link rel="preload" href="audio/voice-preview-dani.mp3" as="audio" type="audio/mpeg" />
+  <link rel="preload" href="audio/Music-Background.mp3" as="audio" type="audio/mpeg" />
+  <link rel="preload" href="audio/Voice-Agent%20IA.mp3" as="audio" type="audio/mpeg" />
+  <link rel="preload" href="audio/Mouse-clic.wav" as="audio" type="audio/wav" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
@@ -29,7 +30,8 @@
   };
   </script>
   -->
-  <!-- defer: no bloquea el primer pintado; orden = Chart → XLSX → estado → app → asistente → gráficas → live -->
+  <!-- defer: clics UI primero; luego Chart → XLSX → estado → app → asistente → gráficas → live → audio -->
+  <script src="scorecard-ui-sounds.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
   <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js" defer></script>
   <script src="scorecard-status.js" defer></script>
@@ -38,7 +40,6 @@
   <script src="scorecard-charts.js" defer></script>
   <script src="scorecard-live.js" defer></script>
   <script src="scorecard-audio.js" defer></script>
-  <script src="scorecard-ui-sounds.js" defer></script>
   <style>
     /* === Marca blanca (cliente): edita también window.SCORECARD_BRAND en scorecard-app.js === */
     :root {

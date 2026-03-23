@@ -15,7 +15,7 @@
   var STORAGE_VOL_UI_EXPANDED = 'scorecard_audio_vol_ui_expanded';
 
   var cfg = window.SCORECARD_AUDIO || {};
-  var defaultSrc = 'audio/nastelbom-ambient-495893.mp3';
+  var defaultSrc = 'audio/Music-Background.mp3';
   var src = cfg.src != null ? String(cfg.src) : defaultSrc;
 
   var audioEl = null;

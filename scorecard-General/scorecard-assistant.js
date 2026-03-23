@@ -211,7 +211,7 @@
   const TTS_VOICE_URI_KEY = 'scorecard_tts_voice_uri';
   /** Voz web (muestra MP3) + lectura TTS — más cercana a “humana” que solo síntesis del sistema */
   const DANI_VOICE_URI = '__dani_web_sample__';
-  const DANI_MP3 = 'audio/voice-preview-dani.mp3';
+  const DANI_MP3 = 'audio/Voice-Agent IA.mp3';
 
   /** Prioriza voces en español que suelen ser femeninas y suenan menos “robóticas”. */
   const FEMALE_VOICE_HINT = /sabina|dalia|helena|mar[ií]a|paulina|m[oó]nica|karla|paloma|luciana|sof[ií]a|ines|elena|teresa|laura|natalia|valentina|isabel|cecilia|beatriz|female|femenina|woman|girl|mujer|española|espanola|latina/i;

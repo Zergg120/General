@@ -14,7 +14,7 @@ Plantilla de **panel ejecutivo** (HTML + JS) con KPIs de ejemplo, diseño premiu
 | `portal-shared.css` / `portal-shared.js` | Estilos y tema (`scorecard_theme`) compartidos en páginas del portal; **fondo corporativo** (mismo tono que Presentación en el ejecutivo) detrás del contenido |
 | `scorecard-status.css` / `scorecard-status.js` | Barra compacta **En línea** + reloj hora local; en segundo plano dispara `scorecard:dailydatasync` al cambiar el día |
 | `scorecard-audio.css` / `scorecard-audio.js` | Música: bocina + **flecha ▲/▼** (plegar volumen) + **− / +**, **píldoras** y %; **primera visita sin pref**: panel volumen **cerrado**; prefs `scorecard_audio_vol_ui_expanded` + `scorecard_audio_music_volume`; clics/IA al 30% |
-| `scorecard-ui-sounds.js` | Sonido corto de **clic** (`audio/mixkit-mouseclicks.wav`) en botones, enlaces, pestañas y tarjetas; respeta `prefers-reduced-motion`; `data-no-ui-sound` para excluir |
+| `scorecard-ui-sounds.js` | Sonido corto de **clic** (`audio/Mouse-clic.wav`) en botones, enlaces, pestañas y tarjetas; opción `respectReducedMotion`; `data-no-ui-sound` para excluir |
 | `scorecard-live.js` | **Auto-actualización** opcional: sondea `SCORECARD_LIVE_POLL.url` y recarga la página si el servidor indica datos nuevos |
 | `scorecard-charts.js` | Gráficas Chart.js (carga con `defer` junto al CDN) |
 | `scorecard-version.example.json` | Ejemplo de respuesta JSON para el endpoint de versión |
@@ -34,7 +34,7 @@ Plantilla de **panel ejecutivo** (HTML + JS) con KPIs de ejemplo, diseño premiu
 - **Legal**: aviso de datos ilustrativos y no PII en el chat.
 - **Gráficas**: color de línea alineado a `--accent` (marca).
 - **Música ambiental**: por defecto **sonido encendido** (`scorecard_audio_prefs_v3` migra `scorecard_audio_muted` a `'0'` si no existía). La música **sigue** al cambiar de pestaña (no se pausa al ocultar); **BroadcastChannel** evita que dos pestañas del mismo sitio reproduzcan a la vez. Se intenta `play()` con **muted** y luego se quita el mute (autoplay). Precarga en `<head>` del MP3.
-- **Asistente (solo ejecutivo)**: voz **Dani** (`audio/voice-preview-dani.mp3`) — muestra más humana + lectura TTS del texto (el MP3 no puede leer respuestas arbitrarias; el texto sigue con síntesis del sistema).
+- **Asistente (solo ejecutivo)**: muestra de voz (`audio/Voice-Agent IA.mp3`) — muestra más humana + lectura TTS del texto (el MP3 no puede leer respuestas arbitrarias; el texto sigue con síntesis del sistema).
 
 ## Uso
 
@@ -63,7 +63,7 @@ Mismo script está en las páginas del portal: con la misma config global se com
 
 ### Música / sonido ambiental
 
-1. Por defecto se usa **`audio/nastelbom-ambient-495893.mp3`** (puedes reemplazar el archivo).
+1. Por defecto se usa **`audio/Music-Background.mp3`** (puedes reemplazar el archivo).
 2. Opcional, antes de `scorecard-audio.js`:
 
 ```js
@@ -77,7 +77,7 @@ window.SCORECARD_AUDIO = {
 
 ### Sonidos de clic (UI)
 
-- Archivo: `audio/mixkit-mouseclicks.wav`, script `scorecard-ui-sounds.js`.
+- Archivo: `audio/Mouse-clic.wav`, script `scorecard-ui-sounds.js`.
 - Opcional: `window.SCORECARD_UI_SOUNDS = { src: '…', volume: 0.35, enabled: true }` antes del script.
 - En cualquier elemento: `data-no-ui-sound` para no reproducir clic (el botón de música ya lo lleva).
 
