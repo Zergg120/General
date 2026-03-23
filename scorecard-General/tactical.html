@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#3d8bfd" />
+  <title>Matriz táctica — Scorecard</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="preload" href="audio/nastelbom-ambient-495893.mp3" as="audio" type="audio/mpeg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700&family=IBM+Plex+Mono:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="portal-shared.css" />
+  <link rel="stylesheet" href="scorecard-status.css" />
+  <link rel="stylesheet" href="scorecard-audio.css" />
+  <script src="portal-shared.js" defer></script>
+  <script src="scorecard-status.js" defer></script>
+  <script src="scorecard-live.js" defer></script>
+  <script src="scorecard-audio.js" defer></script>
+  <script src="scorecard-ui-sounds.js" defer></script>
+  <style>
+    .tactical-banner {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      padding: 0.65rem 0.85rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      margin-bottom: 1rem;
+    }
+    .tactical-banner strong { color: var(--accent); }
+  </style>
+</head>
+<body class="portal-body">
+  <div class="portal-shell">
+    <div id="scorecard-status-mount"></div>
+    <header class="portal-topbar">
+      <a class="portal-logo" href="index.html">
+        <div class="portal-logo-mark">SC</div>
+        <div class="portal-logo-text">
+          <span>Portal</span>
+          <strong>Matriz táctica</strong>
+        </div>
+      </a>
+      <div class="portal-top-meta">
+        <button type="button" class="portal-icon-btn" id="portal-btn-theme" title="Tema" aria-pressed="false">☼</button>
+      </div>
+    </header>
+
+    <a class="portal-back" href="index.html">← Portada</a>
+
+    <div class="portal-page-head" id="mensual">
+      <h1>Cumplimiento por indicador</h1>
+      <p>Datos de ejemplo — el selector <strong>Cadencia</strong> cambia columnas y filas (demo).</p>
+    </div>
+
+    <div class="portal-filters">
+      <div>
+        <label for="f-cadencia">Cadencia</label>
+        <select id="f-cadencia" aria-label="Cadencia">
+          <option value="mensual">Mensual</option>
+          <option value="semanal">Semanal</option>
+          <option value="diario">Diario</option>
+        </select>
+      </div>
+      <div>
+        <label for="f-periodo">Periodo</label>
+        <select id="f-periodo" aria-label="Periodo">
+          <option>Mar 2026</option>
+          <option>Feb 2026</option>
+          <option>Ene 2026</option>
+        </select>
+      </div>
+      <div>
+        <label for="f-planta">Planta / filtro</label>
+        <select id="f-planta" aria-label="Planta">
+          <option>Todas</option>
+          <option>Planta Norte</option>
+          <option>Planta Sur</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="tactical-banner" class="tactical-banner" role="status" aria-live="polite">
+      <strong id="tactical-mode-label">Mensual</strong> — <span id="tactical-mode-desc">matriz por área y meta consolidada.</span>
+    </div>
+
+    <div class="portal-table-wrap" id="semanal">
+      <table class="portal-table" id="tactical-table" aria-describedby="tactical-banner">
+        <thead id="tactical-thead"></thead>
+        <tbody id="tactical-tbody"></tbody>
+      </table>
+    </div>
+
+    <p style="margin-top:1rem;font-size:0.8rem;color:var(--text-muted);" id="diario">
+      Enlaces desde la portada: <a href="tactical.html#mensual">#mensual</a>,
+      <a href="tactical.html#semanal">#semanal</a>,
+      <a href="tactical.html#diario">#diario</a> — al cargar, se aplica la cadencia y la tabla cambia.
+    </p>
+
+    <footer class="portal-footer">Matriz táctica — filtros funcionales con datos demo.</footer>
+  </div>
+  <script>
+    (function () {
+      var VIEWS = {
+        mensual: {
+          label: 'Mensual',
+          desc: 'cumplimiento por área (reunión de fin de mes).',
+          headers: ['Área', 'Meta', 'Real', 'Cumpl.', 'Estado', 'Dueño'],
+          rows: [
+            ['Operaciones', 'OEE 85%', '82.4%', '97%', 'En riesgo', 'Dir. Planta'],
+            ['Calidad', 'Scrap <1.2%', '1.05%', 'OK', 'OK', 'Jefe Cal.'],
+            ['Logística', 'OTIF 95%', '96.1%', '101%', 'OK', 'Supply'],
+            ['Finanzas', 'EBITDA 14%', '14.3%', '102%', 'OK', 'CFO'],
+            ['CX', 'NPS 52', '48', '92%', 'Brecha', 'Marketing'],
+            ['Mantenimiento', 'Paros <4%', '5.2%', '—', 'Fuera', 'Reliability']
+          ],
+          badges: {
+            4: {
+              'En riesgo': 'portal-badge-warn',
+              'OK': 'portal-badge-ok',
+              'Brecha': 'portal-badge-warn',
+              'Fuera': 'portal-badge-warn'
+            }
+          }
+        },
+        semanal: {
+          label: 'Semanal',
+          desc: 'seguimiento táctico por semana ISO.',
+          headers: ['Semana', 'OEE', 'Producción t', 'OTIF', 'Incidentes', 'Nota'],
+          rows: [
+            ['W11', '84.2%', '1240', '94%', '2', 'Estable'],
+            ['W10', '81.0%', '1180', '91%', '4', 'Paros el martes'],
+            ['W09', '86.5%', '1310', '97%', '0', 'Mejor semana'],
+            ['W08', '79.1%', '1050', '88%', '5', 'Falta material']
+          ],
+          badges: {}
+        },
+        diario: {
+          label: 'Diario',
+          desc: 'corte de turno — ejemplo para stand-up de planta.',
+          headers: ['Turno', 'Plan t', 'Real t', 'Var.', 'Paros min', 'Scrap %', 'Estado'],
+          rows: [
+            ['Matutino', '420', '408', '-2.9%', '38', '0.9%', 'OK'],
+            ['Vespertino', '380', '392', '+3.2%', '22', '0.7%', 'OK'],
+            ['Nocturno', '310', '275', '-11%', '95', '1.1%', 'En riesgo']
+          ],
+          badges: {
+            6: {
+              'OK': 'portal-badge-ok',
+              'En riesgo': 'portal-badge-warn'
+            }
+          }
+        }
+      };
+
+      function cellHtml(text, colIndex, viewKey) {
+        var b = VIEWS[viewKey].badges;
+        var meta = b && b[colIndex];
+        var cls = meta && meta[text] ? meta[text] : '';
+        var t = String(text).replace(/</g, '&lt;');
+        if (cls) return '<td class="' + cls + '">' + t + '</td>';
+        return '<td>' + t + '</td>';
+      }
+
+      function render(viewKey) {
+        var v = VIEWS[viewKey];
+        if (!v) return;
+        document.getElementById('tactical-mode-label').textContent = v.label;
+        document.getElementById('tactical-mode-desc').textContent = v.desc;
+        var thead = document.getElementById('tactical-thead');
+        var tbody = document.getElementById('tactical-tbody');
+        thead.innerHTML = '<tr>' + v.headers.map(function (h) {
+          return '<th>' + h + '</th>';
+        }).join('') + '</tr>';
+        tbody.innerHTML = v.rows.map(function (row) {
+          return '<tr>' + row.map(function (cell, i) {
+            return cellHtml(cell, i, viewKey);
+          }).join('') + '</tr>';
+        }).join('');
+      }
+
+      function applyHashOrSelect() {
+        var sel = document.getElementById('f-cadencia');
+        var h = (location.hash || '').replace(/^#/, '');
+        if (h === 'mensual' || h === 'semanal' || h === 'diario') {
+          sel.value = h;
+        }
+        render(sel.value);
+        history.replaceState(null, '', '#' + sel.value);
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        var sel = document.getElementById('f-cadencia');
+        var periodo = document.getElementById('f-periodo');
+        var planta = document.getElementById('f-planta');
+
+        applyHashOrSelect();
+
+        sel.addEventListener('change', function () {
+          render(sel.value);
+          history.replaceState(null, '', '#' + sel.value);
+          document.getElementById('tactical-banner').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+
+        function hintFilters() {
+          var p = periodo ? periodo.value : '';
+          var pl = planta ? planta.value : '';
+          var extra = (p && pl) ? ' Filtros demo: ' + p + ' · ' + pl + '.' : '';
+          document.getElementById('tactical-mode-desc').textContent = VIEWS[sel.value].desc + extra;
+        }
+        if (periodo) periodo.addEventListener('change', hintFilters);
+        if (planta) planta.addEventListener('change', hintFilters);
+
+        window.addEventListener('hashchange', applyHashOrSelect);
+      });
+    })();
+  </script>
+</body>
+</html>

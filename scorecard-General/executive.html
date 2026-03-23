@@ -1,0 +1,1656 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#3d8bfd" />
+  <meta name="description" content="Panel ejecutivo tipo scorecard — plantilla demostrable con KPIs de ejemplo." />
+  <title>Scorecard General — Panel ejecutivo</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="preload" href="audio/nastelbom-ambient-495893.mp3" as="audio" type="audio/mpeg" />
+  <link rel="preload" href="audio/voice-preview-dani.mp3" as="audio" type="audio/mpeg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="preconnect" href="https://cdn.sheetjs.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="scorecard-status.css" />
+  <link rel="stylesheet" href="scorecard-audio.css" />
+  <!--
+    Auto-actualización (opcional): descomenta y pon tu URL cuando tengas API.
+    El servidor debe devolver JSON con al menos uno: checksum | version | updatedAt | etag
+    o cabeceras ETag / Last-Modified.
+  <script>
+  window.SCORECARD_LIVE_POLL = {
+    url: '/api/scorecard/version',
+    intervalMs: 120000,
+    credentials: 'include',
+  };
+  </script>
+  -->
+  <!-- defer: no bloquea el primer pintado; orden = Chart → XLSX → estado → app → asistente → gráficas → live -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js" defer></script>
+  <script src="scorecard-status.js" defer></script>
+  <script src="scorecard-app.js" defer></script>
+  <script src="scorecard-assistant.js" defer></script>
+  <script src="scorecard-charts.js" defer></script>
+  <script src="scorecard-live.js" defer></script>
+  <script src="scorecard-audio.js" defer></script>
+  <script src="scorecard-ui-sounds.js" defer></script>
+  <style>
+    /* === Marca blanca (cliente): edita también window.SCORECARD_BRAND en scorecard-app.js === */
+    :root {
+      --bg: #0c0f14;
+      --bg-elevated: #12171f;
+      --bg-card: #161c27;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.14);
+      --text: #e8ecf1;
+      --text-muted: #8b97a8;
+      --accent: #3d8bfd;
+      --accent-dim: rgba(61, 139, 253, 0.15);
+      --green: #34d399;
+      --green-dim: rgba(52, 211, 153, 0.12);
+      --amber: #fbbf24;
+      --amber-dim: rgba(251, 191, 36, 0.12);
+      --red: #f87171;
+      --red-dim: rgba(248, 113, 113, 0.12);
+      --violet: #a78bfa;
+      --radius: 14px;
+      --shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+      --glass: rgba(22, 28, 39, 0.72);
+    }
+
+    body.light {
+      --bg: #f4f6fa;
+      --bg-elevated: #ffffff;
+      --bg-card: #ffffff;
+      --border: rgba(15, 23, 42, 0.08);
+      --border-strong: rgba(15, 23, 42, 0.14);
+      --text: #0f172a;
+      --text-muted: #475569;
+      --glass: rgba(255, 255, 255, 0.85);
+      --shadow: 0 4px 24px rgba(15, 23, 42, 0.08);
+    }
+
+    body.light {
+      background-image:
+        radial-gradient(ellipse 100% 80% at 50% -30%, rgba(61, 139, 253, 0.09), transparent 50%),
+        radial-gradient(ellipse 60% 40% at 100% 0%, rgba(167, 139, 250, 0.06), transparent 45%);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+
+    body {
+      font-family: "IBM Plex Sans", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+      background-image:
+        radial-gradient(ellipse 120% 80% at 50% -20%, rgba(61, 139, 253, 0.12), transparent 50%),
+        radial-gradient(ellipse 80% 50% at 100% 50%, rgba(167, 139, 250, 0.06), transparent 45%);
+      transition: background-color 0.35s ease, color 0.25s ease;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.035;
+      z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    .shell {
+      position: relative;
+      z-index: 1;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 1.75rem 1.5rem 3.5rem;
+    }
+
+    /* Header */
+    .top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .eyebrow {
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    h1 {
+      font-family: "Outfit", "IBM Plex Sans", system-ui, sans-serif;
+      font-size: clamp(1.65rem, 4.2vw, 2.15rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: var(--text);
+      background: linear-gradient(120deg, var(--text) 0%, var(--accent) 45%, var(--violet) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    body.light h1 {
+      background: linear-gradient(120deg, #0f172a 0%, #2563eb 50%, #7c3aed 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      max-width: 42rem;
+    }
+
+    .meta-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      align-items: center;
+    }
+
+    .pill {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.72rem;
+      padding: 0.4rem 0.85rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      color: var(--text-muted);
+    }
+
+    .pill strong { color: var(--text); font-weight: 600; }
+
+    .badge-dummy {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.35rem 0.65rem;
+      border-radius: 6px;
+      background: var(--amber-dim);
+      color: var(--amber);
+      border: 1px solid rgba(251, 191, 36, 0.25);
+    }
+
+    /* Section */
+    .section {
+      margin-bottom: 2.25rem;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+    }
+
+    .section-hint {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      opacity: 0.85;
+    }
+
+    /* KPI grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+
+    .kpi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.15rem 1.2rem;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .kpi-card:hover {
+      border-color: var(--border-strong);
+      transform: translateY(-2px);
+    }
+
+    .kpi-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--violet));
+      opacity: 0.9;
+    }
+
+    .kpi-card.up::before { background: linear-gradient(90deg, var(--green), #10b981); }
+    .kpi-card.warn::before { background: linear-gradient(90deg, var(--amber), #f59e0b); }
+    .kpi-card.down::before { background: linear-gradient(90deg, var(--red), #ef4444); }
+
+    .kpi-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 0.35rem;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .kpi-label code {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.62rem;
+      padding: 0.12rem 0.35rem;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.06);
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .kpi-value {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 1.45rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .kpi-foot {
+      margin-top: 0.65rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+
+    .delta {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.72rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .delta.pos { color: var(--green); }
+    .delta.neg { color: var(--red); }
+    .delta.neu { color: var(--text-muted); }
+
+    .target {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+    }
+
+    /* Hero KPIs larger */
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .hero-card {
+      background: linear-gradient(145deg, var(--bg-card) 0%, #1a2230 100%);
+      border: 1px solid var(--border);
+      border-radius: calc(var(--radius) + 2px);
+      padding: 1.35rem 1.4rem;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(500px 120px at 100% 0%, var(--accent-dim), transparent 55%);
+      pointer-events: none;
+    }
+
+    .hero-card .inner { position: relative; z-index: 1; }
+
+    .hero-card .kpi-value { font-size: 1.75rem; }
+
+    /* Charts row */
+    .charts-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .chart-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.1rem 1.25rem;
+      box-shadow: var(--shadow);
+    }
+
+    .chart-card h3 {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .chart-wrap {
+      position: relative;
+      height: 200px;
+    }
+
+    /* Table */
+    .table-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      background: rgba(0,0,0,0.25);
+    }
+
+    td { color: var(--text); }
+    td.num {
+      font-family: "IBM Plex Mono", monospace;
+      text-align: right;
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    .status-ok { color: var(--green); font-weight: 600; }
+    .status-warn { color: var(--amber); font-weight: 600; }
+    .status-bad { color: var(--red); font-weight: 600; }
+
+    footer {
+      margin-top: 2.5rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    /* Barra de acciones */
+    .action-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .search-kpi {
+      flex: 1;
+      min-width: 200px;
+      max-width: 420px;
+      position: relative;
+    }
+
+    .search-kpi input {
+      width: 100%;
+      padding: 0.55rem 0.85rem 0.55rem 2.35rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      color: var(--text);
+      font-size: 0.82rem;
+      font-family: inherit;
+    }
+
+    .search-kpi input:focus {
+      outline: none;
+      border-color: rgba(61, 139, 253, 0.5);
+      box-shadow: 0 0 0 3px var(--accent-dim);
+    }
+
+    .search-kpi::before {
+      content: "⌕";
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: 0.45;
+      font-size: 1rem;
+    }
+
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      color: var(--text-muted);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      font-size: 1.1rem;
+      transition: border-color 0.2s, color 0.2s, transform 0.15s;
+    }
+
+    .icon-btn:hover {
+      border-color: var(--border-strong);
+      color: var(--text);
+      transform: translateY(-1px);
+    }
+
+    .btn-soft {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 0.5rem 0.85rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-muted);
+      cursor: pointer;
+      letter-spacing: 0.04em;
+    }
+
+    .btn-soft:hover { color: var(--text); border-color: var(--accent); }
+
+    a.btn-soft {
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    /* Reveal scroll */
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1), transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .reveal.reveal-in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    section.highlight-section {
+      outline: 2px solid rgba(61, 139, 253, 0.65);
+      outline-offset: 6px;
+      border-radius: 18px;
+      animation: secPulse 1.4s ease-out;
+    }
+
+    @keyframes secPulse {
+      0% { box-shadow: 0 0 0 0 rgba(61, 139, 253, 0.45); }
+      100% { box-shadow: 0 0 0 24px transparent; }
+    }
+
+    /* Glosario */
+    .glossary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .gloss-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.1rem;
+      box-shadow: var(--shadow);
+    }
+
+    .gloss-card h4 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.35rem;
+      font-family: "Outfit", sans-serif;
+    }
+
+    .gloss-card p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    /* Command palette */
+    #cmd-palette {
+      position: fixed;
+      inset: 0;
+      z-index: 9000;
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(8px);
+      display: grid;
+      place-items: start center;
+      padding-top: 12vh;
+      padding-inline: 1rem;
+    }
+
+    #cmd-palette[hidden] { display: none; }
+
+    .cmd-panel {
+      width: min(560px, 100%);
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-strong);
+      border-radius: 16px;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+      overflow: hidden;
+    }
+
+    .cmd-panel-head {
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid var(--border);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+    }
+
+    #cmd-input {
+      width: 100%;
+      border: none;
+      padding: 1rem 1.1rem;
+      font-size: 1rem;
+      font-family: inherit;
+      background: transparent;
+      color: var(--text);
+    }
+
+    #cmd-input:focus { outline: none; }
+
+    #cmd-list {
+      list-style: none;
+      max-height: 320px;
+      overflow-y: auto;
+    }
+
+    #cmd-list li {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.65rem 1rem;
+      cursor: pointer;
+      font-size: 0.88rem;
+      border-top: 1px solid var(--border);
+    }
+
+    #cmd-list li:hover { background: var(--accent-dim); }
+
+    .cmd-type {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.6rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--violet);
+      min-width: 3.5rem;
+    }
+
+    /* Asistente */
+    #asst-fab {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 8000;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--accent), var(--violet));
+      color: #fff;
+      font-size: 1.45rem;
+      box-shadow: 0 12px 40px rgba(61, 139, 253, 0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    #asst-fab:hover { transform: scale(1.06); box-shadow: 0 16px 48px rgba(61, 139, 253, 0.5); }
+
+    #asst-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: min(420px, 100vw);
+      height: 100vh;
+      z-index: 8500;
+      background: var(--bg-card);
+      border-left: 1px solid var(--border-strong);
+      box-shadow: -20px 0 60px rgba(0, 0, 0, 0.35);
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #asst-drawer.open { transform: translateX(0); }
+
+    .asst-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.1rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-elevated);
+    }
+
+    .asst-head h3 {
+      font-family: "Outfit", sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .asst-tools { display: flex; gap: 0.35rem; }
+
+    .asst-tool {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .asst-tool.off { opacity: 0.45; }
+
+    .asst-tool.listening {
+      animation: micPulse 1s ease-in-out infinite;
+      border-color: var(--red);
+    }
+
+    @keyframes micPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(248, 113, 113, 0.4); }
+      50% { box-shadow: 0 0 0 8px rgba(248, 113, 113, 0); }
+    }
+
+    #asst-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .asst-msg {
+      max-width: 95%;
+      padding: 0.75rem 0.9rem;
+      border-radius: 14px;
+      font-size: 0.84rem;
+      line-height: 1.5;
+    }
+
+    .asst-msg--user {
+      align-self: flex-end;
+      background: var(--accent-dim);
+      border: 1px solid rgba(61, 139, 253, 0.25);
+    }
+
+    .asst-msg--bot {
+      align-self: flex-start;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+    }
+
+    .asst-foot {
+      padding: 0.75rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 0.5rem;
+      align-items: flex-end;
+    }
+
+    #asst-input {
+      flex: 1;
+      min-height: 44px;
+      max-height: 120px;
+      resize: vertical;
+      padding: 0.65rem 0.85rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.85rem;
+    }
+
+    #asst-input:focus { outline: none; border-color: var(--accent); }
+
+    #asst-send {
+      padding: 0.65rem 1rem;
+      border-radius: 12px;
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+
+    .asst-settings {
+      display: none;
+      padding: 0.75rem 1rem;
+      border-top: 1px solid var(--border);
+      background: rgba(251, 191, 36, 0.08);
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .asst-settings.open { display: block; }
+
+    .asst-settings label { display: block; margin-top: 0.5rem; font-weight: 600; color: var(--text); }
+    .asst-settings input,
+    .asst-settings select {
+      width: 100%;
+      margin-top: 0.25rem;
+      padding: 0.45rem 0.55rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      font-size: 0.75rem;
+      background: var(--bg-card);
+      color: var(--text);
+    }
+
+    #asst-voice-test {
+      margin-top: 0.5rem;
+      padding: 0.4rem 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.72rem;
+      color: var(--text);
+    }
+
+    #asst-voice-test:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    #asst-save-key {
+      margin-top: 0.65rem;
+      padding: 0.45rem 0.85rem;
+      border-radius: 8px;
+      border: 1px solid var(--amber);
+      background: var(--amber-dim);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.72rem;
+    }
+
+    /* Accesibilidad: foco visible */
+    *:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    .icon-btn:focus-visible,
+    .btn-soft:focus-visible,
+    #asst-fab:focus-visible {
+      outline-offset: 2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      .reveal { opacity: 1 !important; transform: none !important; }
+      section.highlight-section { animation: none; }
+    }
+
+    /* Modo presentación / demo (proyector) */
+    body.demo-mode {
+      font-size: 1.05rem;
+    }
+
+    /* Fondo “maestro” solo en presentación: capas detrás de las scorecards (no ocupa HTML extra) */
+    body.demo-mode::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 85% 55% at 12% 15%, rgba(61, 139, 253, 0.16), transparent 58%),
+        radial-gradient(ellipse 75% 50% at 88% 85%, rgba(167, 139, 250, 0.14), transparent 52%),
+        radial-gradient(ellipse 55% 35% at 50% 50%, rgba(61, 139, 253, 0.06), transparent 60%),
+        repeating-linear-gradient(
+          -18deg,
+          transparent 0,
+          transparent 72px,
+          rgba(255, 255, 255, 0.028) 72px,
+          rgba(255, 255, 255, 0.028) 73px
+        ),
+        linear-gradient(
+          165deg,
+          rgba(18, 23, 31, 0.55) 0%,
+          transparent 42%,
+          transparent 58%,
+          rgba(22, 28, 39, 0.45) 100%
+        );
+    }
+
+    body.light.demo-mode::before {
+      background:
+        radial-gradient(ellipse 85% 55% at 10% 12%, rgba(37, 99, 235, 0.12), transparent 58%),
+        radial-gradient(ellipse 75% 50% at 90% 88%, rgba(124, 58, 237, 0.1), transparent 52%),
+        radial-gradient(ellipse 50% 30% at 50% 45%, rgba(37, 99, 235, 0.05), transparent 55%),
+        repeating-linear-gradient(
+          -18deg,
+          transparent 0,
+          transparent 72px,
+          rgba(15, 23, 42, 0.04) 72px,
+          rgba(15, 23, 42, 0.04) 73px
+        ),
+        linear-gradient(
+          165deg,
+          rgba(244, 246, 250, 0.85) 0%,
+          transparent 45%,
+          transparent 55%,
+          rgba(255, 255, 255, 0.65) 100%
+        );
+    }
+
+    /* Textura global más suave en presentación para que respire el fondo de ::before */
+    body.demo-mode::after {
+      opacity: 0.018;
+    }
+
+    body.light.demo-mode::after {
+      opacity: 0.025;
+    }
+
+    body.demo-mode .shell {
+      max-width: 1600px;
+      position: relative;
+      z-index: 1;
+    }
+
+    body.demo-mode .hero-card,
+    body.demo-mode .kpi-card,
+    body.demo-mode .chart-card,
+    body.demo-mode .table-card {
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    }
+
+    body.light.demo-mode .hero-card,
+    body.light.demo-mode .kpi-card,
+    body.light.demo-mode .chart-card,
+    body.light.demo-mode .table-card {
+      box-shadow: 0 12px 36px rgba(15, 23, 42, 0.1), 0 0 0 1px rgba(15, 23, 42, 0.06);
+    }
+
+    body.demo-mode .hero-card .kpi-value {
+      font-size: 2rem;
+    }
+
+    body.demo-mode .kpi-card .kpi-value {
+      font-size: 1.6rem;
+    }
+
+    body.demo-mode .badge-dummy {
+      display: none !important;
+    }
+
+    body.demo-mode .subtitle {
+      font-size: 0.95rem;
+    }
+
+    #btn-demo.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-dim);
+    }
+
+    /* Periodo */
+    .period-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+    }
+
+    .period-wrap label {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+    }
+
+    #period-select {
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 0.4rem 0.65rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      color: var(--text);
+      cursor: pointer;
+      max-width: 220px;
+    }
+
+    #period-select:focus-visible {
+      outline: 2px solid var(--accent);
+    }
+
+    /* Paneles módulos y drill */
+    #module-panel,
+    #excel-panel,
+    #drill-panel {
+      position: fixed;
+      inset: 0;
+      z-index: 9200;
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(6px);
+      display: grid;
+      place-items: center;
+      padding: 1rem;
+    }
+
+    #module-panel[hidden],
+    #excel-panel[hidden],
+    #drill-panel[hidden] {
+      display: none;
+    }
+
+    .module-dialog,
+    .drill-dialog {
+      width: min(480px, 100%);
+      max-height: min(88vh, 640px);
+      overflow: auto;
+      background: var(--bg-card);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.35rem;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+      outline: none;
+    }
+
+    .drill-dialog {
+      width: min(560px, 100%);
+    }
+
+    .module-dialog h3,
+    .drill-dialog h3 {
+      font-family: "Outfit", sans-serif;
+      font-size: 1.1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .module-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.45rem 0;
+      font-size: 0.88rem;
+      cursor: pointer;
+    }
+
+    .module-row input {
+      width: 1rem;
+      height: 1rem;
+      accent-color: var(--accent);
+    }
+
+    .drill-p {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      line-height: 1.55;
+    }
+
+    .drill-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+
+    .drill-table th,
+    .drill-table td {
+      padding: 0.5rem 0.6rem;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+
+    .drill-table .num {
+      text-align: right;
+      font-family: "IBM Plex Mono", monospace;
+    }
+
+    .drill-table .pos {
+      color: var(--green);
+    }
+
+    .drill-list {
+      margin: 0;
+      padding-left: 1.1rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    .panel-close {
+      float: right;
+      margin: -0.25rem 0 0.5rem 0.5rem;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .hero-card[data-drill]:hover {
+      box-shadow: 0 8px 32px rgba(61, 139, 253, 0.12);
+    }
+
+    .legal-footer {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      max-width: 720px;
+      margin: 0.75rem auto 0;
+      line-height: 1.5;
+    }
+
+    .legal-footer a {
+      color: var(--accent);
+    }
+
+    .file-input-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .excel-preview {
+      margin-top: 0.8rem;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: auto;
+      max-height: 240px;
+      background: var(--bg-elevated);
+    }
+
+    .excel-preview table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.75rem;
+    }
+
+    .excel-preview th,
+    .excel-preview td {
+      padding: 0.45rem 0.5rem;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .excel-help {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-top: 0.45rem;
+    }
+
+    @media print {
+      body { background: #fff !important; color: #111 !important; }
+      body::after { display: none; }
+      .kpi-card, .hero-card, .chart-card, .table-card { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
+      #asst-fab, #asst-drawer, #cmd-palette, .action-bar, #module-panel, #excel-panel, #drill-panel { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div id="scorecard-status-mount"></div>
+    <header class="top">
+      <div class="brand">
+        <span class="eyebrow" id="brand-eyebrow">Proyecto</span>
+        <h1 id="brand-title">Scorecard General</h1>
+        <p class="subtitle">
+          Indicadores dummy por área, animaciones al scroll, tema claro/oscuro, buscador de KPIs,
+          <strong>paleta Ctrl+K</strong> y <strong>asistente</strong> (texto, voz y glosario; IA cloud opcional en ajustes).
+        </p>
+      </div>
+      <div class="meta-bar">
+        <div class="period-wrap">
+          <label for="period-select">Periodo</label>
+          <select id="period-select" aria-label="Seleccionar periodo de reporte">
+            <option value="q1_2026">Ene — Mar 2026 (Q1)</option>
+            <option value="q2_2026">Abr — Jun 2026 (Q2)</option>
+            <option value="h1_2026">Semestre (H1)</option>
+            <option value="ytd_cmp">YTD vs año anterior</option>
+          </select>
+        </div>
+        <span class="pill">Vista: <strong id="pill-period-label">Ene — Mar 2026</strong></span>
+        <span class="pill">Moneda: <strong>MXN</strong></span>
+        <span class="pill">Fuente: <strong id="data-source-pill">Demo local</strong></span>
+        <span class="badge-dummy">Datos de ejemplo</span>
+      </div>
+      <div class="action-bar">
+        <a href="index.html" class="btn-soft" title="Volver a la portada del portal">Portada</a>
+        <div class="search-kpi">
+          <input type="search" id="kpi-search" placeholder="Buscar KPI o métrica…" autocomplete="off" aria-label="Filtrar tarjetas KPI" />
+        </div>
+        <button type="button" class="btn-soft" id="btn-upload" title="Subir Excel para hidratar KPIs">Subir Excel</button>
+        <input type="file" id="excel-file" class="file-input-hidden" accept=".xlsx,.xls,.csv" />
+        <button type="button" class="btn-soft" id="btn-modules" title="Mostrar u ocultar bloques del scorecard">Módulos</button>
+        <button type="button" class="btn-soft" id="btn-demo" title="Modo presentación: tipografía grande y sin badge demo" aria-pressed="false">Presentación</button>
+        <button type="button" class="btn-soft" id="btn-cmd" title="Paleta de comandos">⌘K Buscar</button>
+        <button type="button" class="icon-btn" id="btn-theme" title="Tema claro / oscuro">☼</button>
+        <button type="button" class="icon-btn" id="btn-print" title="Imprimir / PDF" onclick="window.print()">⎙</button>
+      </div>
+    </header>
+
+    <!-- Resumen ejecutivo -->
+    <section class="section reveal" id="sec-resumen" data-module="resumen" aria-label="Resumen ejecutivo">
+      <div class="section-head">
+        <h2 class="section-title">Resumen ejecutivo</h2>
+        <span class="section-hint">KPIs cabecera — visión 30 segundos</span>
+      </div>
+      <div class="hero-grid">
+        <article class="hero-card" data-drill="revenue" title="Clic para detalle dummy">
+          <div class="inner">
+            <div class="kpi-label">Ingresos netos YTD <code>YTD</code></div>
+            <div class="kpi-value" id="h-revenue">$6.21M</div>
+            <div class="kpi-foot">
+              <span class="delta pos" id="h-revenue-note">▲ 12.4% vs LY</span>
+              <span class="target">Meta anual 78%</span>
+            </div>
+          </div>
+        </article>
+        <article class="hero-card" data-drill="ebitda" title="Clic para detalle dummy">
+          <div class="inner">
+            <div class="kpi-label">EBITDA ajustado <code>OP</code></div>
+            <div class="kpi-value" id="h-ebitda">$842K</div>
+            <div class="kpi-foot">
+              <span class="delta pos">▲ 3.1 pp margen</span>
+              <span class="target">Run-rate estable</span>
+            </div>
+          </div>
+        </article>
+        <article class="hero-card" data-drill="ccc" title="Clic para detalle dummy">
+          <div class="inner">
+            <div class="kpi-label">Cash conversion cycle <code>CCC</code></div>
+            <div class="kpi-value" id="h-ccc">42 días</div>
+            <div class="kpi-foot">
+              <span class="delta pos">▼ 6 días vs trim anterior</span>
+              <span class="target">Obj. &lt; 45 d</span>
+            </div>
+          </div>
+        </article>
+        <article class="hero-card" data-drill="nps" title="Clic para detalle dummy">
+          <div class="inner">
+            <div class="kpi-label">NPS consolidado <code>CX</code></div>
+            <div class="kpi-value" id="h-nps">+48</div>
+            <div class="kpi-foot">
+              <span class="delta neu">→ plano vs Q4</span>
+              <span class="target">Meta +52</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Mini charts -->
+    <div class="charts-row reveal" id="sec-charts" data-module="charts">
+      <div class="chart-card">
+        <h3>Ingreso mensual (dummy)</h3>
+        <div class="chart-wrap"><canvas id="ch-revenue" aria-label="Gráfica ingresos"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h3>Margen bruto % (dummy)</h3>
+        <div class="chart-wrap"><canvas id="ch-margin" aria-label="Gráfica margen"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Finanzas -->
+    <section class="section reveal" id="sec-finanzas" data-module="finanzas" aria-label="Finanzas">
+      <div class="section-head">
+        <h2 class="section-title">Finanzas & liquidez</h2>
+        <span class="section-hint">Rentabilidad, flujo y estructura</span>
+      </div>
+      <div class="kpi-grid">
+        <article class="kpi-card up">
+          <div class="kpi-label">Margen bruto <code>GM%</code></div>
+          <div class="kpi-value">43.4%</div>
+          <div class="kpi-foot"><span class="delta pos">▲ 1.2 pp</span><span class="target">Sector ~38%</span></div>
+        </article>
+        <article class="kpi-card up">
+          <div class="kpi-label">ROIC <code>ROIC</code></div>
+          <div class="kpi-value">14.8%</div>
+          <div class="kpi-foot"><span class="delta pos">▲ 0.9 pp</span><span class="target">WACC est. 9.2%</span></div>
+        </article>
+        <article class="kpi-card warn">
+          <div class="kpi-label">Deuda neta / EBITDA <code>Leverage</code></div>
+          <div class="kpi-value">2.1×</div>
+          <div class="kpi-foot"><span class="delta neu">→ sin cambio</span><span class="target">Política &lt; 2.5×</span></div>
+        </article>
+        <article class="kpi-card up">
+          <div class="kpi-label">Días de caja <code>Cash</code></div>
+          <div class="kpi-value">118 d</div>
+          <div class="kpi-foot"><span class="delta pos">▲ 9 d</span><span class="target">Stress OK</span></div>
+        </article>
+        <article class="kpi-card down">
+          <div class="kpi-label">CAGR ingresos 3Y <code>Growth</code></div>
+          <div class="kpi-value">11.2%</div>
+          <div class="kpi-foot"><span class="delta neg">▼ vs 14.1% LY</span><span class="target">Plan 12%</span></div>
+        </article>
+        <article class="kpi-card up">
+          <div class="kpi-label">Working capital / ventas <code>WC%</code></div>
+          <div class="kpi-value">18%</div>
+          <div class="kpi-foot"><span class="delta pos">▼ mejora</span><span class="target">Obj. 19%</span></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Comercial -->
+    <section class="section reveal" id="sec-comercial" data-module="comercial" aria-label="Comercial">
+      <div class="section-head">
+        <h2 class="section-title">Comercial & crecimiento</h2>
+        <span class="section-hint">Pipeline, retención y pricing</span>
+      </div>
+      <div class="kpi-grid">
+        <article class="kpi-card up">
+          <div class="kpi-label">Pipeline ponderado <code>CRM</code></div>
+          <div class="kpi-value">$2.4M</div>
+          <div class="kpi-foot"><span class="delta pos">▲ 18%</span><span class="target">Cubre 2.1× quota</span></div>
+        </article>
+        <article class="kpi-card up">
+          <div class="kpi-label">Win rate <code>Sales</code></div>
+          <div class="kpi-value">34%</div>
+          <div class="kpi-foot"><span class="delta pos">▲ 4 pp</span><span class="target">Benchmark 30%</span></div>
+        </article>
+        <article class="kpi-card warn">
+          <div class="kpi-label">Churn revenue <code>RR</code></div>
+          <div class="kpi-value">4.2%</div>
+          <div class="kpi-foot"><span class="delta neg">▲ 0.3 pp</span><span class="target">Tope 4.0%</span></div>
+        </article>
+        <article class="kpi-card up">
+          <div class="kpi-label">CAC payback <code>CAC</code></div>
+          <div class="kpi-value">11 meses</div>
+          <div class="kpi-foot"><span class="delta pos">▼ 1 m</span><span class="target">Obj. 12 m</span></div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-label">LTV / CAC <code>Unit</code></div>
+          <div class="kpi-value">3.2×</div>
+          <div class="kpi-foot"><span class="delta neu">→ estable</span><span class="target">Mín. 3.0×</span></div>
+        </article>
+        <article class="kpi-card up">
+          <div class="kpi-label">Precio neto vs lista <code>Pricing</code></div>
+          <div class="kpi-value">91%</div>
+          <div class="kpi-foot"><span class="delta pos">▲ 1.5 pp</span><span class="target">Desc. controlado</span></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Operaciones -->
+    <section class="section reveal" id="sec-ops" data-module="ops" aria-label="Operaciones">
+      <div class="section-head">
+        <h2 class="section-title">Operaciones & cadena de suministro</h2>
+        <span class="section-hint">Eficiencia, calidad y cumplimiento</span>
+      </div>
+      <div class="kpi-grid">
+        <article class="kpi-card up">
+          <div class="kpi-label">OTIF <code>Logística</code></div>
+          <div class="kpi-value">94.2%</div>
+          <div class="kpi-foot"><span class="delta pos">▲ 2.1 pp</span><span class="target">Meta 95%</span></div>
+        </article>
+        <article class="kpi-card warn">
+          <div class="kpi-label">Lead time promedio <code>Ops</code></div>
+          <div class="kpi-value">6.8 d</div>
+          <div class="kpi-foot"><span class="delta neg">▲ 0.4 d</span><span class="target">Obj. 6.0 d</span></div>
+        </article>
+        <article class="kpi-card up">
+          <div class="kpi-label">Capacidad utilizada <code>Plant</code></div>
+          <div class="kpi-value">87%</div>
+          <div class="kpi-foot"><span class="delta pos">▲ 5 pp</span><span class="target">Zona 85–92%</span></div>
+        </article>
+        <article class="kpi-card up">
+          <div class="kpi-label">Scrap / reproceso <code>Quality</code></div>
+          <div class="kpi-value">0.9%</div>
+          <div class="kpi-foot"><span class="delta pos">▼ 0.2 pp</span><span class="target">Six Sigma lite</span></div>
+        </article>
+        <article class="kpi-card down">
+          <div class="kpi-label">Fill rate proveedores <code>SRM</code></div>
+          <div class="kpi-value">96%</div>
+          <div class="kpi-foot"><span class="delta neg">▼ 2 pp</span><span class="target">Crítico &gt; 97%</span></div>
+        </article>
+        <article class="kpi-card up">
+          <div class="kpi-label">Cumplimiento SLA interno <code>IT/Ops</code></div>
+          <div class="kpi-value">99.1%</div>
+          <div class="kpi-foot"><span class="delta pos">▲ 0.3 pp</span><span class="target">SLO 99%</span></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Personas -->
+    <section class="section reveal" id="sec-personas" data-module="personas" aria-label="Personas">
+      <div class="section-head">
+        <h2 class="section-title">Personas & organización</h2>
+        <span class="section-hint">Talento, productividad y cultura</span>
+      </div>
+      <div class="kpi-grid">
+        <article class="kpi-card warn">
+          <div class="kpi-label">Rotación voluntaria anualizada <code>HR</code></div>
+          <div class="kpi-value">14%</div>
+          <div class="kpi-foot"><span class="delta neg">▲ 1 pp</span><span class="target">Meta 12%</span></div>
+        </article>
+        <article class="kpi-card up">
+          <div class="kpi-label">eNPS <code>Culture</code></div>
+          <div class="kpi-value">+22</div>
+          <div class="kpi-foot"><span class="delta pos">▲ 5 pts</span><span class="target">+25 objetivo</span></div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-label">Días promedio para cubrir vacante <code>TA</code></div>
+          <div class="kpi-value">38 d</div>
+          <div class="kpi-foot"><span class="delta neu">→ igual</span><span class="target">Obj. 35 d</span></div>
+        </article>
+        <article class="kpi-card up">
+          <div class="kpi-label">Horas capacitación / FTE <code>L&D</code></div>
+          <div class="kpi-value">26 h</div>
+          <div class="kpi-foot"><span class="delta pos">▲ 4 h</span><span class="target">Plan anual</span></div>
+        </article>
+        <article class="kpi-card up">
+          <div class="kpi-label">Ausentismo <code>Abs</code></div>
+          <div class="kpi-value">2.1%</div>
+          <div class="kpi-foot"><span class="delta pos">▼ 0.4 pp</span><span class="target">Saludable</span></div>
+        </article>
+        <article class="kpi-card warn">
+          <div class="kpi-label">Brecha salarial auditoría <code>DEI</code></div>
+          <div class="kpi-value">3.2%</div>
+          <div class="kpi-foot"><span class="delta neu">→ en mejora</span><span class="target">&lt; 3.0%</span></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Clientes & riesgo -->
+    <section class="section reveal" id="sec-clientes" data-module="clientes" aria-label="Clientes y riesgo">
+      <div class="section-head">
+        <h2 class="section-title">Clientes, datos & riesgo</h2>
+        <span class="section-hint">Experiencia, concentración y cumplimiento</span>
+      </div>
+      <div class="kpi-grid">
+        <article class="kpi-card up">
+          <div class="kpi-label">CSAT transaccional <code>CX</code></div>
+          <div class="kpi-value">4.6 / 5</div>
+          <div class="kpi-foot"><span class="delta pos">▲ 0.1</span><span class="target">Top decil</span></div>
+        </article>
+        <article class="kpi-card warn">
+          <div class="kpi-label">Concentración top 10 clientes <code>Risk</code></div>
+          <div class="kpi-value">52%</div>
+          <div class="kpi-foot"><span class="delta neg">▲ 2 pp</span><span class="target">Diversificar</span></div>
+        </article>
+        <article class="kpi-card up">
+          <div class="kpi-label">Tickets críticos MTTR <code>Support</code></div>
+          <div class="kpi-value">4.2 h</div>
+          <div class="kpi-foot"><span class="delta pos">▼ 1.1 h</span><span class="target">SLA 6 h</span></div>
+        </article>
+        <article class="kpi-card up">
+          <div class="kpi-label">Cumplimiento normativo <code>GRC</code></div>
+          <div class="kpi-value">100%</div>
+          <div class="kpi-foot"><span class="delta neu">Sin hallazgos mayores</span><span class="target">Auditoría Q1</span></div>
+        </article>
+        <article class="kpi-card warn">
+          <div class="kpi-label">Incidentes ciberseguridad (P2+) <code>Sec</code></div>
+          <div class="kpi-value">2</div>
+          <div class="kpi-foot"><span class="delta neg">▲ 1</span><span class="target">Obj. 0–1</span></div>
+        </article>
+        <article class="kpi-card up">
+          <div class="kpi-label">Calidad de datos maestros <code>MDM</code></div>
+          <div class="kpi-value">97%</div>
+          <div class="kpi-foot"><span class="delta pos">▲ 2 pp</span><span class="target">BI confiable</span></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Tabla resumen -->
+    <section class="section reveal" id="sec-objetivos" data-module="objetivos" aria-label="Tabla objetivos">
+      <div class="section-head">
+        <h2 class="section-title">Seguimiento de objetivos (dummy)</h2>
+        <span class="section-hint">Semáforo ejecutivo</span>
+      </div>
+      <div class="table-card">
+        <table>
+          <thead>
+            <tr>
+              <th>Objetivo</th>
+              <th>Dueño</th>
+              <th class="num">Avance</th>
+              <th class="num">Meta</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Expansión revenue regional norte</td>
+              <td>VP Comercial</td>
+              <td class="num">78%</td>
+              <td class="num">100% jun-26</td>
+              <td class="status-ok">En plan</td>
+            </tr>
+            <tr>
+              <td>Reducción CCC 45 días</td>
+              <td>CFO</td>
+              <td class="num">93%</td>
+              <td class="num">42 d actuales</td>
+              <td class="status-ok">Cumplido</td>
+            </tr>
+            <tr>
+              <td>Programa retención talento clave</td>
+              <td>CHRO</td>
+              <td class="num">45%</td>
+              <td class="num">Q3-26</td>
+              <td class="status-warn">Riesgo</td>
+            </tr>
+            <tr>
+              <td>Homologación proveedores críticos</td>
+              <td>COO</td>
+              <td class="num">62%</td>
+              <td class="num">80% ago-26</td>
+              <td class="status-warn">Atraso leve</td>
+            </tr>
+            <tr>
+              <td>Postura cero trust (fase 1)</td>
+              <td>CISO</td>
+              <td class="num">88%</td>
+              <td class="num">100% dic-26</td>
+              <td class="status-ok">En plan</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Glosario (visible para humanos + contexto del asistente) -->
+    <section class="section reveal" id="sec-glosario" data-module="glosario" aria-label="Glosario">
+      <div class="section-head">
+        <h2 class="section-title">Glosario ejecutivo</h2>
+        <span class="section-hint">Definiciones breves — el asistente también puede explicarlas por chat o voz</span>
+      </div>
+      <div class="glossary-grid">
+        <article class="gloss-card">
+          <h4>ROIC</h4>
+          <p>Retorno sobre capital invertido: eficiencia del capital empleado frente al beneficio operativo después de impuestos.</p>
+        </article>
+        <article class="gloss-card">
+          <h4>CCC</h4>
+          <p>Ciclo de conversión de efectivo: días desde que pagas proveedores hasta cobras clientes (inventario + cobro − proveedores).</p>
+        </article>
+        <article class="gloss-card">
+          <h4>EBITDA</h4>
+          <p>Resultado operativo aproximado antes de intereses, impuestos y amortizaciones; útil para comparar, no sustituye al flujo de caja.</p>
+        </article>
+        <article class="gloss-card">
+          <h4>LTV / CAC</h4>
+          <p>Valor de vida del cliente frente al costo de adquisición. Por debajo de 1× suele ser insostenible en el tiempo.</p>
+        </article>
+        <article class="gloss-card">
+          <h4>OTIF</h4>
+          <p>On Time In Full: entregas a tiempo y completas; KPI estándar de servicio y cadena de suministro.</p>
+        </article>
+        <article class="gloss-card">
+          <h4>NPS / CSAT</h4>
+          <p>NPS mide recomendación (0–10); CSAT mide satisfacción en un contacto o transacción. Se usan juntos para CX.</p>
+        </article>
+      </div>
+    </section>
+
+    <footer>
+      <div>Scorecard General — plantilla HTML · KPIs ficticios · Asistente local + voz + IA opcional · <span id="footer-year">2026</span></div>
+      <p class="legal-footer">
+        Los datos y gráficas son <strong>ilustrativos</strong> y no constituyen asesoría financiera, legal ni fiscal.
+        No introduzcas datos personales sensibles en el chat de asistente o IA. Política de privacidad: sustituir con la del cliente al white-label.
+        <a href="#" onclick="return false">Privacidad (placeholder)</a>
+      </p>
+    </footer>
+  </div>
+
+  <!-- Módulos del tablero -->
+  <div id="module-panel" hidden role="dialog" aria-modal="true" aria-labelledby="module-title">
+    <div class="module-dialog" tabindex="-1">
+      <button type="button" class="panel-close" id="module-close" aria-label="Cerrar">✕</button>
+      <h3 id="module-title">Módulos visibles</h3>
+      <p class="drill-p" style="margin-top:0">Marca qué bloques muestra el scorecard. La preferencia se guarda en este navegador.</p>
+      <div id="module-checklist"></div>
+    </div>
+  </div>
+
+  <!-- Carga Excel -->
+  <div id="excel-panel" hidden role="dialog" aria-modal="true" aria-labelledby="excel-title">
+    <div class="module-dialog" tabindex="-1">
+      <button type="button" class="panel-close" id="excel-close" aria-label="Cerrar">✕</button>
+      <h3 id="excel-title">Carga de Excel (demo)</h3>
+      <p class="drill-p" style="margin-top:0">Se intentará mapear columnas por nombre para actualizar KPIs hero y crear una vista previa.</p>
+      <div class="excel-help">
+        Encabezados sugeridos: <strong>revenue</strong>, <strong>ebitda</strong>, <strong>ccc</strong>, <strong>nps</strong>, <strong>revenue_note</strong>.<br />
+        También acepta alias como: ingresos, ventas, utilidad, margen, cash_conversion, net_promoter.
+      </div>
+      <div id="excel-status" class="excel-help"></div>
+      <div class="excel-preview" id="excel-preview"></div>
+    </div>
+  </div>
+
+  <!-- Drill-down KPI hero -->
+  <div id="drill-panel" hidden role="dialog" aria-modal="true" aria-labelledby="drill-title">
+    <div class="drill-dialog" tabindex="-1">
+      <button type="button" class="panel-close" id="drill-close" aria-label="Cerrar">✕</button>
+      <h3 id="drill-title">Detalle</h3>
+      <div id="drill-body"></div>
+    </div>
+  </div>
+
+  <!-- Paleta de comandos (Ctrl+K o /) -->
+  <div id="cmd-palette" hidden role="dialog" aria-modal="true" aria-label="Paleta de comandos">
+    <div class="cmd-panel">
+      <div class="cmd-panel-head">Navegar · Ayuda rápida · Esc cerrar</div>
+      <input type="text" id="cmd-input" placeholder="Escribe: finanzas, ROIC, glosario…" autocomplete="off" />
+      <ul id="cmd-list"></ul>
+    </div>
+  </div>
+
+  <!-- Asistente -->
+  <button type="button" id="asst-fab" aria-label="Abrir asistente" title="Asistente">✦</button>
+  <aside id="asst-drawer" aria-label="Panel asistente">
+    <div class="asst-head">
+      <h3>Asistente Scorecard</h3>
+      <div class="asst-tools">
+        <button type="button" class="asst-tool" id="asst-tts" title="Lectura en voz">🔊</button>
+        <button type="button" class="asst-tool" id="asst-mic" title="Dictar pregunta">🎤</button>
+        <button type="button" class="asst-tool" id="asst-gear" title="Ajustes IA">⚙</button>
+        <button type="button" class="asst-tool" id="asst-close" title="Cerrar">✕</button>
+      </div>
+    </div>
+    <div id="asst-settings" class="asst-settings">
+      <strong>IA cloud (solo pruebas)</strong> — La clave en el navegador <strong>no es segura</strong> para producción. Usa un backend proxy.
+      <br /><span style="opacity:0.9">No escribas datos personales, financieros reales ni secretos comerciales en el chat.</span>
+      <label>API key (OpenAI u compatible)</label>
+      <input type="password" id="asst-api-key" placeholder="sk-…" autocomplete="off" />
+      <label>Base URL (opcional)</label>
+      <input type="text" id="asst-api-base" placeholder="https://api.openai.com/v1/chat/completions" />
+      <label>Modelo (opcional)</label>
+      <input type="text" id="asst-api-model" placeholder="gpt-4o-mini" />
+      <button type="button" id="asst-save-key">Guardar en esta sesión</button>
+      <hr style="margin:0.85rem 0;border:none;border-top:1px solid var(--border)" />
+      <strong>Lectura en voz</strong> — Por defecto: voz <strong>femenina</strong> en español y ritmo más pausado (menos “robot”). Si no te convence, elige otra en la lista.
+      <label for="asst-voice-select">Voz (español)</label>
+      <select id="asst-voice-select" aria-label="Voz para leer respuestas en alto"></select>
+      <button type="button" id="asst-voice-test">Probar voz</button>
+    </div>
+    <div id="asst-messages"></div>
+    <div class="asst-foot">
+      <textarea id="asst-input" rows="2" placeholder="Pregunta por una métrica o di «ir a comercial»…"></textarea>
+      <button type="button" id="asst-send">Enviar</button>
+    </div>
+  </aside>
+
+</body>
+</html>

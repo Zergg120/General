@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#3d8bfd" />
+  <meta name="description" content="Portal Scorecard — acceso a vistas ejecutivas y operativas (plantilla)." />
+  <title>Scorecard — Portada</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="preload" href="audio/nastelbom-ambient-495893.mp3" as="audio" type="audio/mpeg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700&family=IBM+Plex+Mono:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="portal-shared.css" />
+  <link rel="stylesheet" href="scorecard-status.css" />
+  <link rel="stylesheet" href="scorecard-audio.css" />
+  <script src="portal-shared.js" defer></script>
+  <script src="scorecard-status.js" defer></script>
+  <script src="scorecard-live.js" defer></script>
+  <script src="scorecard-audio.js" defer></script>
+  <script src="scorecard-ui-sounds.js" defer></script>
+</head>
+<body class="portal-body">
+  <div class="portal-shell">
+    <div id="scorecard-status-mount"></div>
+    <header class="portal-topbar">
+      <a class="portal-logo" href="index.html" aria-current="page">
+        <div class="portal-logo-mark">SC</div>
+        <div class="portal-logo-text">
+          <span>Portal</span>
+          <strong>Scorecard General</strong>
+        </div>
+      </a>
+      <div class="portal-top-meta">
+        <div class="portal-user" title="Placeholder — integrar SSO / Power BI">
+          <span class="portal-avatar" aria-hidden="true">👤</span>
+          <span>Usuario demo</span>
+        </div>
+        <button type="button" class="portal-icon-btn" id="portal-btn-theme" title="Tema claro / oscuro" aria-pressed="false">☼</button>
+      </div>
+    </header>
+
+    <section class="portal-hero" aria-label="Imagen de cabecera: equipo directivo y análisis">
+      <div class="portal-hero-frame">
+        <img
+          src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&amp;fit=crop&amp;w=1600&amp;q=82"
+          srcset="
+            https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&amp;fit=crop&amp;w=900&amp;q=82 900w,
+            https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&amp;fit=crop&amp;w=1200&amp;q=82 1200w,
+            https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&amp;fit=crop&amp;w=1600&amp;q=82 1600w
+          "
+          sizes="(max-width: 1280px) 100vw, 1280px"
+          width="1600"
+          height="853"
+          alt="Ejecutivos en reunión revisando indicadores y decisiones de negocio"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
+        <div class="portal-hero-shade" aria-hidden="true"></div>
+        <p class="portal-hero-tagline">
+          <span>Indicadores · estrategia · operación</span>
+        </p>
+      </div>
+      <p class="portal-hero-credit">
+        Imagen de ejemplo (reunión ejecutiva) ·
+        <a href="https://unsplash.com/s/photos/business-meeting" target="_blank" rel="noopener noreferrer">Unsplash</a>
+        — sustituya por foto propia en <code>index.html</code>.
+      </p>
+    </section>
+
+    <div class="portal-hub-title">
+      <h1>Bienvenido al portal</h1>
+      <p>
+        Elija un módulo. La vista <strong>ejecutiva</strong> incluye KPIs, gráficas, Excel, asistente y paleta <kbd>Ctrl+K</kbd>.
+        Las demás páginas son <strong>estructura lista</strong> para enlazar a Power BI o a su API.
+      </p>
+    </div>
+
+    <nav class="portal-module-grid" aria-label="Módulos del portal">
+      <article class="portal-module-card-shell">
+        <a class="portal-module-card__hit" href="executive.html"><span class="visually-hidden">Abrir Scorecard ejecutivo</span></a>
+        <div class="portal-module-card__body">
+          <h2>Scorecard ejecutivo</h2>
+          <p>Panel completo: resumen, finanzas, comercial, operaciones, gráficas, drill-down y modo presentación.</p>
+          <span class="tag">Principal · HTML + JS</span>
+          <span class="portal-module-card__cta" aria-hidden="true">Entrar →</span>
+        </div>
+      </article>
+      <article class="portal-module-card-shell">
+        <a class="portal-module-card__hit" href="tactical.html"><span class="visually-hidden">Abrir matriz táctica</span></a>
+        <div class="portal-module-card__body">
+          <h2>Matriz táctica</h2>
+          <p>Vista densa mensual / semanal: tabla de cumplimiento por área (placeholder estilo matriz de gestión).</p>
+          <span class="tag">Táctico</span>
+          <span class="portal-module-card__cta" aria-hidden="true">Entrar →</span>
+        </div>
+      </article>
+      <article class="portal-module-card-shell">
+        <a class="portal-module-card__hit" href="operaciones.html"><span class="visually-hidden">Abrir reporte operaciones</span></a>
+        <div class="portal-module-card__body">
+          <h2>Reporte operaciones</h2>
+          <p>Producción, scrap, entregas y OTIF — layout ancho para muchas columnas (stub).</p>
+          <span class="tag">Operaciones</span>
+          <span class="portal-module-card__cta" aria-hidden="true">Entrar →</span>
+        </div>
+      </article>
+      <article class="portal-module-card-shell">
+        <a class="portal-module-card__hit" href="oee.html"><span class="visually-hidden">Abrir OEE y planta</span></a>
+        <div class="portal-module-card__body">
+          <h2>OEE y planta</h2>
+          <p>Disponibilidad, rendimiento, calidad y navegación lateral (stub al estilo pestañas ocultas PB).</p>
+          <span class="tag">Planta</span>
+          <span class="portal-module-card__cta" aria-hidden="true">Entrar →</span>
+        </div>
+      </article>
+    </nav>
+
+    <section class="portal-quick" aria-label="Accesos rápidos">
+      <h2>Accesos rápidos</h2>
+      <div class="portal-quick-row">
+        <a class="portal-quick-item" href="tactical.html#mensual">
+          <div class="portal-quick-circle">M</div>
+          <span>Mensual</span>
+        </a>
+        <a class="portal-quick-item" href="tactical.html#semanal">
+          <div class="portal-quick-circle">S</div>
+          <span>Semanal</span>
+        </a>
+        <a class="portal-quick-item" href="tactical.html#diario">
+          <div class="portal-quick-circle">D</div>
+          <span>Diario</span>
+        </a>
+        <a class="portal-quick-item" href="executive.html">
+          <div class="portal-quick-circle">E</div>
+          <span>Ejecutivo</span>
+        </a>
+      </div>
+    </section>
+
+    <footer class="portal-footer">
+      Plantilla marca blanca — reemplace textos, enlaces embebidos y datos por cliente. <code>scorecard-General/</code>
+    </footer>
+  </div>
+</body>
+</html>

@@ -1,0 +1,191 @@
+/* Bocina + fila − / + + barra de “píldoras” verdes + % (solo música de fondo) */
+#scorecard-audio-wrap {
+  position: fixed;
+  bottom: 1.35rem;
+  left: 1.35rem;
+  z-index: 35;
+  max-width: min(200px, calc(100vw - 2rem));
+}
+
+.scorecard-audio-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.35rem;
+}
+
+#scorecard-audio-toggle {
+  width: 46px;
+  height: 46px;
+  align-self: center;
+  border-radius: 12px;
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.12));
+  background: var(--bg-card, #161c27);
+  color: var(--text-muted, #8b97a8);
+  cursor: pointer;
+  font-size: 1.15rem;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+  transition: border-color 0.2s, color 0.2s, transform 0.15s;
+}
+
+#scorecard-audio-toggle:hover {
+  border-color: var(--accent, #3d8bfd);
+  color: var(--accent, #3d8bfd);
+  transform: scale(1.05);
+}
+
+#scorecard-audio-toggle[aria-pressed="true"] {
+  border-color: var(--accent, #3d8bfd);
+  color: var(--accent, #3d8bfd);
+  background: var(--accent-dim, rgba(61, 139, 253, 0.15));
+}
+
+#scorecard-audio-toggle:focus-visible {
+  outline: 2px solid var(--accent, #3d8bfd);
+  outline-offset: 3px;
+}
+
+/* Flecha: ▲ oculta panel / ▼ muestra panel */
+.scorecard-audio-vol-chevron {
+  width: 46px;
+  height: 26px;
+  align-self: center;
+  padding: 0;
+  border-radius: 8px;
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+  background: rgba(22, 28, 39, 0.85);
+  color: var(--text-muted, #8b97a8);
+  cursor: pointer;
+  font-size: 0.7rem;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);
+  transition: border-color 0.2s, color 0.2s, background 0.2s, transform 0.12s;
+}
+
+.scorecard-audio-vol-chevron:hover {
+  border-color: var(--accent, #3d8bfd);
+  color: var(--accent, #3d8bfd);
+}
+
+.scorecard-audio-vol-chevron:active {
+  transform: scale(0.96);
+}
+
+.scorecard-audio-vol-chevron:focus-visible {
+  outline: 2px solid var(--accent, #3d8bfd);
+  outline-offset: 2px;
+}
+
+/* Panel colapsable: − / +, píldoras, % */
+.scorecard-audio-vol-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.scorecard-audio-vol-panel[hidden] {
+  display: none !important;
+}
+
+/* Fila −  + */
+.scorecard-audio-volrow {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 0.35rem;
+}
+
+.scorecard-audio-vol-btn {
+  width: 46px;
+  height: 30px;
+  padding: 0;
+  border-radius: 8px;
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.12));
+  background: var(--bg-card, #161c27);
+  color: var(--text-muted, #8b97a8);
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+  transition: border-color 0.2s, color 0.2s, background 0.2s, transform 0.12s;
+}
+
+.scorecard-audio-vol-btn:hover {
+  border-color: var(--accent, #3d8bfd);
+  color: var(--accent, #3d8bfd);
+}
+
+.scorecard-audio-vol-btn:active {
+  transform: scale(0.96);
+}
+
+.scorecard-audio-vol-btn:focus-visible {
+  outline: 2px solid var(--accent, #3d8bfd);
+  outline-offset: 2px;
+}
+
+/* Barra de píldoras (10 segmentos = 10% cada una) */
+.scorecard-audio-pillbar {
+  display: flex;
+  flex-direction: row;
+  gap: 3px;
+  align-items: stretch;
+  justify-content: center;
+  min-height: 10px;
+  padding: 0 2px;
+}
+
+.scorecard-audio-pill {
+  flex: 1;
+  min-width: 0;
+  height: 10px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: background 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease, transform 0.15s ease;
+}
+
+.scorecard-audio-pill.is-on {
+  background: linear-gradient(180deg, #4ade80 0%, #22c55e 55%, #15803d 100%);
+  border-color: rgba(34, 197, 94, 0.65);
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.35);
+}
+
+.scorecard-audio-vpct {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted, #8b97a8);
+  text-align: center;
+  letter-spacing: 0.03em;
+}
+
+body.light #scorecard-audio-toggle,
+body.light .scorecard-audio-vol-btn,
+body.light .scorecard-audio-vol-chevron {
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.12);
+}
+
+body.light .scorecard-audio-vol-chevron {
+  background: rgba(255, 255, 255, 0.92);
+}
+
+body.light .scorecard-audio-pill {
+  background: rgba(15, 23, 42, 0.12);
+  border-color: rgba(15, 23, 42, 0.15);
+}
+
+@media print {
+  #scorecard-audio-wrap {
+    display: none !important;
+  }
+}

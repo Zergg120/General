@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#3d8bfd" />
+  <title>OEE — Scorecard</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="preload" href="audio/nastelbom-ambient-495893.mp3" as="audio" type="audio/mpeg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700&family=IBM+Plex+Mono:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="portal-shared.css" />
+  <link rel="stylesheet" href="scorecard-status.css" />
+  <link rel="stylesheet" href="scorecard-audio.css" />
+  <script src="portal-shared.js" defer></script>
+  <script src="scorecard-status.js" defer></script>
+  <script src="scorecard-live.js" defer></script>
+  <script src="scorecard-audio.js" defer></script>
+  <script src="scorecard-ui-sounds.js" defer></script>
+</head>
+<body class="portal-body">
+  <div class="portal-shell">
+    <div id="scorecard-status-mount"></div>
+    <header class="portal-topbar">
+      <a class="portal-logo" href="index.html">
+        <div class="portal-logo-mark">SC</div>
+        <div class="portal-logo-text">
+          <span>Portal</span>
+          <strong>OEE y planta</strong>
+        </div>
+      </a>
+      <div class="portal-top-meta">
+        <span class="portal-pill">Línea: <strong>L2 · Extrusión</strong></span>
+        <button type="button" class="portal-icon-btn" id="portal-btn-theme" title="Tema" aria-pressed="false">☼</button>
+      </div>
+    </header>
+
+    <a class="portal-back" href="index.html">← Portada</a>
+
+    <div class="portal-page-head">
+      <h1>OEE y planta</h1>
+      <p>Vista demostración — use las pestañas para cambiar el contenido (datos de ejemplo).</p>
+    </div>
+
+    <div class="portal-oee-layout">
+      <div class="portal-oee-nav" role="tablist" aria-label="Secciones OEE">
+        <button type="button" class="portal-oee-tab" role="tab" id="tab-resumen" aria-selected="true" aria-controls="oee-panel-resumen" data-tab="resumen">Resumen OEE</button>
+        <button type="button" class="portal-oee-tab" role="tab" id="tab-tendencias" aria-selected="false" aria-controls="oee-panel-tendencias" data-tab="tendencias" tabindex="-1">Tendencias</button>
+        <button type="button" class="portal-oee-tab" role="tab" id="tab-mantenimiento" aria-selected="false" aria-controls="oee-panel-mantenimiento" data-tab="mantenimiento" tabindex="-1">Mantenimiento</button>
+        <button type="button" class="portal-oee-tab" role="tab" id="tab-paros" aria-selected="false" aria-controls="oee-panel-paros" data-tab="paros" tabindex="-1">Paros</button>
+        <button type="button" class="portal-oee-tab" role="tab" id="tab-ayuda" aria-selected="false" aria-controls="oee-panel-ayuda" data-tab="ayuda" tabindex="-1">Tooltips / ayuda</button>
+      </div>
+
+      <div class="portal-oee-panels">
+        <!-- Resumen -->
+        <div class="portal-oee-panel" id="oee-panel-resumen" role="tabpanel" aria-labelledby="tab-resumen">
+          <h2>Efectividad global de equipos</h2>
+          <p class="portal-oee-lead">Instantánea del turno actual — equivalente a la portada del informe OEE en Power BI.</p>
+          <div class="portal-gauge-row" style="margin-bottom:1.25rem;">
+            <div class="portal-gauge"><div class="val">91%</div><div class="lbl">Disponibilidad</div></div>
+            <div class="portal-gauge"><div class="val">88%</div><div class="lbl">Rendimiento</div></div>
+            <div class="portal-gauge"><div class="val">99.1%</div><div class="lbl">Calidad</div></div>
+            <div class="portal-gauge"><div class="val">79.4%</div><div class="lbl">OEE</div></div>
+          </div>
+          <div class="portal-table-wrap">
+            <table class="portal-table">
+              <thead>
+                <tr>
+                  <th>Equipo</th>
+                  <th>OEE</th>
+                  <th>Paros hoy</th>
+                  <th>Último evento</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Extrusora 2</td><td>79.4%</td><td>3</td><td>Cambio de molde 12:40</td></tr>
+                <tr><td>Empaque A</td><td>84.0%</td><td>1</td><td>Ajuste sensor</td></tr>
+                <tr><td>Mezclador 1</td><td>91.2%</td><td>0</td><td>—</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="portal-oee-hint">En producción: conecte esta vista a su dataset o publique como página del informe.</p>
+        </div>
+
+        <!-- Tendencias -->
+        <div class="portal-oee-panel" id="oee-panel-tendencias" role="tabpanel" aria-labelledby="tab-tendencias" hidden>
+          <h2>Tendencia OEE (semanal)</h2>
+          <p class="portal-oee-lead">Evolución de ejemplo — sustituya por gráfica de líneas o página “Tendencias” de su workspace.</p>
+          <div class="portal-table-wrap">
+            <table class="portal-table">
+              <thead>
+                <tr>
+                  <th>Semana</th>
+                  <th>OEE %</th>
+                  <th>vs meta 82%</th>
+                  <th>Comentario</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>S12 · Mar</td><td>81.2%</td><td class="portal-badge-warn">−0.8 pp</td><td>Paros planeados</td></tr>
+                <tr><td>S11 · Mar</td><td>84.5%</td><td class="portal-badge-ok">+2.5 pp</td><td>Estable</td></tr>
+                <tr><td>S10 · Mar</td><td>78.9%</td><td class="portal-badge-warn">−3.1 pp</td><td>Falla hidráulica</td></tr>
+                <tr><td>S09 · Mar</td><td>83.1%</td><td class="portal-badge-ok">+1.1 pp</td><td>—</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="portal-oee-hint">Tip: en Power BI puede ocultar esta página y enlazarla desde botones o bookmarks.</p>
+        </div>
+
+        <!-- Mantenimiento -->
+        <div class="portal-oee-panel" id="oee-panel-mantenimiento" role="tabpanel" aria-labelledby="tab-mantenimiento" hidden>
+          <h2>Mantenimiento preventivo</h2>
+          <p class="portal-oee-lead">Próximas actividades y estado — datos ilustrativos para reuniones de confiabilidad.</p>
+          <div class="portal-table-wrap">
+            <table class="portal-table">
+              <thead>
+                <tr>
+                  <th>Equipo</th>
+                  <th>Tipo</th>
+                  <th>Próxima fecha</th>
+                  <th>Estado</th>
+                  <th>Hrs último PM</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Extrusora 2</td><td>PM nivel B</td><td>28/03/2026</td><td class="portal-badge-warn">Programar</td><td>412</td></tr>
+                <tr><td>Empaque A</td><td>Inspección</td><td>25/03/2026</td><td class="portal-badge-ok">En curso</td><td>96</td></tr>
+                <tr><td>Mezclador 1</td><td>PM nivel A</td><td>18/04/2026</td><td class="portal-badge-ok">OK</td><td>720</td></tr>
+                <tr><td>Compresor C1</td><td>Cambio filtros</td><td>22/03/2026</td><td class="portal-badge-ok">Repuestos listos</td><td>168</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="portal-oee-hint">Integre con CMMS o hoja de ruta de mantenimiento del cliente.</p>
+        </div>
+
+        <!-- Paros -->
+        <div class="portal-oee-panel" id="oee-panel-paros" role="tabpanel" aria-labelledby="tab-paros" hidden>
+          <h2>Registro de paros (hoy)</h2>
+          <p class="portal-oee-lead">Detalle de paradas — útil para tablero de pérdidas y análisis de causa raíz.</p>
+          <div class="portal-table-wrap">
+            <table class="portal-table">
+              <thead>
+                <tr>
+                  <th>Inicio</th>
+                  <th>Fin</th>
+                  <th>Equipo</th>
+                  <th>Causa</th>
+                  <th>Min</th>
+                  <th>Tipo</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>06:15</td><td>06:42</td><td>Extrusora 2</td><td>Cambio de molde</td><td>27</td><td>Planeado</td></tr>
+                <tr><td>09:03</td><td>09:18</td><td>Extrusora 2</td><td>Ajuste temperatura</td><td>15</td><td>No planeado</td></tr>
+                <tr><td>11:22</td><td>11:28</td><td>Empaque A</td><td>Atasco sensor</td><td>6</td><td>No planeado</td></tr>
+                <tr><td>14:00</td><td>—</td><td>Mezclador 1</td><td>En curso (revisión)</td><td>—</td><td>Planeado</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="portal-oee-hint">Los totales pueden alimentar el cálculo de disponibilidad del resumen OEE.</p>
+        </div>
+
+        <!-- Ayuda -->
+        <div class="portal-oee-panel" id="oee-panel-ayuda" role="tabpanel" aria-labelledby="tab-ayuda" hidden>
+          <h2>Glosario y ayuda contextual</h2>
+          <p class="portal-oee-lead">Textos tipo tooltip para capacitar en sala o en la versión embebida del portal.</p>
+          <div class="portal-table-wrap">
+            <table class="portal-table">
+              <thead>
+                <tr>
+                  <th>Término</th>
+                  <th>Definición breve</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>OEE</strong></td><td>Disponibilidad × Rendimiento × Calidad. Mide uso efectivo del equipo.</td></tr>
+                <tr><td><strong>Disponibilidad</strong></td><td>Tiempo operando vs tiempo calendario o planificado (excluye paros mayores si aplica).</td></tr>
+                <tr><td><strong>Rendimiento</strong></td><td>Velocidad real frente a velocidad ideal o nominal de la línea.</td></tr>
+                <tr><td><strong>Calidad</strong></td><td>Unidades buenas sobre total producido (scrap y retrabajo restan).</td></tr>
+                <tr><td><strong>Paro planeado</strong></td><td>Detención incluida en el plan (cambios, limpieza, mantenimiento programado).</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="portal-oee-hint">Puede sustituir esta tabla por modales, iconos <abbr title="…">ⓘ</abbr> junto a KPIs o documentación del cliente.</p>
+        </div>
+      </div>
+    </div>
+
+    <footer class="portal-footer">OEE — pestañas funcionales con datos demo; listo para enlazar a Power BI o SCADA.</footer>
+  </div>
+
+  <script>
+    (function () {
+      function activateTab(tab) {
+        var tabs = document.querySelectorAll('.portal-oee-tab');
+        var panels = document.querySelectorAll('.portal-oee-panel');
+        var targetId = tab.getAttribute('data-tab');
+
+        tabs.forEach(function (t) {
+          var on = t === tab;
+          t.setAttribute('aria-selected', on ? 'true' : 'false');
+          t.tabIndex = on ? 0 : -1;
+        });
+
+        panels.forEach(function (p) {
+          var show = p.id === 'oee-panel-' + targetId;
+          if (show) {
+            p.removeAttribute('hidden');
+          } else {
+            p.setAttribute('hidden', '');
+          }
+        });
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        var tablist = document.querySelector('[role="tablist"]');
+        var tabs = Array.prototype.slice.call(document.querySelectorAll('.portal-oee-tab'));
+
+        tabs.forEach(function (tab) {
+          tab.addEventListener('click', function () {
+            activateTab(tab);
+            tab.focus();
+          });
+        });
+
+        tablist.addEventListener('keydown', function (e) {
+          var i = tabs.indexOf(document.activeElement);
+          if (i < 0) return;
+          var next = null;
+          if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+            e.preventDefault();
+            next = tabs[(i + 1) % tabs.length];
+          } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+            e.preventDefault();
+            next = tabs[(i - 1 + tabs.length) % tabs.length];
+          } else if (e.key === 'Home') {
+            e.preventDefault();
+            next = tabs[0];
+          } else if (e.key === 'End') {
+            e.preventDefault();
+            next = tabs[tabs.length - 1];
+          }
+          if (next) {
+            activateTab(next);
+            next.focus();
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
