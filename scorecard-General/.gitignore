@@ -1,0 +1,11 @@
+# Local / OS
+.DS_Store
+Thumbs.db
+*.log
+
+# Env (si agregas claves después)
+.env
+.env.*
+
+# Node (si en el futuro hay package.json aquí)
+node_modules/
