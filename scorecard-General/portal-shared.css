@@ -229,6 +229,58 @@ body.portal-body.portal-light .portal-module-card-shell {
   margin-bottom: 1.5rem;
 }
 
+.portal-hero-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(160px, 280px);
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.portal-hero-aside {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 1rem 1.1rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: linear-gradient(145deg, rgba(61, 139, 253, 0.12), rgba(12, 15, 20, 0.85));
+  box-shadow: var(--shadow);
+  text-align: left;
+}
+
+.portal-hero-aside-kicker {
+  margin: 0 0 0.35rem;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  opacity: 0.95;
+}
+
+.portal-hero-aside-title {
+  margin: 0;
+  font-family: "Outfit", system-ui, sans-serif;
+  font-size: clamp(1.15rem, 2.5vw, 1.5rem);
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--text);
+}
+
+.portal-hero-aside-brand {
+  margin: 0.4rem 0 0;
+  font-family: "IBM Plex Sans", system-ui, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+body.portal-light .portal-hero-aside {
+  background: linear-gradient(145deg, rgba(61, 139, 253, 0.14), rgba(248, 250, 252, 0.95));
+}
+
 .portal-hero-frame {
   position: relative;
   border-radius: var(--radius);
@@ -305,6 +357,25 @@ body.portal-light .portal-hero-tagline {
 
 .portal-hero-credit code {
   font-size: 0.6rem;
+}
+
+@media (max-width: 768px) {
+  .portal-hero-row {
+    grid-template-columns: 1fr;
+  }
+
+  .portal-hero-aside {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem 1rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .portal-hero-aside-kicker {
+    width: 100%;
+    margin-bottom: 0;
+  }
 }
 
 @media (max-width: 640px) {
