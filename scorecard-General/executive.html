@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#3d8bfd" />
   <meta name="description" content="Panel ejecutivo tipo scorecard — plantilla demostrable con KPIs de ejemplo." />
   <title>Scorecard General — Panel ejecutivo</title>
@@ -94,7 +94,12 @@
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+    html {
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
 
     body {
       font-family: "IBM Plex Sans", system-ui, sans-serif;
@@ -180,11 +185,61 @@
       max-width: 42rem;
     }
 
+    /*
+      Mobile-first: periodo y píldoras en bloques separados (sin depender de @media).
+      Escritorio: una sola fila flexible desde min-width 1024px.
+    */
     .meta-bar {
       display: flex;
-      flex-wrap: wrap;
+      flex-direction: column;
+      align-items: stretch;
       gap: 0.65rem;
+      width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+
+    .meta-bar-period {
+      width: 100%;
+      min-width: 0;
+    }
+
+    .meta-bar-tags {
+      display: flex;
+      flex-wrap: wrap;
       align-items: center;
+      gap: 0.5rem 0.55rem;
+      width: 100%;
+      min-width: 0;
+    }
+
+    /* “Vista” repite el periodo; solo tiene sentido en escritorio */
+    .pill--vista {
+      display: none;
+    }
+
+    @media (min-width: 1024px) {
+      .meta-bar {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .meta-bar-period {
+        flex: 0 1 auto;
+        width: auto;
+      }
+
+      .meta-bar-tags {
+        flex: 1 1 auto;
+        width: auto;
+        justify-content: flex-end;
+      }
+
+      .pill--vista {
+        display: inline-flex;
+        align-items: center;
+      }
     }
 
     .pill {
@@ -195,6 +250,8 @@
       border: 1px solid var(--border);
       background: var(--bg-elevated);
       color: var(--text-muted);
+      min-width: 0;
+      max-width: 100%;
     }
 
     .pill strong { color: var(--text); font-weight: 600; }
@@ -871,25 +928,43 @@
       outline-offset: 2px;
     }
 
-    /* —— Responsive: móvil y tablets —— */
-    @media (max-width: 1024px) {
+    /* —— Escritorio / laptop: aire y grillas amplias (no afecta móvil) —— */
+    @media (min-width: 1025px) {
       .shell {
-        padding: 1.35rem 1.1rem 2.75rem;
+        padding: 1.75rem 2rem 3.5rem;
       }
       .charts-row {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+        gap: 1.15rem;
       }
       .hero-grid {
-        grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      }
+      .kpi-grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
       }
     }
 
+    @media (min-width: 1440px) {
+      .shell {
+        padding: 2rem 2.25rem 4rem;
+      }
+    }
+
+    /* Tablets anchas / ventana estrecha: solo un poco menos padding */
+    @media (max-width: 1024px) and (min-width: 721px) {
+      .shell {
+        padding: 1.5rem 1.35rem 3rem;
+      }
+    }
+
+    /* —— Móvil y tablets estrechas —— */
     @media (max-width: 720px) {
       .shell {
         padding:
           max(1rem, env(safe-area-inset-top, 0px))
           max(0.85rem, env(safe-area-inset-right, 0px))
-          max(2.25rem, env(safe-area-inset-bottom, 0px))
+          max(5.5rem, calc(env(safe-area-inset-bottom, 0px) + 4.25rem))
           max(0.85rem, env(safe-area-inset-left, 0px));
       }
       .top {
@@ -906,15 +981,14 @@
         max-width: none;
         font-size: 0.86rem;
       }
-      .meta-bar {
-        width: 100%;
-        justify-content: flex-start;
-      }
       .kpi-grid {
         grid-template-columns: 1fr;
         gap: 0.75rem;
       }
       .glossary-grid {
+        grid-template-columns: 1fr;
+      }
+      .charts-row {
         grid-template-columns: 1fr;
       }
       .chart-wrap {
@@ -933,13 +1007,23 @@
         font-size: 0.78rem;
       }
       .action-bar {
-        flex-direction: column;
-        align-items: stretch;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 0.5rem;
       }
-      .search-kpi {
-        flex: 1 1 auto;
+      .action-bar > .btn-soft,
+      .action-bar > .search-kpi {
+        flex: 1 1 100%;
         min-width: 0;
         max-width: none;
+      }
+      .action-bar > .icon-btn {
+        flex: 0 0 auto;
+        width: 48px;
+        height: 48px;
+        align-self: center;
       }
       .icon-btn {
         min-width: 44px;
@@ -971,19 +1055,31 @@
         max-height: min(85vh, 640px);
         border-radius: 16px;
       }
-      .period-wrap {
-        flex: 1;
-        min-width: 0;
-      }
-      #period-select {
-        max-width: 100%;
-        flex: 1;
-      }
       .module-dialog,
       .drill-dialog {
         width: 100%;
         max-height: min(90vh, 720px);
         margin: auto;
+      }
+    }
+
+    @media (max-width: 480px) {
+      #period-select {
+        font-size: 0.72rem;
+        padding: 0.45rem 0.55rem;
+      }
+
+      .meta-bar-tags .pill,
+      .meta-bar-tags .badge-dummy {
+        font-size: 0.64rem;
+        padding: 0.38rem 0.55rem;
+        line-height: 1.35;
+        word-break: break-word;
+      }
+
+      .meta-bar-tags .badge-dummy {
+        font-size: 0.56rem;
+        padding: 0.42rem 0.5rem;
       }
     }
 
@@ -1125,13 +1221,16 @@
     /* Periodo */
     .period-wrap {
       display: flex;
-      align-items: center;
-      gap: 0.45rem;
-      flex-wrap: wrap;
-      padding: 0.35rem 0.85rem;
-      border-radius: 999px;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.4rem;
+      padding: 0.5rem 0.85rem;
+      border-radius: 14px;
       border: 1px solid var(--border);
       background: var(--bg-elevated);
+      width: 100%;
+      box-sizing: border-box;
+      min-width: 0;
     }
 
     .period-wrap label {
@@ -1140,19 +1239,39 @@
       text-transform: uppercase;
       letter-spacing: 0.12em;
       color: var(--text-muted);
+      flex-shrink: 0;
     }
 
     #period-select {
       font-family: inherit;
       font-size: 0.78rem;
       font-weight: 600;
-      padding: 0.4rem 0.65rem;
+      padding: 0.45rem 0.65rem;
       border-radius: 10px;
       border: 1px solid var(--border);
       background: var(--bg-elevated);
       color: var(--text);
       cursor: pointer;
-      max-width: 220px;
+      width: 100%;
+      max-width: none;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+
+    @media (min-width: 1024px) {
+      .period-wrap {
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: wrap;
+        width: auto;
+        padding: 0.35rem 0.85rem;
+        border-radius: 999px;
+      }
+
+      #period-select {
+        width: auto;
+        max-width: min(22rem, 100%);
+      }
     }
 
     #period-select:focus-visible {
@@ -1342,19 +1461,23 @@
         </p>
       </div>
       <div class="meta-bar">
-        <div class="period-wrap">
-          <label for="period-select">Periodo</label>
-          <select id="period-select" aria-label="Seleccionar periodo de reporte">
-            <option value="q1_2026">Ene — Mar 2026 (Q1)</option>
-            <option value="q2_2026">Abr — Jun 2026 (Q2)</option>
-            <option value="h1_2026">Semestre (H1)</option>
-            <option value="ytd_cmp">YTD vs año anterior</option>
-          </select>
+        <div class="meta-bar-period">
+          <div class="period-wrap">
+            <label for="period-select">Periodo</label>
+            <select id="period-select" aria-label="Seleccionar periodo de reporte">
+              <option value="q1_2026">Ene — Mar 2026 (Q1)</option>
+              <option value="q2_2026">Abr — Jun 2026 (Q2)</option>
+              <option value="h1_2026">Semestre (H1)</option>
+              <option value="ytd_cmp">YTD vs año anterior</option>
+            </select>
+          </div>
         </div>
-        <span class="pill">Vista: <strong id="pill-period-label">Ene — Mar 2026</strong></span>
-        <span class="pill">Moneda: <strong>MXN</strong></span>
-        <span class="pill">Fuente: <strong id="data-source-pill">Demo local</strong></span>
-        <span class="badge-dummy">Datos de ejemplo</span>
+        <div class="meta-bar-tags">
+          <span class="pill pill--vista">Vista: <strong id="pill-period-label">Ene — Mar 2026</strong></span>
+          <span class="pill">Moneda: <strong>MXN</strong></span>
+          <span class="pill">Fuente: <strong id="data-source-pill">Demo local</strong></span>
+          <span class="badge-dummy">Datos de ejemplo</span>
+        </div>
       </div>
       <div class="action-bar">
         <a href="index.html" class="btn-soft" title="Volver a la portada del portal">Portada</a>

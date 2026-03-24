@@ -83,6 +83,27 @@
   }
 }
 
+/* Móviles estrechos HD+ (Android ~360–400px CSS): barra en línea sin desbordes */
+@media (max-width: 480px) {
+  .scorecard-status-bar {
+    flex-wrap: wrap;
+    justify-content: center;
+    text-align: center;
+    font-size: 0.58rem;
+    padding: 0.4rem 0.55rem;
+    gap: 0.3rem 0.45rem;
+  }
+
+  .scorecard-status-clock-wrap {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .scorecard-status-clock {
+    font-size: 0.95em;
+  }
+}
+
 @media print {
   #scorecard-status-mount,
   .scorecard-status-bar {

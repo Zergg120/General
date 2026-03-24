@@ -340,6 +340,17 @@ html.scorecard-print-report #scorecard-report-panel td {
   color: #111;
 }
 
+/* Escritorio: modal del informe con aire */
+@media (min-width: 1025px) {
+  #scorecard-report-panel {
+    padding: 1.25rem;
+  }
+
+  #scorecard-report-panel .report-dialog {
+    padding: 1.2rem 1.4rem 1.4rem;
+  }
+}
+
 /* Informe ventas: móvil */
 @media (max-width: 720px) {
   #scorecard-report-panel {

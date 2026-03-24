@@ -184,6 +184,27 @@ body.light .scorecard-audio-pill {
   border-color: rgba(15, 23, 42, 0.15);
 }
 
+/* Móvil: evita que la pila quede pegada al borde y por debajo de capas de la página */
+@media (max-width: 720px) {
+  #scorecard-audio-wrap {
+    bottom: max(0.85rem, env(safe-area-inset-bottom, 0px));
+    left: max(0.65rem, env(safe-area-inset-left, 0px));
+    z-index: 7800;
+    max-width: min(200px, calc(100vw - 5.75rem));
+  }
+
+  .scorecard-audio-stack {
+    gap: 0.45rem;
+    align-items: center;
+  }
+
+  #scorecard-audio-toggle,
+  .scorecard-audio-vol-chevron {
+    align-self: center;
+    flex-shrink: 0;
+  }
+}
+
 @media print {
   #scorecard-audio-wrap {
     display: none !important;
