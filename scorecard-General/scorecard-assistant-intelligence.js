@@ -20,7 +20,7 @@
 
   /** Temas claramente ajenos al scorecard (si no hay palabras de contexto del panel). */
   const OFF_TOPIC_HINT =
-    /\b(clima|temperatura|llover|receta|cocinar|pel[ií]cula|netflix|f[úu]tbol|mundial|chisme|bitcoin|cripto|whatsapp|instagram|tarea\s+de\s+mate|historia\s+de\s+méxico|quien\s+gan[oó]|cumpleaños|horóscopo|chiste)\b/i;
+    /\b(clima|temperatura|llover|receta|cocinar|cocina|comida|pasta|queso|platillo|chef|restaurante|desayuno|cena|pel[ií]cula|netflix|f[úu]tbol|mundial|chisme|bitcoin|cripto|whatsapp|instagram|tarea\s+de\s+mate|historia\s+de\s+m[eé]xico|quien\s+gan[oó]|cumpleaños|hor[óo]scopo|chiste)\b/i;
 
   const IN_SCOPE_HINT =
     /\b(scorecard|ventas?|kpi|métrica|metrica|panel|dashboard|ebitda|roic|nps|ccc|finanzas|comercial|operaciones|personas|cliente|glosario|objetivo|gr[áa]fica|informe|excel|pdf|secci[oó]n|buscador|mes|compar|suma|sumar|anterior|d[oó]nde|ubicar|llevar|ir\s+a|asistente|contabilidad|liquidez|riesgo|margen|deuda|ytd|resumen|pipeline|churn|presentaci[oó]n|m[oó]dulo|dummy|tabla|hero|ingresos|cash|capital|proveedor|otif|enps|csat|facturaci[oó]n|libro|cuenta)\b/i;

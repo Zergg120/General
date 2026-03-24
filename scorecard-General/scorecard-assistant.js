@@ -151,20 +151,66 @@
     return false;
   }
 
+  /** Evita que «como» dispare el trigger «como uso» en frases ajenas («cómo hacer pasta»). */
+  const WEAK_MATCH_WORDS = new Set([
+    'como',
+    'cómo',
+    'una',
+    'que',
+    'qué',
+    'con',
+    'del',
+    'los',
+    'las',
+    'por',
+    'para',
+    'pero',
+    'este',
+    'esta',
+    'esto',
+    'hay',
+    'son',
+    'mas',
+    'más',
+    'bien',
+    'mal',
+    'dias',
+    'días',
+    'dia',
+    'día',
+    'solo',
+    'todo',
+    'muy',
+  ]);
+
+  function scoreMatchStrong(q, text) {
+    const words = norm(q)
+      .split(/\s+/)
+      .filter(Boolean)
+      .filter((w) => w.length >= 2 && !WEAK_MATCH_WORDS.has(w));
+    if (!words.length) return 0;
+    const t = norm(text);
+    let s = 0;
+    words.forEach((w) => {
+      if (t.includes(w)) s += w.length;
+    });
+    return s;
+  }
+
   function findLocalAnswer(q) {
     const nq = norm(q);
     let best = null;
     let bestScore = 0;
     KNOWLEDGE.forEach((k) => {
       k.triggers.forEach((tr) => {
-        const sc = scoreMatch(nq, tr) + (nq.includes(norm(tr)) ? 20 : 0);
+        const sc = scoreMatchStrong(nq, tr) + (nq.includes(norm(tr)) ? 20 : 0);
         if (sc > bestScore) {
           bestScore = sc;
           best = k.answer;
         }
       });
     });
-    if (bestScore >= 4) return best;
+    if (bestScore >= 10) return best;
     for (const k of KNOWLEDGE) {
       for (const tr of k.triggers) {
         if (nq.includes(norm(tr)) || norm(tr).includes(nq)) return k.answer;
@@ -200,8 +246,24 @@
     }
   }
 
+  /** Markdown mínimo para el chat: negritas y cursivas; el TTS usa stripMarkdownForSpeech (sin leer asteriscos). */
   function mdLite(s) {
-    return String(s).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    let t = String(s);
+    t = t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    t = t.replace(/\*(.+?)\*/g, '<em>$1</em>');
+    return t;
+  }
+
+  /** Texto plano para síntesis de voz: sin HTML ni marcadores *, **, ` */
+  function stripMarkdownForSpeech(s) {
+    return String(s)
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/\*\*(.+?)\*\*/g, '$1')
+      .replace(/__(.+?)__/g, '$1')
+      .replace(/`([^`]+)`/g, '$1')
+      .replace(/\*(.+?)\*/g, '$1')
+      .replace(/\s+/g, ' ')
+      .trim();
   }
 
   /* ---------- UI: mensajes ---------- */
@@ -471,7 +533,7 @@
 
   function speak(text) {
     if (!speakEnabled) return;
-    const plain = String(text).replace(/<[^>]+>/g, '');
+    const plain = stripMarkdownForSpeech(text);
     window.speechSynthesis.cancel();
     doSpeechSynthesis(plain);
   }
