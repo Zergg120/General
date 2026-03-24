@@ -113,6 +113,53 @@
         radial-gradient(ellipse 90% 55% at 100% 20%, rgba(167, 139, 250, 0.09), transparent 48%),
         radial-gradient(ellipse 70% 45% at 0% 100%, rgba(52, 211, 153, 0.05), transparent 50%);
       transition: background-color 0.35s ease, color 0.25s ease;
+      /* Evita el caret “tipo Word” al clic en chrome vacío; la selección se reactiva abajo donde importa */
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    input,
+    textarea,
+    select,
+    option,
+    a,
+    label,
+    .scorecard-status-bar,
+    #scorecard-report-panel,
+    .subtitle,
+    .pill,
+    .badge-dummy,
+    .kpi-value,
+    .kpi-label,
+    .delta,
+    .target,
+    .section-hint,
+    .section-title,
+    .legal-footer,
+    footer,
+    .gloss-card,
+    .gloss-card p,
+    .chart-card h3,
+    .chart-card .legend,
+    th,
+    td,
+    code,
+    #cmd-input,
+    #cmd-list li,
+    #asst-messages,
+    .search-kpi input,
+    .module-dialog,
+    .drill-dialog,
+    .excel-preview {
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    input,
+    textarea,
+    select,
+    [contenteditable="true"] {
+      caret-color: auto;
     }
 
     body::after {
@@ -170,6 +217,9 @@
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+      caret-color: transparent;
     }
 
     body.light h1 {
