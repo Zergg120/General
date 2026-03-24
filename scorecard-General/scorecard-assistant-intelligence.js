@@ -23,13 +23,44 @@
     /\b(clima|temperatura|llover|receta|cocinar|cocina|comida|pasta|queso|platillo|chef|restaurante|desayuno|cena|pel[ií]cula|netflix|f[úu]tbol|mundial|chisme|bitcoin|cripto|whatsapp|instagram|tarea\s+de\s+mate|historia\s+de\s+m[eé]xico|quien\s+gan[oó]|cumpleaños|hor[óo]scopo|chiste)\b/i;
 
   const IN_SCOPE_HINT =
-    /\b(scorecard|ventas?|kpi|métrica|metrica|panel|dashboard|ebitda|roic|nps|ccc|finanzas|comercial|operaciones|personas|cliente|glosario|objetivo|gr[áa]fica|informe|excel|pdf|secci[oó]n|buscador|mes|compar|suma|sumar|anterior|d[oó]nde|ubicar|llevar|ir\s+a|asistente|contabilidad|liquidez|riesgo|margen|deuda|ytd|resumen|pipeline|churn|presentaci[oó]n|m[oó]dulo|dummy|tabla|hero|ingresos|cash|capital|proveedor|otif|enps|csat|facturaci[oó]n|libro|cuenta)\b/i;
+    /\b(scorecard|ventas?|kpi|métrica|metrica|panel|dashboard|ebitda|roic|nps|ccc|finanzas|comercial|operaciones|personas|cliente|glosario|objetivo|gr[áa]fica|informe|excel|pdf|secci[oó]n|buscador|mes|compar|suma|sumar|anterior|d[oó]nde|ubicar|llevar|ir\s+a|asistente|contabilidad|liquidez|riesgo|margen|deuda|ytd|resumen|pipeline|churn|presentaci[oó]n|m[oó]dulo|dummy|tabla|hero|ingresos|cash|capital|proveedor|otif|enps|csat|facturaci[oó]n|libro|cuenta|ayuda|ayudar|explic|n[uú]mero|n[uú]meros|datos|indicador|export|descarg|imprimir|vendedor|reporte|cuadro|filtro|pestaña|pesta|tablero|demo|prototipo)\b/i;
 
+  /** Saludos / cortesías: no declinar; las responde la base de conocimiento local. */
+  const GREETING_LEX = new Set(
+    'hola hi hey buenos buenas dias días tardes noches como estas estás estas que qué tal muy bien gracias gusto mucho usted tu por favor disculpe perdon perdón saludos'.split(
+      /\s+/
+    )
+  );
+
+  function isMostlyGreetingOrSmallTalk(text) {
+    const words = norm(text)
+      .split(/\s+/)
+      .filter((w) => w.length > 0);
+    if (words.length === 0) return true;
+    if (words.length <= 6 && words.every((w) => w.length <= 2 || GREETING_LEX.has(w))) return true;
+    return false;
+  }
+
+  /** Solo “gracias / ok / …” — dejar pasar. */
+  const PLEASANTRY_ONLY = /^(gracias|muchas\s+gracias|ok|vale|perfecto|entendido|listo|bien|genial)\.?$/i;
+
+  /**
+   * Fuera de tema: (1) lista explícita de temas ajenos, o (2) mensaje sustancial sin ninguna
+   * palabra relacionada con este panel (cualquier “tontería” general).
+   */
   function shouldDeclineAsOffTopic(text) {
-    const t = String(text || '');
+    const t = String(text || '').trim();
     if (t.length < 4) return false;
+    if (PLEASANTRY_ONLY.test(t)) return false;
     if (IN_SCOPE_HINT.test(t)) return false;
-    if (!OFF_TOPIC_HINT.test(t)) return false;
+    if (OFF_TOPIC_HINT.test(t)) return true;
+    if (isMostlyGreetingOrSmallTalk(t)) return false;
+
+    const words = norm(t)
+      .split(/\s+/)
+      .filter(Boolean);
+    const substantial = words.length >= 5 || (words.length >= 4 && t.length >= 32);
+    if (!substantial) return false;
     return true;
   }
 
