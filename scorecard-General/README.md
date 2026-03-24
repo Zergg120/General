@@ -20,6 +20,9 @@ Plantilla de **panel ejecutivo** (HTML + JS) con KPIs de ejemplo, diseño premiu
 | `scorecard-version.example.json` | Ejemplo de respuesta JSON para el endpoint de versión |
 | `scorecard-app.js` | **Marca blanca** (`SCORECARD_BRAND`), periodo dummy, **módulos** on/off, **drill-down** en hero, modo **Presentación** |
 | `scorecard-assistant.js` | **Ctrl+K**, asistente, voz, IA opcional |
+| `scorecard-report-data.js` | Datos demo **coherentes** de ventas del mes (líneas que suman al total) |
+| `scorecard-report-export.js` | Export del informe: **Excel** (SheetJS), **PNG/PDF** (html2canvas + jsPDF) |
+| `scorecard-report-agent.js` + `scorecard-report.css` | Intención *ventas del mes* / informe → panel con vista previa y exportar / imprimir |
 | `favicon.svg` / `manifest.json` | Icono y PWA ligera |
 | `PLANTILLA_BORRADOR.md` | Checklist para clonar por cliente |
 
@@ -35,6 +38,7 @@ Plantilla de **panel ejecutivo** (HTML + JS) con KPIs de ejemplo, diseño premiu
 - **Gráficas**: color de línea alineado a `--accent` (marca).
 - **Música ambiental**: por defecto **sonido encendido** (`scorecard_audio_prefs_v3` migra `scorecard_audio_muted` a `'0'` si no existía). La música **sigue** al cambiar de pestaña (no se pausa al ocultar); **BroadcastChannel** evita que dos pestañas del mismo sitio reproduzcan a la vez. Se intenta `play()` con **muted** y luego se quita el mute (autoplay). Precarga en `<head>` del MP3.
 - **Asistente (solo ejecutivo)**: muestra de voz (`audio/Voice-Agent IA.mp3`) — muestra más humana + lectura TTS del texto (el MP3 no puede leer respuestas arbitrarias; el texto sigue con síntesis del sistema).
+- **Informe de ventas (demo)**: el asistente interpreta *«dame las ventas del mes»*, *«solo el pdf»*, etc. Genera una **vista previa** tipo informe ejecutivo (marca, período, texto resumen, KPIs, rankings con %, detalle). **Descargar Excel** = libro `.xlsx` con hojas *Portada*, *Resumen KPI*, *Detalle ventas*, *Rank vendedores*, *Rank clientes*; **PDF/PNG** capturan la vista en formato claro; **Imprimir** abre el diálogo del sistema (incl. guardar como PDF). Datos demo **coherentes**; en producción sustituir `SCORECARD_REPORT_DATA` por tu API.
 
 ## Uso
 

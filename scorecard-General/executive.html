@@ -18,6 +18,7 @@
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="scorecard-status.css" />
   <link rel="stylesheet" href="scorecard-audio.css" />
+  <link rel="stylesheet" href="scorecard-report.css" />
   <!--
     Auto-actualización (opcional): descomenta y pon tu URL cuando tengas API.
     El servidor debe devolver JSON con al menos uno: checksum | version | updatedAt | etag
@@ -34,8 +35,13 @@
   <script src="scorecard-ui-sounds.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
   <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js" defer></script>
   <script src="scorecard-status.js" defer></script>
   <script src="scorecard-app.js" defer></script>
+  <script src="scorecard-report-data.js" defer></script>
+  <script src="scorecard-report-export.js" defer></script>
+  <script src="scorecard-report-agent.js" defer></script>
   <script src="scorecard-assistant.js" defer></script>
   <script src="scorecard-charts.js" defer></script>
   <script src="scorecard-live.js" defer></script>
@@ -1165,7 +1171,7 @@
       body { background: #fff !important; color: #111 !important; }
       body::after { display: none; }
       .kpi-card, .hero-card, .chart-card, .table-card { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
-      #asst-fab, #asst-drawer, #cmd-palette, .action-bar, #module-panel, #excel-panel, #drill-panel { display: none !important; }
+      #asst-fab, #asst-drawer, #cmd-palette, .action-bar, #module-panel, #excel-panel, #drill-panel, #scorecard-report-panel { display: none !important; }
     }
   </style>
 </head>
@@ -1618,6 +1624,27 @@
     </div>
   </div>
 
+  <!-- Informe ventas (demo): agente por texto + exportaciones -->
+  <div id="scorecard-report-panel" hidden role="dialog" aria-modal="true" aria-labelledby="scorecard-report-title">
+    <div class="report-dialog">
+      <div class="report-head">
+        <div>
+          <h3 id="scorecard-report-title">Informe de ventas</h3>
+          <p id="scorecard-report-subtitle" class="report-meta"></p>
+        </div>
+        <div class="report-actions">
+          <button type="button" id="report-export-xlsx" title="Libro .xlsx con portada, KPI, detalle y rankings">Descargar Excel</button>
+          <button type="button" id="report-export-pdf" title="Documento PDF listo para archivar o enviar">Descargar PDF</button>
+          <button type="button" id="report-export-png" title="Imagen PNG del informe">Descargar imagen</button>
+          <button type="button" id="report-print" title="Imprimir o Guardar como PDF desde el sistema">Imprimir</button>
+          <button type="button" id="report-close" class="panel-close" aria-label="Cerrar informe">✕</button>
+        </div>
+      </div>
+      <p class="report-hint" id="report-hint"></p>
+      <div id="scorecard-report-surface" class="report-surface" aria-live="polite"></div>
+    </div>
+  </div>
+
   <!-- Asistente -->
   <button type="button" id="asst-fab" aria-label="Abrir asistente" title="Asistente">✦</button>
   <aside id="asst-drawer" aria-label="Panel asistente">
@@ -1648,7 +1675,7 @@
     </div>
     <div id="asst-messages"></div>
     <div class="asst-foot">
-      <textarea id="asst-input" rows="2" placeholder="Pregunta por una métrica o di «ir a comercial»…"></textarea>
+      <textarea id="asst-input" rows="2" placeholder="Ej.: ventas del mes, ¿qué es EBITDA?, ir a comercial…"></textarea>
       <button type="button" id="asst-send">Enviar</button>
     </div>
   </aside>

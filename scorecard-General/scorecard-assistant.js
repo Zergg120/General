@@ -9,7 +9,8 @@
     { id: 'sec-resumen', label: 'Resumen ejecutivo', keys: 'inicio hero cabecera ytd ebitda' },
     { id: 'sec-charts', label: 'Gráficas', keys: 'grafica chart ingreso margen tendencia' },
     { id: 'sec-finanzas', label: 'Finanzas y liquidez', keys: 'roic deuda caja margen bruto ccc working capital' },
-    { id: 'sec-comercial', label: 'Comercial y crecimiento', keys: 'pipeline ventas churn cac ltv win rate' },
+    /** "ventas" no va en keys: evita que «ventas del mes» salte aquí en lugar del informe (report-agent). */
+    { id: 'sec-comercial', label: 'Comercial y crecimiento', keys: 'pipeline comercial crecimiento churn cac ltv win rate ingresos comerciales' },
     { id: 'sec-ops', label: 'Operaciones', keys: 'otif logistica lead time capacidad scrap proveedor sla' },
     { id: 'sec-personas', label: 'Personas y organización', keys: 'rrhh rotacion enps vacante ausentismo' },
     { id: 'sec-clientes', label: 'Clientes y riesgo', keys: 'nps csat ciberseguridad concentracion mdm grc' },
@@ -94,6 +95,11 @@
         'Atajos: **Ctrl+K** o **/** — paleta de comandos (saltar a sección). **Tema** — botón sol/luna. **Presentación** — tipografía grande y oculta badge demo. **Módulos** — botón para mostrar/ocultar bloques del tablero (se guarda en el navegador). **Imprimir** — PDF. **Asistente** — botón flotante o micrófono (Chrome recomendado para voz).',
     },
     {
+      triggers: ['informe ventas', 'ventas del mes', 'reporte ventas', 'exportar ventas'],
+      answer:
+        'Di por ejemplo **«dame las ventas del mes»** o **«solo descarga el excel»**: se abre un informe con **resumen ejecutivo**, rankings y detalle. **Descargar Excel** crea un libro con **varias hojas** (portada, KPI, detalle, rankings). **PDF** e **imagen** copian la vista; **Imprimir** usa tu sistema (también *Guardar como PDF*). También en **Ctrl+K**: *Ventas del mes (demo)*.',
+    },
+    {
       triggers: ['modulos', 'módulos', 'ocultar seccion', 'mostrar seccion'],
       answer:
         'Usa el botón **Módulos** en la barra superior: marca o desmarca bloques (resumen, gráficas, finanzas, etc.). La preferencia queda guardada en **localStorage** de este navegador. **Esc** cierra el cuadro.',
@@ -127,6 +133,19 @@
       if (w.length >= 2 && t.includes(w)) s += w.length;
     });
     return s;
+  }
+
+  /** Respald si el script del informe falla al cargar: misma intención que report-agent. */
+  function isSalesReportMessage(text) {
+    const t = String(text || '').toLowerCase();
+    if (t.length < 8) return false;
+    if (!/ventas?|vendedor|clientes?|informe|reporte|resumen/i.test(t)) return false;
+    if (/(informe|reporte|resumen)\s*(de\s*)?ventas?/i.test(text)) return true;
+    if (/dame\s+(las\s+)?ventas?(\s+del\s+mes)?/i.test(text)) return true;
+    if (/quiero\s+(ver\s+)?(las\s+)?ventas?/i.test(text)) return true;
+    if (/ventas?\s+del\s+mes|del\s+mes.*ventas?/i.test(text)) return true;
+    if (/top\s+(vendedor|cliente|vendedores|clientes)/i.test(text)) return true;
+    return false;
   }
 
   function findLocalAnswer(q) {
@@ -486,6 +505,18 @@
 
     addMsg('user', escapeHtml(text));
 
+    if (typeof window.scrHandleReportIntent === 'function') {
+      const handled = window.scrHandleReportIntent(text, { addMsg, speak, mdLite });
+      if (handled) return;
+    } else if (typeof window.scrOpenReportQuick === 'function' && isSalesReportMessage(text)) {
+      window.scrOpenReportQuick({ addMsg, mdLite });
+      if (typeof window.scrTryAutoExportFromText === 'function') window.scrTryAutoExportFromText(text);
+      speak(
+        'Informe de ventas listo. Puedes descargar Excel con varias hojas, PDF, imagen o imprimir desde el panel.'
+      );
+      return;
+    }
+
     const sec = findSectionCommand(text);
     if (sec && sec.id) {
       scrollToId(sec.id);
@@ -557,6 +588,16 @@
     if (!list) return;
     const f = norm(filter);
     const items = [];
+    if (typeof window.scrOpenReportQuick === 'function') {
+      items.push({
+        type: 'Informe',
+        label: 'Ventas del mes (demo)',
+        action: () => {
+          window.scrOpenReportQuick({ addMsg, mdLite });
+          document.getElementById('asst-drawer')?.classList.add('open');
+        },
+      });
+    }
     SECTIONS.forEach((s) => {
       items.push({ type: 'Ir a', label: s.label, action: () => scrollToId(s.id) });
     });
@@ -746,7 +787,7 @@
     addMsg(
       'bot',
       mdLite(
-        '**Asistente listo.** Pregunta por métricas (*¿Qué es el EBITDA?*), di *«ir a comercial»*, usa **Ctrl+K** o el **micrófono** (Chrome).'
+        '**Asistente listo.** Pregunta por métricas (*¿Qué es el EBITDA?*), di *«ir a comercial»*, pide *«dame las ventas del mes»* para el **informe demo** (Excel/PNG/PDF), usa **Ctrl+K** o el **micrófono** (Chrome).'
       )
     );
 
@@ -755,6 +796,14 @@
     // 2) si el panel del asistente está abierto, lo cierra.
     document.addEventListener('keydown', (e) => {
       if (e.key !== 'Escape') return;
+      const reportPanel = document.getElementById('scorecard-report-panel');
+      if (reportPanel && !reportPanel.hidden) {
+        reportPanel.hidden = true;
+        try {
+          document.documentElement.classList.remove('scorecard-print-report');
+        } catch (_) {}
+        return;
+      }
       if (settings?.classList.contains('open')) {
         settings.classList.remove('open');
         return;
