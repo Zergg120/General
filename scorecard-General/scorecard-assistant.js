@@ -577,7 +577,7 @@
       const handled = window.scrHandleReportIntent(text, { addMsg, speak, mdLite });
       if (handled) return;
     } else if (typeof window.scrOpenReportQuick === 'function' && isSalesReportMessage(text)) {
-      window.scrOpenReportQuick({ addMsg, mdLite });
+      window.scrOpenReportQuick({ addMsg, mdLite }, text);
       if (typeof window.scrTryAutoExportFromText === 'function') window.scrTryAutoExportFromText(text);
       speak(
         'Informe de ventas preparado. Puede descargar el libro Excel, PDF, imagen o imprimir desde el panel.'

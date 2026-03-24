@@ -58,6 +58,73 @@
     return sumLines(LINEAS) === totalVentas;
   }
 
+  function aggregateByLines(rows, field, topN) {
+    const map = {};
+    rows.forEach((r) => {
+      const k = r[field];
+      map[k] = (map[k] || 0) + r.importe;
+    });
+    return Object.entries(map)
+      .map(([nombre, importe]) => ({ nombre, importe }))
+      .sort((a, b) => b.importe - a.importe)
+      .slice(0, topN || 10);
+  }
+
+  /**
+   * Vista para informe/PDF/Excel: un solo mes o mes actual + anterior (líneas y totales coherentes).
+   */
+  function buildReportView(twoMonth) {
+    if (!twoMonth) {
+      return {
+        mode: 'single',
+        periodLabel: MONTH_LABEL,
+        headlineMonth: MONTH_LABEL,
+        MONTH_KEY_EXPORT: MONTH_KEY,
+        LINEAS: LINEAS,
+        totalVentas: totalVentas,
+        totalVentasMesActual: totalVentas,
+        totalVentasMesAnterior: totalVentasPrev,
+        topVendedores: aggregateBy('vendedor', 5),
+        topClientes: aggregateBy('cliente', 5),
+        verifyCoherence: verifyCoherence,
+        PREV_MONTH_LABEL: PREV_MONTH_LABEL,
+        MONTH_LABEL_SINGLE: MONTH_LABEL,
+      };
+    }
+    const todas = [...LINEAS_PREV, ...LINEAS].sort((a, b) => a.fecha.localeCompare(b.fecha));
+    const totalAmbos = totalVentas + totalVentasPrev;
+    const delta = totalVentas - totalVentasPrev;
+    const pct = totalVentasPrev ? (delta / totalVentasPrev) * 100 : 0;
+    return {
+      mode: 'two-month',
+      periodLabel: PREV_MONTH_LABEL + ' y ' + MONTH_LABEL,
+      headlineMonth: PREV_MONTH_LABEL + ' y ' + MONTH_LABEL,
+      MONTH_KEY_EXPORT: PREV_MONTH_KEY + '_' + MONTH_KEY,
+      LINEAS: todas,
+      LINEAS_PREV: LINEAS_PREV,
+      LINEAS_CURRENT: LINEAS,
+      totalVentas: totalAmbos,
+      totalVentasMesActual: totalVentas,
+      totalVentasMesAnterior: totalVentasPrev,
+      deltaVsAnterior: delta,
+      pctVsAnterior: pct,
+      topVendedores: aggregateByLines(todas, 'vendedor', 5),
+      topClientes: aggregateByLines(todas, 'cliente', 5),
+      verifyCoherence: () => sumLines(todas) === totalAmbos,
+      PREV_MONTH_LABEL: PREV_MONTH_LABEL,
+      MONTH_LABEL_SINGLE: MONTH_LABEL,
+      PREV_MONTH_KEY: PREV_MONTH_KEY,
+      MONTH_KEY: MONTH_KEY,
+    };
+  }
+
+  function etiquetaMesLinea(fecha, view) {
+    if (!view || view.mode !== 'two-month' || !fecha) return '';
+    const f = String(fecha);
+    if (f.startsWith(PREV_MONTH_KEY) || f.slice(0, 7) === PREV_MONTH_KEY) return PREV_MONTH_LABEL;
+    return MONTH_LABEL;
+  }
+
   window.SCORECARD_REPORT_DATA = {
     MONTH_LABEL,
     MONTH_KEY,
@@ -74,5 +141,7 @@
       return aggregateBy('cliente', 5);
     },
     verifyCoherence,
+    buildReportView,
+    etiquetaMesLinea,
   };
 })();

@@ -17,6 +17,27 @@
     return (b && b.appName) || 'Scorecard General';
   }
 
+  /** Informe/PDF/Excel del mes actual y el anterior. */
+  function detectTwoMonthReportIntent(text) {
+    const t = norm(text);
+    if (t.length < 8) return false;
+    if (
+      /(dos|2)\s+meses|ambos\s+meses|mes\s+actual\s+y\s+(el\s+)?mes\s+anterior|este\s+mes\s+y\s+(el\s+)?(mes\s+)?(anterior|pasado)/i.test(
+        text
+      )
+    ) {
+      return true;
+    }
+    if (/(mes\s+anterior).{0,48}(mes\s+actual|este\s+mes)|(mes\s+actual|este\s+mes).{0,48}(mes\s+anterior)/i.test(text)) {
+      return true;
+    }
+    if (/(inclu(ye|ir)|junto|ademas|además).*(mes\s+anterior|mes\s+pasado)/i.test(text) && /ventas|informe|reporte|pdf|excel/i.test(text)) {
+      return true;
+    }
+    if (/(febrero|feb).*(marzo|mar)\s*2026|(marzo|mar).*(febrero|feb)\s*2026/i.test(text)) return true;
+    return false;
+  }
+
   function detectSalesMonthIntent(text) {
     const n = norm(text);
     if (n.length < 5) return null;
@@ -67,24 +88,56 @@
       .replace(/"/g, '&quot;');
   }
 
-  function executiveSummaryText(D) {
-    const tv = D.topVendedores[0];
-    const tc = D.topClientes[0];
-    let s =
-      'En <strong>' +
-      escapeHtml(D.MONTH_LABEL) +
-      '</strong> el importe total acumulado es <strong>' +
-      escapeHtml(moneyEs(D.totalVentas)) +
-      '</strong> en <strong>' +
-      D.LINEAS.length +
-      '</strong> movimientos registrados.';
+  function executiveSummaryText(V) {
+    const tv = V.topVendedores[0];
+    const tc = V.topClientes[0];
+    let s = '';
+    if (V.mode === 'two-month') {
+      const pct = Number.isFinite(V.pctVsAnterior) ? V.pctVsAnterior.toFixed(1) : '—';
+      const sign = V.deltaVsAnterior >= 0 ? '+' : '';
+      s =
+        'Período: <strong>' +
+        escapeHtml(V.headlineMonth) +
+        '</strong>. En <strong>' +
+        escapeHtml(V.MONTH_LABEL_SINGLE) +
+        '</strong> el importe total fue <strong>' +
+        escapeHtml(moneyEs(V.totalVentasMesActual)) +
+        '</strong> (' +
+        V.LINEAS_CURRENT.length +
+        ' movimientos); en <strong>' +
+        escapeHtml(V.PREV_MONTH_LABEL) +
+        '</strong> fue <strong>' +
+        escapeHtml(moneyEs(V.totalVentasMesAnterior)) +
+        '</strong> (' +
+        V.LINEAS_PREV.length +
+        ' movimientos). Variación del mes corriente frente al anterior: <strong>' +
+        sign +
+        escapeHtml(moneyEs(V.deltaVsAnterior)) +
+        '</strong> (<strong>' +
+        sign +
+        pct +
+        '%</strong>). <strong>Total acumulado en ambos meses</strong>: <strong>' +
+        escapeHtml(moneyEs(V.totalVentas)) +
+        '</strong> en <strong>' +
+        V.LINEAS.length +
+        '</strong> movimientos.';
+    } else {
+      s =
+        'En <strong>' +
+        escapeHtml(V.periodLabel) +
+        '</strong> el importe total acumulado es <strong>' +
+        escapeHtml(moneyEs(V.totalVentas)) +
+        '</strong> en <strong>' +
+        V.LINEAS.length +
+        '</strong> movimientos registrados.';
+    }
     if (tv) {
       s +=
         ' El mayor aporte por vendedor corresponde a <strong>' +
         escapeHtml(tv.nombre) +
         '</strong> (' +
         escapeHtml(moneyEs(tv.importe)) +
-        ').';
+        ' sobre el total del período mostrado).';
     }
     if (tc) {
       s +=
@@ -97,11 +150,22 @@
     return s;
   }
 
-  function renderReportHtml(D) {
+  function renderReportHtml(V, dataApi) {
+    const D = dataApi || window.SCORECARD_REPORT_DATA;
     const org = escapeHtml(brandName());
-    const rows = D.LINEAS.map(
-      (r) =>
-        '<tr><td>' +
+    const colMes =
+      V.mode === 'two-month'
+        ? '<th>Período</th>'
+        : '';
+    const rows = V.LINEAS.map((r) => {
+      const mesCol =
+        V.mode === 'two-month'
+          ? '<td>' + escapeHtml(D.etiquetaMesLinea(r.fecha, V)) + '</td>'
+          : '';
+      return (
+        '<tr>' +
+        mesCol +
+        '<td>' +
         escapeHtml(r.fecha) +
         '</td><td>' +
         escapeHtml(r.cliente) +
@@ -110,8 +174,9 @@
         '</td><td class="report-num">' +
         escapeHtml(moneyEs(r.importe)) +
         '</td></tr>'
-    ).join('');
-    const tv = D.topVendedores
+      );
+    }).join('');
+    const tv = V.topVendedores
       .map(
         (x, i) =>
           '<tr><td>' +
@@ -121,11 +186,11 @@
           '</td><td class="report-num">' +
           escapeHtml(moneyEs(x.importe)) +
           '</td><td class="report-num">' +
-          (D.totalVentas ? ((x.importe / D.totalVentas) * 100).toFixed(1) : '—') +
+          (V.totalVentas ? ((x.importe / V.totalVentas) * 100).toFixed(1) : '—') +
           '%</td></tr>'
       )
       .join('');
-    const tc = D.topClientes
+    const tc = V.topClientes
       .map(
         (x, i) =>
           '<tr><td>' +
@@ -135,10 +200,12 @@
           '</td><td class="report-num">' +
           escapeHtml(moneyEs(x.importe)) +
           '</td><td class="report-num">' +
-          (D.totalVentas ? ((x.importe / D.totalVentas) * 100).toFixed(1) : '—') +
+          (V.totalVentas ? ((x.importe / V.totalVentas) * 100).toFixed(1) : '—') +
           '%</td></tr>'
       )
       .join('');
+    const kpi1Label = V.mode === 'two-month' ? 'Total (ambos meses)' : 'Total ventas';
+    const kpi3Label = V.mode === 'two-month' ? 'Cuadre (ambos)' : 'Cuadre';
     return (
       '<header class="report-doc-header">' +
       '<p class="report-doc-eyebrow">' +
@@ -146,21 +213,25 @@
       '</p>' +
       '<h2 class="report-doc-title">Informe ejecutivo de ventas</h2>' +
       '<p class="report-doc-period">' +
-      escapeHtml(D.MONTH_LABEL) +
+      escapeHtml(V.headlineMonth) +
       '</p>' +
       '</header>' +
       '<p class="report-executive-summary">' +
-      executiveSummaryText(D) +
+      executiveSummaryText(V) +
       '</p>' +
       '<div class="report-kpi-row">' +
-      '<div class="report-kpi"><span>Total ventas</span><strong>' +
-      escapeHtml(moneyEs(D.totalVentas)) +
+      '<div class="report-kpi"><span>' +
+      kpi1Label +
+      '</span><strong>' +
+      escapeHtml(moneyEs(V.totalVentas)) +
       '</strong></div>' +
       '<div class="report-kpi"><span>Movimientos</span><strong>' +
-      D.LINEAS.length +
+      V.LINEAS.length +
       '</strong></div>' +
-      '<div class="report-kpi"><span>Cuadre</span><strong>' +
-      (D.verifyCoherence() ? 'Verificado' : '—') +
+      '<div class="report-kpi"><span>' +
+      kpi3Label +
+      '</span><strong>' +
+      (V.verifyCoherence() ? 'Verificado' : '—') +
       '</strong></div>' +
       '</div>' +
       '<div class="report-grid-2">' +
@@ -171,7 +242,9 @@
       tc +
       '</tbody></table></div></div>' +
       '</div>' +
-      '<div class="report-block report-block--detail"><h4>Detalle de movimientos</h4><div class="report-table-wrap"><table><thead><tr><th>Fecha</th><th>Cliente</th><th>Vendedor</th><th>Importe</th></tr></thead><tbody>' +
+      '<div class="report-block report-block--detail"><h4>Detalle de movimientos</h4><div class="report-table-wrap"><table><thead><tr>' +
+      colMes +
+      '<th>Fecha</th><th>Cliente</th><th>Vendedor</th><th>Importe</th></tr></thead><tbody>' +
       rows +
       '</tbody></table></div></div>' +
       '<footer class="report-doc-footer">' +
@@ -180,21 +253,35 @@
     );
   }
 
-  function fillSurface(D) {
+  function fillSurface(twoMonth) {
+    const D = window.SCORECARD_REPORT_DATA;
     const el = document.getElementById('scorecard-report-surface');
-    if (!el) return;
-    el.innerHTML = renderReportHtml(D);
+    if (!el || !D || typeof D.buildReportView !== 'function') return;
+    const V = D.buildReportView(!!twoMonth);
+    window.__SCORECARD_REPORT_ACTIVE_VIEW__ = V;
+    el.innerHTML = renderReportHtml(V, D);
     const sub = document.getElementById('scorecard-report-subtitle');
     if (sub) {
       sub.textContent =
-        D.MONTH_LABEL +
-        ' · Informe listo para exportar (Excel con 5 hojas, PDF/PNG o impresión)';
+        V.headlineMonth +
+        (V.mode === 'two-month'
+          ? ' · Informe con mes actual y mes anterior · Excel (hojas + detalle por mes) · PDF/PNG'
+          : ' · Informe listo para exportar (Excel con 5 hojas, PDF/PNG o impresión)');
     }
     const hint = document.getElementById('report-hint');
     if (hint) {
       hint.textContent =
-        'El Excel incluye portada, KPI, detalle y rankings. PDF e imagen reflejan esta vista. Imprimir abre el cuadro de impresión del sistema (puede guardar como PDF).';
+        V.mode === 'two-month'
+          ? 'Incluye totales por mes, variación y detalle con columna de período. PDF e imagen reflejan esta vista.'
+          : 'El Excel incluye portada, KPI, detalle y rankings. PDF e imagen reflejan esta vista. Imprimir abre el cuadro de impresión del sistema (puede guardar como PDF).';
     }
+  }
+
+  function getActiveReportView() {
+    const D = window.SCORECARD_REPORT_DATA;
+    if (window.__SCORECARD_REPORT_ACTIVE_VIEW__) return window.__SCORECARD_REPORT_ACTIVE_VIEW__;
+    if (D && typeof D.buildReportView === 'function') return D.buildReportView(false);
+    return null;
   }
 
   function runAutoExport(pref) {
@@ -204,9 +291,11 @@
     if (!pref || !D || !X) return;
     window.setTimeout(async () => {
       try {
-        if (pref === 'xlsx') X.exportExcelFromData(D);
-        else if (pref === 'pdf' && el) await X.exportPdf(el, D.MONTH_KEY);
-        else if (pref === 'png' && el) await X.exportPng(el, D.MONTH_KEY);
+        const V = getActiveReportView();
+        if (!V) return;
+        if (pref === 'xlsx') X.exportExcelFromData(V);
+        else if (pref === 'pdf' && el) await X.exportPdf(el, V.MONTH_KEY_EXPORT);
+        else if (pref === 'png' && el) await X.exportPng(el, V.MONTH_KEY_EXPORT);
       } catch (e) {
         console.warn(e);
       }
@@ -217,8 +306,9 @@
     const panel = document.getElementById('scorecard-report-panel');
     if (!panel) return;
     panel.hidden = false;
+    const twoMonth = opts && opts.twoMonth;
     const D = window.SCORECARD_REPORT_DATA;
-    if (D) fillSurface(D);
+    if (D) fillSurface(!!twoMonth);
     const pref = opts && opts.autoExport;
     if (pref) runAutoExport(pref);
     document.getElementById('report-close')?.focus();
@@ -239,19 +329,22 @@
     document.getElementById('report-export-xlsx')?.addEventListener('click', () => {
       const D = window.SCORECARD_REPORT_DATA;
       const X = window.SCORECARD_REPORT_EXPORT;
-      if (D && X) X.exportExcelFromData(D);
+      const V = getActiveReportView();
+      if (D && X && V) X.exportExcelFromData(V);
     });
     document.getElementById('report-export-png')?.addEventListener('click', async () => {
       const el = document.getElementById('scorecard-report-surface');
       const D = window.SCORECARD_REPORT_DATA;
       const X = window.SCORECARD_REPORT_EXPORT;
-      if (el && D && X) await X.exportPng(el, D.MONTH_KEY);
+      const V = getActiveReportView();
+      if (el && D && X && V) await X.exportPng(el, V.MONTH_KEY_EXPORT);
     });
     document.getElementById('report-export-pdf')?.addEventListener('click', async () => {
       const el = document.getElementById('scorecard-report-surface');
       const D = window.SCORECARD_REPORT_DATA;
       const X = window.SCORECARD_REPORT_EXPORT;
-      if (el && D && X) await X.exportPdf(el, D.MONTH_KEY);
+      const V = getActiveReportView();
+      if (el && D && X && V) await X.exportPdf(el, V.MONTH_KEY_EXPORT);
     });
     document.getElementById('report-print')?.addEventListener('click', () => {
       document.documentElement.classList.add('scorecard-print-report');
@@ -269,7 +362,14 @@
   window.scrHandleReportIntent = function (text, api) {
     if (detectSalesMonthIntent(text) !== 'sales-month') return false;
     const pref = detectExportPreference(text);
-    openPanel({ autoExport: pref });
+    const twoMonth = detectTwoMonthReportIntent(text);
+    openPanel({ autoExport: pref, twoMonth: twoMonth });
+    const periodoMsg =
+      twoMonth && window.SCORECARD_REPORT_DATA
+        ? window.SCORECARD_REPORT_DATA.PREV_MONTH_LABEL + ' y ' + window.SCORECARD_REPORT_DATA.MONTH_LABEL
+        : window.SCORECARD_REPORT_DATA && window.SCORECARD_REPORT_DATA.MONTH_LABEL
+          ? window.SCORECARD_REPORT_DATA.MONTH_LABEL
+          : 'el período';
     if (api && api.addMsg && api.mdLite) {
       let extra = '';
       if (pref === 'xlsx') extra = ' También **inicié la descarga del Excel** con hojas ordenadas (portada, KPI, detalle, rankings).';
@@ -279,10 +379,10 @@
         'bot',
         api.mdLite(
           '**Informe de ventas preparado** — Datos ordenados para **' +
-            (window.SCORECARD_REPORT_DATA && window.SCORECARD_REPORT_DATA.MONTH_LABEL
-              ? window.SCORECARD_REPORT_DATA.MONTH_LABEL
-              : 'el período') +
-            '**. Desde el panel podrá **descargar el libro Excel** (varias hojas), **PDF**, **imagen PNG** o **imprimir** (en el cuadro de impresión también puede elegir *Guardar como PDF*).' +
+            periodoMsg +
+            '**' +
+            (twoMonth ? ' (mes actual y mes anterior, con totales y variación).' : '.') +
+            ' Desde el panel podrá **descargar el libro Excel** (varias hojas), **PDF**, **imagen PNG** o **imprimir** (en el cuadro de impresión también puede elegir *Guardar como PDF*).' +
             extra
         )
       );
@@ -297,8 +397,14 @@
     return true;
   };
 
-  window.scrOpenReportQuick = function (api) {
-    openPanel({});
+  window.scrDetectTwoMonthReportIntent = detectTwoMonthReportIntent;
+
+  window.scrOpenReportQuick = function (api, userText) {
+    const twoMonth =
+      userText && typeof detectTwoMonthReportIntent === 'function'
+        ? detectTwoMonthReportIntent(userText)
+        : false;
+    openPanel({ twoMonth: !!twoMonth });
     if (api && api.addMsg && api.mdLite) {
       api.addMsg(
         'bot',
