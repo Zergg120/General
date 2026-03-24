@@ -123,18 +123,13 @@
     select,
     option,
     a,
-    label,
     .scorecard-status-bar,
     #scorecard-report-panel,
     .subtitle,
-    .pill,
-    .badge-dummy,
     .kpi-value,
     .kpi-label,
     .delta,
     .target,
-    .section-hint,
-    .section-title,
     .legal-footer,
     footer,
     .gloss-card,
@@ -160,6 +155,27 @@
     select,
     [contenteditable="true"] {
       caret-color: auto;
+    }
+
+    /*
+      UI solo lectura (no son campos): sin caret ni selección tipo editor.
+      Las píldoras antes tenían user-select:text y Chrome mostraba el cursor de inserción.
+    */
+    .pill,
+    .pill strong,
+    .badge-dummy,
+    .eyebrow,
+    .section-title,
+    .section-hint,
+    .meta-bar-tags,
+    .period-wrap label,
+    .btn-soft,
+    .icon-btn,
+    .scorecard-status-pill,
+    .scorecard-status-sep {
+      user-select: none !important;
+      -webkit-user-select: none !important;
+      caret-color: transparent !important;
     }
 
     body::after {
