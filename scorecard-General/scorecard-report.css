@@ -12,6 +12,8 @@
   -webkit-backdrop-filter: blur(8px);
   border: none;
   margin: 0;
+  /* Para que la capa de carga cubra todo el modal */
+  isolation: isolate;
 }
 
 #scorecard-report-panel[hidden] {
@@ -20,6 +22,7 @@
 
 #scorecard-report-panel .report-dialog {
   position: relative;
+  z-index: 1;
   width: min(920px, 100%);
   max-height: min(92vh, 900px);
   overflow: auto;
@@ -128,42 +131,86 @@ body.light .scorecard-global-loading__gif {
   .scorecard-global-loading {
     display: none !important;
   }
+
+  .report-loading-overlay {
+    display: none !important;
+  }
 }
 
-/* Informe: badge de “generando…” — esquina superior derecha del modal; GIF a la derecha del texto */
+/* Informe: pantalla de carga a pantalla completa sobre el modal — GIF grande centrado */
 .report-loading-overlay {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
-  left: auto;
-  z-index: 12001;
+  inset: 0;
+  z-index: 5;
   display: flex;
-  flex-direction: row-reverse;
   align-items: center;
-  gap: 0.55rem;
-  padding: 0.35rem 0.65rem 0.35rem 0.35rem;
-  border-radius: 12px;
-  border: 1px solid var(--border-strong);
-  background: var(--bg-card);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+  justify-content: center;
+  padding: 1.5rem;
+  margin: 0;
+  border-radius: 0;
+  border: none;
+  background: rgba(6, 10, 18, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   pointer-events: none;
+}
+
+body.light #scorecard-report-panel .report-loading-overlay {
+  background: rgba(244, 246, 250, 0.92);
 }
 
 .report-loading-overlay[hidden] {
   display: none !important;
 }
 
+.report-loading-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  text-align: center;
+  max-width: 26rem;
+}
+
 .report-loading-gif {
   display: block;
   flex-shrink: 0;
-  border-radius: 8px;
+  border-radius: 16px;
+}
+
+.report-loading-gif--hero {
+  width: min(320px, 72vw);
+  height: auto;
+  max-height: min(360px, 45vh);
+  object-fit: contain;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.45);
+}
+
+body.light .report-loading-gif--hero {
+  box-shadow: 0 12px 40px rgba(15, 23, 42, 0.15);
 }
 
 .report-loading-text {
   font-size: 0.78rem;
   font-weight: 600;
   color: var(--text-muted);
-  white-space: nowrap;
+}
+
+.report-loading-text--hero {
+  font-family: Outfit, system-ui, sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+  white-space: normal;
+  line-height: 1.35;
+}
+
+.report-loading-sub {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+  max-width: 22rem;
 }
 
 #scorecard-report-panel .report-head {

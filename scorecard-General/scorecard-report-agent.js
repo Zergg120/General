@@ -357,9 +357,10 @@
     }, 500);
   }
 
-  var REPORT_OPEN_DELAY_MS = 720;
+  /** Vista previa del informe: GIF grande centrado; ~10 s para apreciar la carga (demo). */
+  var REPORT_OPEN_DELAY_MS = 10000;
   /** Tiempo de “preparando…” antes de abrir el cuadro de impresión del sistema */
-  var PRINT_PREP_DELAY_MS = 920;
+  var PRINT_PREP_DELAY_MS = 3200;
 
   function showPrintPrepOverlay() {
     const el = document.getElementById('scorecard-print-prep');
@@ -427,6 +428,14 @@
   }
 
   window.scorecardRunPrintWithPrep = runPrintWithPrep;
+
+  /**
+   * Abre el modal del informe (misma vista que imprimir/exportar) sin mensaje extra en el chat.
+   * Usado por el asistente al responder ventas por periodo.
+   */
+  window.scrOpenReportPanel = function (opts) {
+    openPanel(opts || {});
+  };
 
   function openPanel(opts) {
     const panel = document.getElementById('scorecard-report-panel');

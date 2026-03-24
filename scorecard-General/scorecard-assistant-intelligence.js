@@ -250,6 +250,9 @@
 
     ctx.addMsg('bot', ctx.mdLite(body));
     ctx.speak('Total de ventas en el periodo solicitado, datos de demostración.');
+    if (typeof window.scrOpenReportPanel === 'function') {
+      window.scrOpenReportPanel({ reportPreset: intent, twoMonth: false });
+    }
     return true;
   }
 

@@ -595,6 +595,9 @@
       )
     );
     speak('Total de ventas en demostración para el periodo solicitado.');
+    if (typeof window.scrOpenReportPanel === 'function') {
+      window.scrOpenReportPanel({ reportPreset: preset, twoMonth: false });
+    }
     return true;
   }
 
