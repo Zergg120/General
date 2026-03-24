@@ -594,7 +594,7 @@
           '**. Las cifras dependen del periodo (día, semana, mes, año). Puede pedir también el **informe** con Excel o PDF desde el panel.'
       )
     );
-    speak('Total de ventas en demostración para el periodo solicitado.');
+    speak('Total de ventas en el periodo solicitado. Espere un momento por favor.');
     if (typeof window.scrOpenReportPanel === 'function') {
       window.scrOpenReportPanel({ reportPreset: preset, twoMonth: false });
     }

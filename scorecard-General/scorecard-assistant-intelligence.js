@@ -249,7 +249,7 @@
       'Las cifras **cambian por periodo** (día, semana, mes, año): si no hay movimientos en el set demo, se muestra un importe ilustrativo coherente. Para la **comparativa mes vs mes anterior** o el **informe con Excel/PDF**, indíquelo en su pregunta.';
 
     ctx.addMsg('bot', ctx.mdLite(body));
-    ctx.speak('Total de ventas en el periodo solicitado, datos de demostración.');
+    ctx.speak('Total de ventas en el periodo solicitado. Espere un momento por favor.');
     if (typeof window.scrOpenReportPanel === 'function') {
       window.scrOpenReportPanel({ reportPreset: intent, twoMonth: false });
     }
@@ -320,7 +320,7 @@
 
     ctx.addMsg('bot', ctx.mdLite(body));
     ctx.speak(
-      'Datos de demostración. Total del mes actual, del anterior, suma y variación porcentual.'
+      'Totales del mes actual y del mes anterior, suma y variación porcentual. Espere un momento por favor.'
     );
     return true;
   }
