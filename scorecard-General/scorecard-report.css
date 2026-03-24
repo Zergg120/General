@@ -363,15 +363,30 @@ body.light #scorecard-report-panel tbody tr:nth-child(even) {
   max-height: 280px;
 }
 
-/* Vista clara para captura PDF/PNG (coincide con fondo html2canvas) */
+/* Vista tipo documento ejecutivo para PDF/PNG (captura html2canvas) */
 #scorecard-report-panel .report-surface.report-surface--export {
-  background: #f8fafc;
+  background: #ffffff;
   color: #0f172a;
-  border-color: #e2e8f0;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  box-shadow: 0 4px 24px rgba(15, 23, 42, 0.08);
+  padding: 1.35rem 1.5rem 1.5rem;
+}
+
+#scorecard-report-panel .report-surface.report-surface--export .report-doc-header {
+  border-bottom: 2px solid #1e3a5f;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  background: linear-gradient(180deg, #f1f5f9 0%, #ffffff 100%);
+  margin: -1.35rem -1.5rem 1rem;
+  padding: 1.1rem 1.5rem 1rem;
+  border-radius: 4px 4px 0 0;
 }
 
 #scorecard-report-panel .report-surface.report-surface--export .report-doc-eyebrow {
-  color: #2563eb;
+  color: #1d4ed8;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
 }
 
 #scorecard-report-panel .report-surface.report-surface--export .report-doc-title,
@@ -381,9 +396,14 @@ body.light #scorecard-report-panel tbody tr:nth-child(even) {
   color: #0f172a;
 }
 
+#scorecard-report-panel .report-surface.report-surface--export .report-doc-title {
+  font-size: 1.4rem;
+}
+
 #scorecard-report-panel .report-surface.report-surface--export .report-kpi {
-  background: rgba(37, 99, 235, 0.08);
-  border-color: #e2e8f0;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
 }
 
 #scorecard-report-panel .report-surface.report-surface--export .report-kpi span {
@@ -394,23 +414,57 @@ body.light #scorecard-report-panel tbody tr:nth-child(even) {
   color: #0f172a;
 }
 
+#scorecard-report-panel .report-surface.report-surface--export .report-block h4 {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #475569;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 0.35rem;
+  margin-bottom: 0.5rem;
+}
+
+#scorecard-report-panel .report-surface.report-surface--export table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
 #scorecard-report-panel .report-surface.report-surface--export th {
-  background: #e2e8f0;
-  color: #334155;
+  background: #1e293b;
+  color: #f8fafc;
+  font-weight: 600;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.5rem 0.55rem;
+  border: 1px solid #334155;
 }
 
 #scorecard-report-panel .report-surface.report-surface--export td,
 #scorecard-report-panel .report-surface.report-surface--export th {
-  border-color: #cbd5e1;
+  border: 1px solid #cbd5e1;
+}
+
+#scorecard-report-panel .report-surface.report-surface--export td {
+  padding: 0.45rem 0.55rem;
+  font-size: 0.8rem;
 }
 
 #scorecard-report-panel .report-surface.report-surface--export tbody tr:nth-child(even) {
-  background: rgba(15, 23, 42, 0.04);
+  background: #f8fafc;
+}
+
+#scorecard-report-panel .report-surface.report-surface--export .report-demo-disclaimer {
+  border: 1px solid #bfdbfe;
+  background: #eff6ff;
+  color: #1e40af;
+  border-radius: 6px;
 }
 
 #scorecard-report-panel .report-surface.report-surface--export .report-doc-footer {
   color: #64748b;
-  border-color: #e2e8f0;
+  border-top: 1px solid #e2e8f0;
+  font-size: 0.65rem;
 }
 
 #scorecard-report-panel .report-kpi-row {

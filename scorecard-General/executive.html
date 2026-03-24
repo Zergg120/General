@@ -17,9 +17,9 @@
   <link rel="preconnect" href="https://cdn.sheetjs.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
   <!-- ?v= fuerza recarga tras desplegar (evita JS/CSS viejos en caché del navegador o CDN) -->
-  <link rel="stylesheet" href="scorecard-status.css?v=20250324e" />
-  <link rel="stylesheet" href="scorecard-audio.css?v=20250324e" />
-  <link rel="stylesheet" href="scorecard-report.css?v=20250324e" />
+  <link rel="stylesheet" href="scorecard-status.css?v=20250324f" />
+  <link rel="stylesheet" href="scorecard-audio.css?v=20250324f" />
+  <link rel="stylesheet" href="scorecard-report.css?v=20250324f" />
   <!--
     Auto-actualización (opcional): descomenta y pon tu URL cuando tengas API.
     El servidor debe devolver JSON con al menos uno: checksum | version | updatedAt | etag
@@ -33,21 +33,22 @@
   </script>
   -->
   <!-- defer: clics UI primero; luego Chart → XLSX → estado → app → asistente → gráficas → live → audio -->
-  <script src="scorecard-ui-sounds.js?v=20250324e" defer></script>
+  <script src="scorecard-ui-sounds.js?v=20250324f" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
   <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js" defer></script>
-  <script src="scorecard-status.js?v=20250324e" defer></script>
-  <script src="scorecard-app.js?v=20250324e" defer></script>
-  <script src="scorecard-report-data.js?v=20250324e" defer></script>
-  <script src="scorecard-report-export.js?v=20250324e" defer></script>
-  <script src="scorecard-report-agent.js?v=20250324e" defer></script>
-  <script src="scorecard-assistant-intelligence.js?v=20250324e" defer></script>
-  <script src="scorecard-assistant.js?v=20250324e" defer></script>
-  <script src="scorecard-charts.js?v=20250324e" defer></script>
-  <script src="scorecard-live.js?v=20250324e" defer></script>
-  <script src="scorecard-audio.js?v=20250324e" defer></script>
+  <script src="scorecard-status.js?v=20250324f" defer></script>
+  <script src="scorecard-app.js?v=20250324f" defer></script>
+  <script src="scorecard-report-data.js?v=20250324f" defer></script>
+  <script src="scorecard-report-export.js?v=20250324f" defer></script>
+  <script src="scorecard-report-agent.js?v=20250324f" defer></script>
+  <script src="scorecard-assistant-intelligence.js?v=20250324f" defer></script>
+  <script src="scorecard-assistant.js?v=20250324f" defer></script>
+  <script src="scorecard-charts.js?v=20250324f" defer></script>
+  <script src="scorecard-live.js?v=20250324f" defer></script>
+  <script src="scorecard-audio.js?v=20250324f" defer></script>
   <style>
     /* === Marca blanca (cliente): edita también window.SCORECARD_BRAND en scorecard-app.js === */
     :root {

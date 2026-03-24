@@ -348,7 +348,12 @@
       try {
         const V = getActiveReportView();
         if (!V) return;
-        if (pref === 'xlsx') X.exportExcelFromData(V);
+        if (pref === 'xlsx') {
+          Promise.resolve(X.exportExcelFromData(V)).catch(function (e) {
+            console.warn(e);
+            window.alert('No se pudo generar el Excel: ' + (e && e.message ? e.message : e));
+          });
+        }
         else if (pref === 'pdf' && el) await X.exportPdf(el, V.MONTH_KEY_EXPORT);
         else if (pref === 'png' && el) await X.exportPng(el, V.MONTH_KEY_EXPORT);
       } catch (e) {
@@ -494,7 +499,11 @@
       const D = window.SCORECARD_REPORT_DATA;
       const X = window.SCORECARD_REPORT_EXPORT;
       const V = getActiveReportView();
-      if (D && X && V) X.exportExcelFromData(V);
+      if (D && X && V) {
+        Promise.resolve(X.exportExcelFromData(V)).catch(function (e) {
+          console.warn(e);
+        });
+      }
     });
     document.getElementById('report-export-png')?.addEventListener('click', async () => {
       const el = document.getElementById('scorecard-report-surface');
