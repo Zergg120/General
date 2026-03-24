@@ -20,10 +20,13 @@
 
   /** Temas claramente ajenos al scorecard (si no hay palabras de contexto del panel). */
   const OFF_TOPIC_HINT =
-    /\b(clima|temperatura|llover|receta|cocinar|cocina|comida|pasta|queso|platillo|chef|restaurante|desayuno|cena|pel[ií]cula|netflix|f[úu]tbol|mundial|chisme|bitcoin|cripto|whatsapp|instagram|tarea\s+de\s+mate|historia\s+de\s+m[eé]xico|quien\s+gan[oó]|cumpleaños|hor[óo]scopo|chiste)\b/i;
+    /\b(clima|temperatura|llover|receta|cocinar|cocina|comida|pasta|queso|pastel|torta|reposter[ií]?a|pasteler|hornear|bizcoch|platillo|chef|restaurante|desayuno|cena|pel[ií]cula|netflix|f[úu]tbol|mundial|chisme|bitcoin|cripto|whatsapp|instagram|tarea\s+de\s+mate|historia\s+de\s+m[eé]xico|quien\s+gan[oó]|cumpleaños|hor[óo]scopo|chiste)\b/i;
 
+  /**
+   * Temas del panel (no usar «ayuda|ayudar» solas: «me ayudas a hacer un pastel» debe poder declinarse).
+   */
   const IN_SCOPE_HINT =
-    /\b(scorecard|ventas?|kpi|métrica|metrica|panel|dashboard|ebitda|roic|nps|ccc|finanzas|comercial|operaciones|personas|cliente|glosario|objetivo|gr[áa]fica|informe|excel|pdf|secci[oó]n|buscador|mes|compar|suma|sumar|anterior|d[oó]nde|ubicar|llevar|ir\s+a|asistente|contabilidad|liquidez|riesgo|margen|deuda|ytd|resumen|pipeline|churn|presentaci[oó]n|m[oó]dulo|dummy|tabla|hero|ingresos|cash|capital|proveedor|otif|enps|csat|facturaci[oó]n|libro|cuenta|ayuda|ayudar|explic|n[uú]mero|n[uú]meros|datos|indicador|export|descarg|imprimir|vendedor|reporte|cuadro|filtro|pestaña|pesta|tablero|demo|prototipo)\b/i;
+    /\b(scorecard|ventas?|kpi|métrica|metrica|panel|dashboard|ebitda|roic|nps|ccc|finanzas|comercial|operaciones|personas|cliente|glosario|objetivo|gr[áa]fica|informe|excel|pdf|secci[oó]n|buscador|mes|compar|suma|sumar|anterior|d[oó]nde|ubicar|llevar|ir\s+a|asistente|contabilidad|liquidez|riesgo|margen|deuda|ytd|resumen|pipeline|churn|presentaci[oó]n|m[oó]dulo|dummy|tabla|hero|ingresos|cash|capital|proveedor|otif|enps|csat|facturaci[oó]n|libro|cuenta|n[uú]mero|n[uú]meros|datos|indicador|export|descarg|imprimir|vendedor|reporte|cuadro|filtro|pestaña|pesta|tablero|demo|prototipo)\b/i;
 
   /** Saludos / cortesías: no declinar; las responde la base de conocimiento local. */
   const GREETING_LEX = new Set(
