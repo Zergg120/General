@@ -62,6 +62,18 @@
   background: var(--bg-card);
 }
 
+/* Aviso dentro de la vista PDF/Excel: demo explícita */
+.report-surface .report-demo-disclaimer {
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+  margin: 0 0 0.85rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: 10px;
+  border: 1px dashed var(--border-strong);
+  background: rgba(59, 130, 246, 0.06);
+}
+
 #scorecard-report-panel .report-actions {
   display: flex;
   flex-wrap: wrap;

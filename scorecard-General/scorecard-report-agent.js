@@ -96,7 +96,8 @@
       const pct = Number.isFinite(V.pctVsAnterior) ? V.pctVsAnterior.toFixed(1) : '—';
       const sign = V.deltaVsAnterior >= 0 ? '+' : '';
       s =
-        'Período: <strong>' +
+        '<em>Demostración</em> — cifras y mes anterior son <strong>datos de muestra</strong> para mostrar informes comparativos; con fuentes reales (ERP/BI) los mismos formatos reflejarían sus totales. ' +
+        'Período mostrado: <strong>' +
         escapeHtml(V.headlineMonth) +
         '</strong>. En <strong>' +
         escapeHtml(V.MONTH_LABEL_SINGLE) +
@@ -123,6 +124,7 @@
         '</strong> movimientos.';
     } else {
       s =
+        '<em>Demostración</em> — importes <strong>ilustrativos</strong> del mes en curso (muestra de capacidad del informe). ' +
         'En <strong>' +
         escapeHtml(V.periodLabel) +
         '</strong> el importe total acumulado es <strong>' +
@@ -216,6 +218,11 @@
       escapeHtml(V.headlineMonth) +
       '</p>' +
       '</header>' +
+      '<p class="report-demo-disclaimer">' +
+      (V.mode === 'two-month'
+        ? '<strong>Vista de demostración.</strong> El mes anterior y las cifras son <strong>datos ficticios coherentes</strong> para exhibir comparación entre períodos, PDF/Excel y respuestas del asistente. En producción se conectan fuentes reales.'
+        : '<strong>Vista de demostración.</strong> Cifras <strong>ilustrativas</strong> del período actual para validar diseño e informes; sustituir por API en producción.') +
+      '</p>' +
       '<p class="report-executive-summary">' +
       executiveSummaryText(V) +
       '</p>' +
@@ -248,7 +255,7 @@
       rows +
       '</tbody></table></div></div>' +
       '<footer class="report-doc-footer">' +
-      '<span>Documento generado automáticamente · Datos demo coherentes · Sustituir por API en producción</span>' +
+      '<span>Generado automáticamente · Escenario demo (datos de muestra, no operativos) · Sustituir por API / ERP en producción</span>' +
       '</footer>'
     );
   }
@@ -265,15 +272,15 @@
       sub.textContent =
         V.headlineMonth +
         (V.mode === 'two-month'
-          ? ' · Informe con mes actual y mes anterior · Excel (hojas + detalle por mes) · PDF/PNG'
-          : ' · Informe listo para exportar (Excel con 5 hojas, PDF/PNG o impresión)');
+          ? ' · Demo: mes actual + mes anterior (ficticio) · Comparación y exportes de muestra'
+          : ' · Demo: un mes · Datos ilustrativos · Excel / PDF / PNG');
     }
     const hint = document.getElementById('report-hint');
     if (hint) {
       hint.textContent =
         V.mode === 'two-month'
-          ? 'Incluye totales por mes, variación y detalle con columna de período. PDF e imagen reflejan esta vista.'
-          : 'El Excel incluye portada, KPI, detalle y rankings. PDF e imagen reflejan esta vista. Imprimir abre el cuadro de impresión del sistema (puede guardar como PDF).';
+          ? 'Los importes del mes anterior son ficticios de demostración; el objetivo es mostrar el flujo comparativo (asistente, vista, PDF/Excel).'
+          : 'Cifras ilustrativas para validar el informe. El Excel incluye portada, KPI, detalle y rankings; PDF e imagen reflejan esta vista.';
     }
   }
 
@@ -378,11 +385,13 @@
       api.addMsg(
         'bot',
         api.mdLite(
-          '**Informe de ventas preparado** — Datos ordenados para **' +
+            '**Informe de ventas preparado** (escenario **demo**: cifras de muestra) — Período mostrado: **' +
             periodoMsg +
             '**' +
-            (twoMonth ? ' (mes actual y mes anterior, con totales y variación).' : '.') +
-            ' Desde el panel podrá **descargar el libro Excel** (varias hojas), **PDF**, **imagen PNG** o **imprimir** (en el cuadro de impresión también puede elegir *Guardar como PDF*).' +
+            (twoMonth
+              ? ' Incluye mes anterior ficticio para mostrar comparación; con datos reales vendrían de su API. '
+              : '. ') +
+            'Desde el panel podrá **descargar el libro Excel** (varias hojas), **PDF**, **imagen PNG** o **imprimir** (en el cuadro de impresión también puede elegir *Guardar como PDF*).' +
             extra
         )
       );

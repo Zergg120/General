@@ -45,8 +45,9 @@
       ['', ''],
       ['Organización', org],
       ['Período analizado', V.headlineMonth || V.periodLabel],
+      ['Tipo de información', two ? 'Demostración: mes actual + mes anterior ficticio (muestra comparativa)' : 'Demostración: datos ilustrativos del período'],
       ['Documento generado', genAt],
-      ['Fuente', 'Demo coherente (reemplazar por API en producción)'],
+      ['Fuente', 'Datos de muestra coherentes — sustituir por ERP/BI en producción'],
       ['', ''],
     ];
     if (two) {
