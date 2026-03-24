@@ -193,7 +193,7 @@
     const hint = document.getElementById('report-hint');
     if (hint) {
       hint.textContent =
-        'El Excel incluye portada, KPI, detalle y rankings. PDF e imagen reflejan esta vista. Imprimir abre el cuadro de impresión del sistema (puedes guardar como PDF).';
+        'El Excel incluye portada, KPI, detalle y rankings. PDF e imagen reflejan esta vista. Imprimir abre el cuadro de impresión del sistema (puede guardar como PDF).';
     }
   }
 
@@ -282,7 +282,7 @@
             (window.SCORECARD_REPORT_DATA && window.SCORECARD_REPORT_DATA.MONTH_LABEL
               ? window.SCORECARD_REPORT_DATA.MONTH_LABEL
               : 'el período') +
-            '**. Desde el panel puedes **descargar Excel** (libro con varias hojas), **PDF**, **PNG** o **imprimir** (desde el diálogo de impresión también puedes “Guardar como PDF”).' +
+            '**. Desde el panel podrá **descargar el libro Excel** (varias hojas), **PDF**, **imagen PNG** o **imprimir** (en el cuadro de impresión también puede elegir *Guardar como PDF*).' +
             extra
         )
       );
@@ -290,8 +290,8 @@
     if (api && api.speak) {
       api.speak(
         pref
-          ? 'Informe listo. Se descargó el archivo que pediste; también puedes usar los demás botones.'
-          : 'Informe de ventas listo. Puedes descargar Excel, PDF o imagen, o imprimir desde el panel.'
+          ? 'Informe listo. Se ha iniciado la descarga solicitada; puede emplear también los demás formatos en el panel.'
+          : 'Informe de ventas listo. Puede descargar Excel, PDF o imagen, o imprimir desde el panel.'
       );
     }
     return true;
@@ -303,7 +303,7 @@
       api.addMsg(
         'bot',
         api.mdLite(
-          '**Informe de ventas** abierto. **Descargar Excel** genera un libro con portada y rankings; **PDF/PNG** copian esta vista; **Imprimir** usa tu impresora o guardar como PDF del sistema.'
+          '**Informe de ventas** abierto. **Descargar Excel** genera un libro con portada y rankings; **PDF** e **imagen** reproducen esta vista; **Imprimir** abre el cuadro de su sistema (incluida la opción *Guardar como PDF*).'
         )
       );
     }

@@ -18,101 +18,104 @@
     { id: 'sec-glosario', label: 'Glosario de métricas', keys: 'definicion que es significa glosario ayuda' },
   ];
 
+  const MSG_ALCANCE_FUERA =
+    'Le informo que mi cometido se limita a **este Scorecard** (métricas del panel, navegación, informes de ventas de demostración y uso de la interfaz). **No dispongo de información ajena** a esta aplicación. Si lo desea, indíqueme una métrica, una sección o solicite un **informe de ventas** y con gusto le orientaré.';
+
   const KNOWLEDGE = [
     {
       triggers: ['hola', 'buenos dias', 'buenas', 'hey', 'hi'],
       answer:
-        '¡Hola! Soy el asistente del **Scorecard General**. Puedo llevarte a cualquier sección, explicar métricas del glosario o responder por voz. Prueba: *«¿Qué es el ROIC?»*, *«ir a operaciones»*, o abre la paleta con **Ctrl+K**.',
+        'Buenos días. Soy el asistente del **Scorecard General**. Podré **orientarle** en las secciones del panel, en el **glosario de métricas** y en el **informe de ventas** (demo). Puede preguntar, por ejemplo: *«¿Qué es el ROIC?»*, *«ir a operaciones»*, *«dónde veo el EBITDA»* o abrir la paleta con **Ctrl+K**.',
     },
     {
       triggers: ['que es scorecard', 'para que sirve', 'como uso', 'ayuda general'],
       answer:
-        'Un **scorecard** es un panel ejecutivo que resume en una sola vista los indicadores clave (finanzas, clientes, operaciones, personas…). Aquí los datos son **de ejemplo**: sirve como prototipo para luego conectar tus fuentes reales (ERP, BI, CRM). Usa el buscador de KPIs arriba o pregúntame por una métrica.',
+        'Un **scorecard** es un panel ejecutivo que concentra los indicadores clave (finanzas, clientes, operaciones, personas, etc.). En esta vista los datos son **de demostración**; el propósito es validar el diseño antes de conectar **ERP, BI o CRM**. Le sugiero utilizar el **buscador de KPIs** o formular preguntas concretas sobre las métricas.',
     },
     {
       triggers: ['ytd', 'ingresos netos', 'revenue ytd'],
       answer:
-        '**Ingresos netos YTD** = ingresos acumulados del año fiscal hasta la fecha de corte (Year-to-Date). En la tarjeta superior es un número **dummy** para diseño.',
+        '**Ingresos netos YTD** designan los ingresos acumulados del ejercicio hasta la fecha de corte (*Year-to-Date*). En la tarjeta superior figura un valor **ilustrativo** para el diseño del panel.',
     },
     {
       triggers: ['ebitda', 'e b i t d a'],
       answer:
-        '**EBITDA** (Earnings Before Interest, Taxes, Depreciation and Amortization) aproxima el resultado operativo antes de intereses, impuestos y amortizaciones. Es útil para comparar rentabilidad operativa entre empresas; no sustituye al flujo de caja.',
+        '**EBITDA** (*Earnings Before Interest, Taxes, Depreciation and Amortization*) aproxima el resultado operativo antes de intereses, impuestos y amortizaciones. Resulta útil para comparar rentabilidad operativa; **no sustituye** al flujo de efectivo.',
     },
     {
       triggers: ['ccc', 'ciclo de efectivo', 'cash conversion'],
       answer:
-        '**CCC (Cash Conversion Cycle)** mide cuántos días tarda la empresa en convertir inversión en inventario y cuentas por cobrar en efectivo, neteando proveedores. **Menos días** suele ser mejor (liberas caja antes).',
+        '**CCC (*Cash Conversion Cycle*)** indica cuántos días transcurren hasta convertir inversión en inventario y cuentas por cobrar en efectivo, neteando a proveedores. Por regla general, **menos días** implica liberar caja antes.',
     },
     {
       triggers: ['nps', 'net promoter'],
       answer:
-        '**NPS** pregunta qué tan probable es recomendar la empresa (0–10). Promotores (9–10) menos detractores (0–6), en escala -100 a +100. Es proxy de lealtad; conviene cruzarlo con ingresos y churn.',
+        '**NPS** mide la probabilidad de recomendar la empresa (escala 0–10). Se calculan promotores (9–10) menos detractores (0–6), en rango -100 a +100. Suele cruzarse con ingresos y *churn*.',
     },
     {
       triggers: ['roic', 'return on invested capital'],
       answer:
-        '**ROIC** = retorno sobre capital invertido: qué tan bien la empresa usa el capital (deuda + equity) para generar beneficio operativo después de impuestos. Si ROIC > **WACC** (costo del capital), suele crearse valor.',
+        '**ROIC** (*return on invested capital*) refleja qué retorno operativo después de impuestos obtiene la empresa sobre el capital invertido. Si ROIC supera el **WACC** (costo del capital), en términos generales se asocia a creación de valor.',
     },
     {
       triggers: ['margen bruto', 'gm', 'gross margin'],
       answer:
-        '**Margen bruto %** = (Ventas − Costo de ventas) / Ventas. Mide la rentabilidad directa del producto/servicio antes de gastos operativos (SG&A).',
+        '**Margen bruto %** = (Ventas − costo de ventas) / Ventas. Mide la rentabilidad directa del bien o servicio antes de gastos operativos (SG&A).',
     },
     {
       triggers: ['deuda', 'leverage', 'ebitda deuda'],
       answer:
-        '**Deuda neta / EBITDA** es un múltiplo de apalancamiento: años de EBITDA aproximados para pagar deuda neta. Umbrales dependen del sector; lo importante es tendencia y covenant bancario.',
+        '**Deuda neta / EBITDA** es un múltiplo de apalancamiento (años aproximados de EBITDA para cubrir deuda neta). Los umbrales dependen del sector; conviene observar tendencia y **covenants** bancarios.',
     },
     {
       triggers: ['cac', 'payback'],
       answer:
-        '**CAC** = costo de adquirir un cliente. **Payback** = meses para recuperar el CAC con margen del cliente. **LTV/CAC** compara valor de vida del cliente vs costo de adquisición; ratios &lt;1 suelen ser insostenibles.',
+        '**CAC** es el costo de adquirir un cliente; **payback** son los meses para recuperar el CAC con el margen del cliente. **LTV/CAC** contrasta valor de vida frente a costo de adquisición; ratios inferiores a 1 suelen ser insostenibles.',
     },
     {
       triggers: ['churn', 'retencion'],
       answer:
-        '**Churn** (pérdida de clientes o ingresos recurrentes) mide fuga. Bajar churn suele ser más barato que adquirir nuevos clientes; se cruza con NPS y CSAT.',
+        '**Churn** mide la pérdida de clientes o de ingresos recurrentes. Reducir *churn* suele ser más eficiente que adquirir nuevos clientes; se relaciona con NPS y CSAT.',
     },
     {
       triggers: ['otif', 'on time in full'],
       answer:
-        '**OTIF** = entregas a tiempo y completas. Es KPI clásico de cadena de suministro y cumplimiento a cliente.',
+        '**OTIF** (*on time in full*) mide entregas a tiempo y completas; es un indicador habitual en cadena de suministro y cumplimiento al cliente.',
     },
     {
       triggers: ['enps', 'empleados'],
       answer:
-        '**eNPS** adapta la lógica del NPS a empleados: probabilidad de recomendar la empresa como lugar de trabajo. Complementa rotación y absentismo.',
+        '**eNPS** aplica la lógica del NPS al personal: probabilidad de recomendar la empresa como lugar de trabajo. Complementa indicadores de rotación y absentismo.',
     },
     {
       triggers: ['csat', 'satisfaccion cliente'],
       answer:
-        '**CSAT** mide satisfacción en una interacción o ticket (ej. escala 1–5). Es más granular que NPS; sirve para operaciones y soporte.',
+        '**CSAT** mide la satisfacción en una interacción o ticket (p. ej. escala 1–5). Es más granular que el NPS y suele emplearse en operaciones y soporte.',
     },
     {
       triggers: ['comando', 'atajo', 'teclado', 'ctrl'],
       answer:
-        'Atajos: **Ctrl+K** o **/** — paleta de comandos (saltar a sección). **Tema** — botón sol/luna. **Presentación** — tipografía grande y oculta badge demo. **Módulos** — botón para mostrar/ocultar bloques del tablero (se guarda en el navegador). **Imprimir** — PDF. **Asistente** — botón flotante o micrófono (Chrome recomendado para voz).',
+        'Atajos útiles: **Ctrl+K** o **/** — paleta de comandos para saltar a una sección. **Tema** — conmutador claro/oscuro. **Presentación** — tipografía ampliada y ocultación del distintivo *demo*. **Módulos** — visibilidad de bloques (preferencia en el navegador). **Imprimir** — salida a impresora o PDF del sistema. **Asistente** — acceso flotante; el micrófono funciona de forma óptima en **Chrome**.',
     },
     {
       triggers: ['informe ventas', 'ventas del mes', 'reporte ventas', 'exportar ventas'],
       answer:
-        'Di por ejemplo **«dame las ventas del mes»** o **«solo descarga el excel»**: se abre un informe con **resumen ejecutivo**, rankings y detalle. **Descargar Excel** crea un libro con **varias hojas** (portada, KPI, detalle, rankings). **PDF** e **imagen** copian la vista; **Imprimir** usa tu sistema (también *Guardar como PDF*). También en **Ctrl+K**: *Ventas del mes (demo)*.',
+        'Puede solicitar, por ejemplo, **«dame las ventas del mes»** o **«descargue el Excel»**: se desplegará un informe con **resumen ejecutivo**, rankings y detalle. **Descargar Excel** genera un libro con **varias hojas** (portada, KPI, detalle, rankings). **PDF** e **imagen** reproducen la vista; **Imprimir** emplea el cuadro de su sistema (incluido *Guardar como PDF*). También puede usar **Ctrl+K** → *Ventas del mes (demo)*.',
     },
     {
       triggers: ['modulos', 'módulos', 'ocultar seccion', 'mostrar seccion'],
       answer:
-        'Usa el botón **Módulos** en la barra superior: marca o desmarca bloques (resumen, gráficas, finanzas, etc.). La preferencia queda guardada en **localStorage** de este navegador. **Esc** cierra el cuadro.',
+        'El botón **Módulos** en la barra superior permite activar o desactivar bloques (resumen, gráficas, finanzas, etc.). La preferencia queda almacenada en **localStorage** de este navegador. **Esc** cierra el cuadro de diálogo.',
     },
     {
       triggers: ['voz', 'microfono', 'hablar', 'escuchar'],
       answer:
-        'Pulsa el **micrófono** en el asistente (permiso del navegador). El modo **Dani** usa la **mejor voz en español** que tenga tu sistema (prioriza las que digan *neural* / *natural*) y un ritmo un poco más dinámico; **no** puede copiar al 100% el acento de un MP3 — eso requeriría **TTS en la nube** con clonación (ElevenLabs, Azure, etc.). **Probar voz** reproduce solo la **muestra** que subiste; las respuestas se leen con síntesis del sistema.',
+        'Active el **micrófono** en el asistente (el navegador solicitará permiso). El perfil **Dani** selecciona la voz en español más natural disponible en su equipo; la **muestra en MP3** no puede replicarse al cien por cien sin un servicio **TTS en la nube**. **Probar voz** reproduce únicamente la muestra cargada; las respuestas del asistente utilizan la síntesis del sistema.',
     },
     {
       triggers: ['api', 'openai', 'chatgpt', 'ia cloud', 'clave'],
       answer:
-        'En **Ajustes** del asistente puedes pegar una API key compatible con OpenAI **solo para pruebas**. En producción **no** expongas la clave en el navegador: usa un backend proxy. La key se guarda en *sessionStorage* (se borra al cerrar la pestaña).',
+        'En **Ajustes** puede ingresar una clave API compatible con OpenAI **únicamente para pruebas**. En entornos de producción **no** debe exponer la clave en el navegador: utilice un **proxy en servidor**. La clave permanece en *sessionStorage* hasta cerrar la pestaña.',
     },
   ];
 
@@ -480,7 +483,10 @@
     const model = sessionStorage.getItem('scorecard_openai_model') || 'gpt-4o-mini';
     if (!key || key.length < 12) return null;
     const sys =
-      'Eres asistente de un scorecard ejecutivo en español. Respuestas cortas y claras. Los números en pantalla son ejemplos/dummy salvo que el usuario diga lo contrario. No inventes cifras concretas de empresas reales.';
+      'Usted es el asistente formal del panel ejecutivo Scorecard General. Responda siempre en español (México), tratando al usuario de "usted", con tono profesional y conciso. ' +
+      'Solo puede orientar sobre: KPIs y secciones de este tablero, informes de ventas del prototipo (demo), exportación Excel/PDF, navegación y lectura ejecutiva. ' +
+      'Los números mostrados son ilustrativos salvo que el usuario indique fuentes reales conectadas. No invente cifras de empresas reales. ' +
+      'Si la pregunta no guarda relación con el scorecard (clima, ocio, política, tareas ajenas al panel, etc.), decline cortésmente e indique que solo puede ayudar con este sitio web.';
     const r = await fetch(base, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + key },
@@ -512,17 +518,43 @@
       window.scrOpenReportQuick({ addMsg, mdLite });
       if (typeof window.scrTryAutoExportFromText === 'function') window.scrTryAutoExportFromText(text);
       speak(
-        'Informe de ventas listo. Puedes descargar Excel con varias hojas, PDF, imagen o imprimir desde el panel.'
+        'Informe de ventas preparado. Puede descargar el libro Excel, PDF, imagen o imprimir desde el panel.'
       );
+      return;
+    }
+
+    if (
+      window.SCORECARD_ASSISTANT_INTEL &&
+      typeof window.SCORECARD_ASSISTANT_INTEL.shouldDeclineAsOffTopic === 'function' &&
+      window.SCORECARD_ASSISTANT_INTEL.shouldDeclineAsOffTopic(text)
+    ) {
+      addMsg('bot', mdLite(MSG_ALCANCE_FUERA));
+      speak(
+        'Le informo que solo puedo ayudarle con este Scorecard: métricas, navegación e informes de demostración.'
+      );
+      return;
+    }
+
+    const ctxIntel = { addMsg, speak, mdLite, scrollToId, escapeHtml };
+    if (
+      window.SCORECARD_ASSISTANT_INTEL &&
+      typeof window.SCORECARD_ASSISTANT_INTEL.tryHandle === 'function' &&
+      window.SCORECARD_ASSISTANT_INTEL.tryHandle(text, ctxIntel)
+    ) {
       return;
     }
 
     const sec = findSectionCommand(text);
     if (sec && sec.id) {
       scrollToId(sec.id);
-      const rep = 'Listo: te llevé a **' + sec.label + '**.';
+      const rep =
+        'Con gusto le indico: he desplazado la vista a la sección **' +
+        sec.label +
+        '**. Allí podrá localizar la información relacionada.';
       addMsg('bot', mdLite(rep));
-      speak(rep.replace(/\*\*/g, ''));
+      speak(
+        'He desplazado la vista a la sección ' + sec.label + '. Allí podrá consultar la información.'
+      );
       return;
     }
 
@@ -535,7 +567,7 @@
 
     const loading = document.createElement('div');
     loading.className = 'asst-msg asst-msg--bot asst-loading';
-    loading.textContent = 'Consultando IA cloud…';
+    loading.textContent = 'Consultando servicio de inteligencia en la nube…';
     messagesEl().appendChild(loading);
     messagesEl().scrollTop = messagesEl().scrollHeight;
     try {
@@ -549,13 +581,16 @@
         addMsg(
           'bot',
           mdLite(
-            'No tengo una respuesta local para eso. Opciones: activa **IA cloud** en el engrane (API key de prueba), reformula, o di *«ir a finanzas»* / **Ctrl+K**.'
+            'No dispongo de una respuesta almacenada para esa consulta. Si lo autoriza, active **IA cloud** en el engrane (clave de prueba); también puede reformular en el marco del Scorecard o usar **Ctrl+K** para ir a una sección.'
           )
+        );
+        speak(
+          'No dispongo de una respuesta almacenada. Puede activar la IA cloud en ajustes o usar la paleta de comandos.'
         );
       }
     } catch (e) {
       loading.remove();
-      addMsg('bot', 'Error IA: ' + escapeHtml(e.message));
+      addMsg('bot', 'Se produjo un error al consultar el servicio: ' + escapeHtml(e.message));
     }
   }
 
@@ -787,7 +822,7 @@
     addMsg(
       'bot',
       mdLite(
-        '**Asistente listo.** Pregunta por métricas (*¿Qué es el EBITDA?*), di *«ir a comercial»*, pide *«dame las ventas del mes»* para el **informe demo** (Excel/PNG/PDF), usa **Ctrl+K** o el **micrófono** (Chrome).'
+        '**Asistente a su servicio.** Puede consultar métricas (*¿Qué es el EBITDA?*), solicitar *«ir a comercial»*, pedir *«dame las ventas del mes»* para el **informe de demostración** (Excel, PDF, imagen), preguntar *«dónde veo el ROIC»* o comparar ventas entre meses; también dispone de **Ctrl+K** y del **micrófono** (se recomienda Chrome).'
       )
     );
 

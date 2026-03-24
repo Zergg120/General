@@ -19,7 +19,8 @@ Plantilla de **panel ejecutivo** (HTML + JS) con KPIs de ejemplo, diseño premiu
 | `scorecard-charts.js` | Gráficas Chart.js (carga con `defer` junto al CDN) |
 | `scorecard-version.example.json` | Ejemplo de respuesta JSON para el endpoint de versión |
 | `scorecard-app.js` | **Marca blanca** (`SCORECARD_BRAND`), periodo dummy, **módulos** on/off, **drill-down** en hero, modo **Presentación** |
-| `scorecard-assistant.js` | **Ctrl+K**, asistente, voz, IA opcional |
+| `scorecard-assistant.js` | **Ctrl+K**, asistente, voz, IA opcional (tono formal, alcance del panel) |
+| `scorecard-assistant-intelligence.js` | Navegación *¿dónde está…?*, comparativas de ventas demo (mes vs mes anterior), rechazo educado de temas ajenos al scorecard |
 | `scorecard-report-data.js` | Datos demo **coherentes** de ventas del mes (líneas que suman al total) |
 | `scorecard-report-export.js` | Export del informe: **Excel** (SheetJS), **PNG/PDF** (html2canvas + jsPDF) |
 | `scorecard-report-agent.js` + `scorecard-report.css` | Intención *ventas del mes* / informe → panel con vista previa y exportar / imprimir |
