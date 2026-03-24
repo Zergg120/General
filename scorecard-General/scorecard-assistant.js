@@ -21,6 +21,10 @@
   const MSG_ALCANCE_FUERA =
     'Le informo que mi cometido se limita a **este Scorecard** (métricas del panel, navegación, informes de ventas de demostración y uso de la interfaz). **No dispongo de información ajena** a esta aplicación. Si lo desea, indíqueme una métrica, una sección o solicite un **informe de ventas** y con gusto le orientaré.';
 
+  /** Cuando no hay IA cloud o no hay respuesta local: tono formal, pedir concreción antes que tecnicismos. */
+  const MSG_FALLBACK_PEDIR_CONCRECION =
+    'Con todo gusto le ayudo **dentro de este Scorecard**. Si no le he entendido bien, ¿sería tan amable de **ser un poco más específico**? Por ejemplo: *ventas de hoy*, *ventas de ayer*, *este mes*, *año anterior*, *informe de ventas en Excel*, o *¿dónde veo el ROIC?* También puede usar **Ctrl+K** para ir a una sección.<br/><br/>Opcional: en **Ajustes** (⚙) puede activar **IA cloud** con una clave de prueba para preguntas más abiertas.';
+
   const KNOWLEDGE = [
     {
       triggers: ['hola', 'buenos dias', 'buenas', 'hey', 'hi'],
@@ -567,6 +571,33 @@
     return data.choices?.[0]?.message?.content?.trim() || null;
   }
 
+  function tryAnswerDemoVentasPeriod(text) {
+    const D = window.SCORECARD_REPORT_DATA;
+    if (!D || typeof D.detectReportPeriodPreset !== 'function' || typeof D.demoVentasForPreset !== 'function') {
+      return false;
+    }
+    const preset = D.detectReportPeriodPreset(text);
+    if (!preset || !preset.kind) return false;
+    const t = String(text);
+    const looksSales =
+      /\b(ventas?|vendimos|vendieron|vendi[oó]|factur|cu[aá]nto|importe|total|cifra|movimientos)\b/i.test(t) ||
+      /\b(hoy|ayer|antier|anteayer|semana|mes|a[nñ]o|trimestre|fecha|d[ií]a)\b/i.test(t);
+    if (!looksSales) return false;
+    const amount = D.demoVentasForPreset(preset.kind, new Date(), preset.iso);
+    if (!Number.isFinite(amount)) return false;
+    const fmt = amount.toLocaleString('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 });
+    addMsg(
+      'bot',
+      mdLite(
+        '**Datos ilustrativos (demo)** — Para el periodo solicitado, el total de ventas es **' +
+          fmt +
+          '**. Las cifras dependen del periodo (día, semana, mes, año). Puede pedir también el **informe** con Excel o PDF desde el panel.'
+      )
+    );
+    speak('Total de ventas en demostración para el periodo solicitado.');
+    return true;
+  }
+
   async function handleUserMessage(raw) {
     const text = String(raw || '').trim();
     if (!text) return;
@@ -627,6 +658,12 @@
       return;
     }
 
+    /**
+     * Red de seguridad: si la capa intel no respondió pero el texto encaja en un periodo de ventas demo
+     * (p. ej. caché viejo o orden de carga), devolver total desde SCORECARD_REPORT_DATA.
+     */
+    if (tryAnswerDemoVentasPeriod(text)) return;
+
     const loading = document.createElement('div');
     loading.className = 'asst-msg asst-msg--bot asst-loading';
     loading.textContent = 'Consultando servicio de inteligencia en la nube…';
@@ -640,14 +677,9 @@
         addMsg('bot', safe);
         speak(ai);
       } else {
-        addMsg(
-          'bot',
-          mdLite(
-            'No dispongo de una respuesta almacenada para esa consulta. Si lo autoriza, active **IA cloud** en el engrane (clave de prueba); también puede reformular en el marco del Scorecard o usar **Ctrl+K** para ir a una sección.'
-          )
-        );
+        addMsg('bot', mdLite(MSG_FALLBACK_PEDIR_CONCRECION));
         speak(
-          'No dispongo de una respuesta almacenada. Puede activar la IA cloud en ajustes o usar la paleta de comandos.'
+          'Si no le he entendido bien, sea un poco más específico con su pregunta, por ejemplo ventas de hoy o informe del mes. También puede usar Ctrl+K. Opcionalmente active IA cloud en ajustes.'
         );
       }
     } catch (e) {
@@ -895,7 +927,11 @@
       if (e.key !== 'Escape') return;
       const reportPanel = document.getElementById('scorecard-report-panel');
       if (reportPanel && !reportPanel.hidden) {
-        reportPanel.hidden = true;
+        if (typeof window.__scorecardCloseReportPanel === 'function') {
+          window.__scorecardCloseReportPanel();
+        } else {
+          reportPanel.hidden = true;
+        }
         try {
           document.documentElement.classList.remove('scorecard-print-report');
         } catch (_) {}

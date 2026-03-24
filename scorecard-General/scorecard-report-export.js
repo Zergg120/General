@@ -38,6 +38,7 @@
     const org = brandName();
     const genAt = new Date().toLocaleString('es-MX', { dateStyle: 'long', timeStyle: 'short' });
     const two = V.mode === 'two-month';
+    const flex = V.mode === 'flex';
 
     /* —— Portada —— */
     const portadaAoA = [
@@ -45,7 +46,14 @@
       ['', ''],
       ['Organización', org],
       ['Período analizado', V.headlineMonth || V.periodLabel],
-      ['Tipo de información', two ? 'Demostración: mes actual + mes anterior ficticio (muestra comparativa)' : 'Demostración: datos ilustrativos del período'],
+      [
+        'Tipo de información',
+        two
+          ? 'Demostración: mes actual + mes anterior ficticio (muestra comparativa)'
+          : flex
+            ? 'Demostración: periodo flexible (día/semana/mes/año — datos ilustrativos coherentes)'
+            : 'Demostración: datos ilustrativos del período',
+      ],
       ['Documento generado', genAt],
       ['Fuente', 'Datos de muestra coherentes — sustituir por ERP/BI en producción'],
       ['', ''],

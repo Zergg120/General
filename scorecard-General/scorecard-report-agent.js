@@ -41,6 +41,12 @@
   function detectSalesMonthIntent(text) {
     const n = norm(text);
     if (n.length < 5) return null;
+    const D = window.SCORECARD_REPORT_DATA;
+    const preset = D && typeof D.detectReportPeriodPreset === 'function' ? D.detectReportPeriodPreset(text) : null;
+    const wantsExport =
+      /(excel|xlsx|pdf|png|descarg|imprim|export|libro|hoja)/i.test(text) ||
+      /(informe|reporte)\s+(de\s+)?ventas?/i.test(text);
+    if (wantsExport && preset && /ventas?/i.test(text)) return 'sales-month';
     const aboutSales =
       /ventas?|vendedor|clientes?/i.test(text) ||
       /(informe|reporte|resumen)\s+(de\s+)?ventas?/i.test(text);
@@ -92,6 +98,33 @@
     const tv = V.topVendedores[0];
     const tc = V.topClientes[0];
     let s = '';
+    if (V.mode === 'flex') {
+      s =
+        '<em>Demostración</em> — Informe acotado a <strong>' +
+        escapeHtml(V.flexLabel || V.headlineMonth) +
+        '</strong>. Importe total <strong>' +
+        escapeHtml(moneyEs(V.totalVentas)) +
+        '</strong> en <strong>' +
+        V.LINEAS.length +
+        '</strong> movimientos. Los importes son <strong>ilustrativos</strong> y varían según el periodo solicitado (día, semana, mes, año, etc.); con API/ERP reales sustituirían esta capa.';
+      if (tv) {
+        s +=
+          ' Mayor aporte por vendedor: <strong>' +
+          escapeHtml(tv.nombre) +
+          '</strong> (' +
+          escapeHtml(moneyEs(tv.importe)) +
+          ').';
+      }
+      if (tc) {
+        s +=
+          ' Cliente con mayor volumen: <strong>' +
+          escapeHtml(tc.nombre) +
+          '</strong> (' +
+          escapeHtml(moneyEs(tc.importe)) +
+          ').';
+      }
+      return s;
+    }
     if (V.mode === 'two-month') {
       const pct = Number.isFinite(V.pctVsAnterior) ? V.pctVsAnterior.toFixed(1) : '—';
       const sign = V.deltaVsAnterior >= 0 ? '+' : '';
@@ -155,10 +188,7 @@
   function renderReportHtml(V, dataApi) {
     const D = dataApi || window.SCORECARD_REPORT_DATA;
     const org = escapeHtml(brandName());
-    const colMes =
-      V.mode === 'two-month'
-        ? '<th>Período</th>'
-        : '';
+    const colMes = V.mode === 'two-month' ? '<th>Período</th>' : '';
     const rows = V.LINEAS.map((r) => {
       const mesCol =
         V.mode === 'two-month'
@@ -206,7 +236,8 @@
           '%</td></tr>'
       )
       .join('');
-    const kpi1Label = V.mode === 'two-month' ? 'Total (ambos meses)' : 'Total ventas';
+    const kpi1Label =
+      V.mode === 'two-month' ? 'Total (ambos meses)' : V.mode === 'flex' ? 'Total ventas (periodo)' : 'Total ventas';
     const kpi3Label = V.mode === 'two-month' ? 'Cuadre (ambos)' : 'Cuadre';
     return (
       '<header class="report-doc-header">' +
@@ -219,9 +250,11 @@
       '</p>' +
       '</header>' +
       '<p class="report-demo-disclaimer">' +
-      (V.mode === 'two-month'
-        ? '<strong>Vista de demostración.</strong> El mes anterior y las cifras son <strong>datos ficticios coherentes</strong> para exhibir comparación entre períodos, PDF/Excel y respuestas del asistente. En producción se conectan fuentes reales.'
-        : '<strong>Vista de demostración.</strong> Cifras <strong>ilustrativas</strong> del período actual para validar diseño e informes; sustituir por API en producción.') +
+      (V.mode === 'flex'
+        ? '<strong>Vista de demostración.</strong> Periodo seleccionado por el usuario; cifras <strong>ilustrativas</strong> (filtradas del set demo o generadas con totales coherentes). Sustituir por API en producción.'
+        : V.mode === 'two-month'
+          ? '<strong>Vista de demostración.</strong> El mes anterior y las cifras son <strong>datos ficticios coherentes</strong> para exhibir comparación entre períodos, PDF/Excel y respuestas del asistente. En producción se conectan fuentes reales.'
+          : '<strong>Vista de demostración.</strong> Cifras <strong>ilustrativas</strong> del período actual para validar diseño e informes; sustituir por API en producción.') +
       '</p>' +
       '<p class="report-executive-summary">' +
       executiveSummaryText(V) +
@@ -260,27 +293,42 @@
     );
   }
 
-  function fillSurface(twoMonth) {
+  function fillSurface(opts) {
+    const o = opts || {};
+    const twoMonth = !!o.twoMonth;
+    const preset = !twoMonth && o.reportPreset && o.reportPreset.kind ? o.reportPreset : null;
     const D = window.SCORECARD_REPORT_DATA;
     const el = document.getElementById('scorecard-report-surface');
     if (!el || !D || typeof D.buildReportView !== 'function') return;
-    const V = D.buildReportView(!!twoMonth);
+    let V;
+    if (preset && typeof D.buildFlexibleReportView === 'function') {
+      V = D.buildFlexibleReportView(preset);
+    } else {
+      V = D.buildReportView(twoMonth);
+    }
     window.__SCORECARD_REPORT_ACTIVE_VIEW__ = V;
     el.innerHTML = renderReportHtml(V, D);
     const sub = document.getElementById('scorecard-report-subtitle');
     if (sub) {
-      sub.textContent =
-        V.headlineMonth +
-        (V.mode === 'two-month'
-          ? ' · Demo: mes actual + mes anterior (ficticio) · Comparación y exportes de muestra'
-          : ' · Demo: un mes · Datos ilustrativos · Excel / PDF / PNG');
+      if (V.mode === 'flex') {
+        sub.textContent =
+          V.headlineMonth + ' · Demo: periodo flexible · Datos ilustrativos · Excel / PDF / PNG';
+      } else {
+        sub.textContent =
+          V.headlineMonth +
+          (V.mode === 'two-month'
+            ? ' · Demo: mes actual + mes anterior (ficticio) · Comparación y exportes de muestra'
+            : ' · Demo: un mes · Datos ilustrativos · Excel / PDF / PNG');
+      }
     }
     const hint = document.getElementById('report-hint');
     if (hint) {
       hint.textContent =
-        V.mode === 'two-month'
-          ? 'Los importes del mes anterior son ficticios de demostración; el objetivo es mostrar el flujo comparativo (asistente, vista, PDF/Excel).'
-          : 'Cifras ilustrativas para validar el informe. El Excel incluye portada, KPI, detalle y rankings; PDF e imagen reflejan esta vista.';
+        V.mode === 'flex'
+          ? 'Totales coherentes con el periodo elegido (datos filtrados del demo o filas sintéticas). Excel, PDF e imagen reflejan esta vista.'
+          : V.mode === 'two-month'
+            ? 'Los importes del mes anterior son ficticios de demostración; el objetivo es mostrar el flujo comparativo (asistente, vista, PDF/Excel).'
+            : 'Cifras ilustrativas para validar el informe. El Excel incluye portada, KPI, detalle y rankings; PDF e imagen reflejan esta vista.';
     }
   }
 
@@ -309,21 +357,121 @@
     }, 500);
   }
 
+  var REPORT_OPEN_DELAY_MS = 720;
+  /** Tiempo de “preparando…” antes de abrir el cuadro de impresión del sistema */
+  var PRINT_PREP_DELAY_MS = 920;
+
+  function showPrintPrepOverlay() {
+    const el = document.getElementById('scorecard-print-prep');
+    if (el) {
+      el.hidden = false;
+      el.setAttribute('aria-hidden', 'false');
+    }
+  }
+
+  function hidePrintPrepOverlay() {
+    const el = document.getElementById('scorecard-print-prep');
+    if (el) {
+      el.hidden = true;
+      el.setAttribute('aria-hidden', 'true');
+    }
+  }
+
+  function setPrintPrepCopy(title, sub) {
+    const t = document.getElementById('scorecard-print-prep-title');
+    const s = document.getElementById('scorecard-print-prep-sub');
+    if (t && title) t.textContent = title;
+    if (s && sub) s.textContent = sub;
+  }
+
+  /**
+   * Pantalla de carga con GIF (esquina superior derecha) y retardo antes de window.print().
+   * @param {{ reportMode?: boolean, title?: string, sub?: string }} opts — reportMode: solo informe (oculta resto al imprimir)
+   */
+  function runPrintWithPrep(opts) {
+    opts = opts || {};
+    const reportMode = !!opts.reportMode;
+    setPrintPrepCopy(
+      opts.title ||
+        (reportMode ? 'Preparando el informe para imprimir…' : 'Preparando la vista para imprimir…'),
+      opts.sub ||
+        (reportMode
+          ? 'Generando la vista del informe; en un momento abrirá el cuadro de su sistema'
+          : 'Generando la vista del panel; en un momento abrirá el cuadro de su sistema')
+    );
+    showPrintPrepOverlay();
+    window.setTimeout(function () {
+      hidePrintPrepOverlay();
+      if (reportMode) {
+        document.documentElement.classList.add('scorecard-print-report');
+      }
+      var safety = window.setTimeout(function () {
+        if (reportMode) {
+          document.documentElement.classList.remove('scorecard-print-report');
+        }
+      }, 120000);
+      function onAfterPrint() {
+        window.clearTimeout(safety);
+        if (reportMode) {
+          document.documentElement.classList.remove('scorecard-print-report');
+        }
+        window.removeEventListener('afterprint', onAfterPrint);
+      }
+      window.addEventListener('afterprint', onAfterPrint);
+      window.requestAnimationFrame(function () {
+        window.requestAnimationFrame(function () {
+          window.print();
+        });
+      });
+    }, PRINT_PREP_DELAY_MS);
+  }
+
+  window.scorecardRunPrintWithPrep = runPrintWithPrep;
+
   function openPanel(opts) {
     const panel = document.getElementById('scorecard-report-panel');
     if (!panel) return;
+    const loading = document.getElementById('scorecard-report-loading');
+    const dialog = panel.querySelector('.report-dialog');
     panel.hidden = false;
-    const twoMonth = opts && opts.twoMonth;
-    const D = window.SCORECARD_REPORT_DATA;
-    if (D) fillSurface(!!twoMonth);
-    const pref = opts && opts.autoExport;
-    if (pref) runAutoExport(pref);
-    document.getElementById('report-close')?.focus();
+    panel.classList.remove('report-panel--visible');
+    panel.classList.add('report-panel--opening');
+    if (dialog) dialog.classList.remove('report-dialog--enter-done');
+    if (loading) {
+      loading.hidden = false;
+      loading.setAttribute('aria-hidden', 'false');
+    }
+
+    window.setTimeout(function () {
+      const D = window.SCORECARD_REPORT_DATA;
+      if (D) fillSurface(opts || {});
+      if (loading) {
+        loading.hidden = true;
+        loading.setAttribute('aria-hidden', 'true');
+      }
+      window.requestAnimationFrame(function () {
+        panel.classList.remove('report-panel--opening');
+        panel.classList.add('report-panel--visible');
+        if (dialog) dialog.classList.add('report-dialog--enter-done');
+      });
+      const pref = opts && opts.autoExport;
+      if (pref) runAutoExport(pref);
+      document.getElementById('report-close')?.focus();
+    }, REPORT_OPEN_DELAY_MS);
   }
 
   function closePanel() {
     const panel = document.getElementById('scorecard-report-panel');
-    if (panel) panel.hidden = true;
+    if (!panel) return;
+    panel.hidden = true;
+    panel.classList.remove('report-panel--visible', 'report-panel--opening');
+    const dialog = panel.querySelector('.report-dialog');
+    if (dialog) dialog.classList.remove('report-dialog--enter-done');
+    const loading = document.getElementById('scorecard-report-loading');
+    if (loading) {
+      loading.hidden = true;
+      loading.setAttribute('aria-hidden', 'true');
+    }
   }
 
   function bindPanel() {
@@ -353,30 +501,37 @@
       const V = getActiveReportView();
       if (el && D && X && V) await X.exportPdf(el, V.MONTH_KEY_EXPORT);
     });
-    document.getElementById('report-print')?.addEventListener('click', () => {
-      document.documentElement.classList.add('scorecard-print-report');
-      const after = () => {
-        document.documentElement.classList.remove('scorecard-print-report');
-        window.removeEventListener('afterprint', after);
-      };
-      window.addEventListener('afterprint', after);
-      window.setTimeout(() => {
-        window.print();
-      }, 120);
+    document.getElementById('report-print')?.addEventListener('click', function () {
+      runPrintWithPrep({ reportMode: true });
     });
+    document.getElementById('btn-print')?.addEventListener('click', function () {
+      runPrintWithPrep({ reportMode: false });
+    });
+    window.__scorecardCloseReportPanel = closePanel;
   }
 
   window.scrHandleReportIntent = function (text, api) {
     if (detectSalesMonthIntent(text) !== 'sales-month') return false;
     const pref = detectExportPreference(text);
     const twoMonth = detectTwoMonthReportIntent(text);
-    openPanel({ autoExport: pref, twoMonth: twoMonth });
-    const periodoMsg =
-      twoMonth && window.SCORECARD_REPORT_DATA
-        ? window.SCORECARD_REPORT_DATA.PREV_MONTH_LABEL + ' y ' + window.SCORECARD_REPORT_DATA.MONTH_LABEL
-        : window.SCORECARD_REPORT_DATA && window.SCORECARD_REPORT_DATA.MONTH_LABEL
-          ? window.SCORECARD_REPORT_DATA.MONTH_LABEL
+    const D = window.SCORECARD_REPORT_DATA;
+    let reportPreset = null;
+    if (!twoMonth && D && typeof D.detectReportPeriodPreset === 'function') {
+      reportPreset = D.detectReportPeriodPreset(text);
+    }
+    openPanel({ autoExport: pref, twoMonth: twoMonth, reportPreset: reportPreset });
+    let periodoMsg =
+      twoMonth && D
+        ? D.PREV_MONTH_LABEL + ' y ' + D.MONTH_LABEL
+        : D && D.MONTH_LABEL
+          ? D.MONTH_LABEL
           : 'el período';
+    if (!twoMonth && reportPreset && reportPreset.kind && D && typeof D.buildFlexibleReportView === 'function') {
+      try {
+        const Vp = D.buildFlexibleReportView(reportPreset);
+        periodoMsg = Vp.headlineMonth || periodoMsg;
+      } catch (_) {}
+    }
     if (api && api.addMsg && api.mdLite) {
       let extra = '';
       if (pref === 'xlsx') extra = ' También **inicié la descarga del Excel** con hojas ordenadas (portada, KPI, detalle, rankings).';
@@ -413,7 +568,12 @@
       userText && typeof detectTwoMonthReportIntent === 'function'
         ? detectTwoMonthReportIntent(userText)
         : false;
-    openPanel({ twoMonth: !!twoMonth });
+    const D = window.SCORECARD_REPORT_DATA;
+    let reportPreset = null;
+    if (!twoMonth && D && typeof D.detectReportPeriodPreset === 'function' && userText) {
+      reportPreset = D.detectReportPeriodPreset(userText);
+    }
+    openPanel({ twoMonth: !!twoMonth, reportPreset: reportPreset });
     if (api && api.addMsg && api.mdLite) {
       api.addMsg(
         'bot',

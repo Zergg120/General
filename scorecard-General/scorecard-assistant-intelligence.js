@@ -26,7 +26,7 @@
    * Temas del panel (no usar «ayuda|ayudar» solas: «me ayudas a hacer un pastel» debe poder declinarse).
    */
   const IN_SCOPE_HINT =
-    /\b(scorecard|ventas?|kpi|métrica|metrica|panel|dashboard|ebitda|roic|nps|ccc|finanzas|comercial|operaciones|personas|cliente|glosario|objetivo|gr[áa]fica|informe|excel|pdf|secci[oó]n|buscador|mes|compar|suma|sumar|anterior|d[oó]nde|ubicar|llevar|ir\s+a|asistente|contabilidad|liquidez|riesgo|margen|deuda|ytd|resumen|pipeline|churn|presentaci[oó]n|m[oó]dulo|dummy|tabla|hero|ingresos|cash|capital|proveedor|otif|enps|csat|facturaci[oó]n|libro|cuenta|n[uú]mero|n[uú]meros|datos|indicador|export|descarg|imprimir|vendedor|reporte|cuadro|filtro|pestaña|pesta|tablero|demo|prototipo)\b/i;
+    /\b(scorecard|ventas?|kpi|métrica|metrica|panel|dashboard|ebitda|roic|nps|ccc|finanzas|comercial|operaciones|personas|cliente|glosario|objetivo|gr[áa]fica|informe|excel|pdf|secci[oó]n|buscador|mes|semana|a[nñ]o|trimestre|hoy|ayer|d[ií]a|compar|suma|sumar|anterior|d[oó]nde|ubicar|llevar|ir\s+a|asistente|contabilidad|liquidez|riesgo|margen|deuda|ytd|resumen|pipeline|churn|presentaci[oó]n|m[oó]dulo|dummy|tabla|hero|ingresos|cash|capital|proveedor|otif|enps|csat|facturaci[oó]n|libro|cuenta|n[uú]mero|n[uú]meros|datos|indicador|export|descarg|imprimir|vendedor|reporte|cuadro|filtro|pestaña|pesta|tablero|demo|prototipo)\b/i;
 
   /** Saludos / cortesías: no declinar; las responde la base de conocimiento local. */
   const GREETING_LEX = new Set(
@@ -151,7 +151,111 @@
     return true;
   }
 
+  function detectVentasPeriodIntent(text) {
+    const D = window.SCORECARD_REPORT_DATA;
+    if (D && typeof D.detectReportPeriodPreset === 'function') return D.detectReportPeriodPreset(text);
+    return null;
+  }
+
+  function tryVentasPorPeriodoFlexible(text, ctx) {
+    const D = window.SCORECARD_REPORT_DATA;
+    if (!D || typeof D.demoVentasForPreset !== 'function') return false;
+    const t = String(text || '');
+    const ventasCtx =
+      /\b(ventas?|vendimos|vendieron|vendi[oó]|vendiste|factur|importe|cu[aá]nto|dinero|total|cifra|movimientos|opera[mc]|dame|mu[eé]strame|informe|resumen)\b/i.test(
+        t
+      );
+    if (
+      !ventasCtx &&
+      !/\b(hoy|ayer|antier|anteayer|semana|mes|a[nñ]o|trimestre|fecha|d[ií]a|hace\s+dos\s+d[ií]as)\b/i.test(t)
+    ) {
+      return false;
+    }
+
+    const intent = detectVentasPeriodIntent(t);
+    if (!intent) return false;
+
+    const P = D.computeVentasPorPeriodo(new Date());
+    const amount = D.demoVentasForPreset(intent.kind, new Date(), intent.iso);
+    let periodoDesc = '';
+
+    switch (intent.kind) {
+      case 'hoy':
+        periodoDesc = '**hoy** (' + P.refIso + ', fecha según su equipo)';
+        break;
+      case 'ayer':
+        periodoDesc = '**ayer** (' + P.labelAyer + ')';
+        break;
+      case 'antier': {
+        const a = new Date();
+        a.setDate(a.getDate() - 2);
+        const meses = [
+          '',
+          'enero',
+          'febrero',
+          'marzo',
+          'abril',
+          'mayo',
+          'junio',
+          'julio',
+          'agosto',
+          'septiembre',
+          'octubre',
+          'noviembre',
+          'diciembre',
+        ];
+        periodoDesc =
+          '**antier** (' + meses[a.getMonth() + 1] + ' ' + a.getDate() + ', ' + a.getFullYear() + ')';
+        break;
+      }
+      case 'semana':
+        periodoDesc = '**esta semana** (' + P.rangoSemanaActual + ')';
+        break;
+      case 'semana_ant':
+        periodoDesc = '**la semana anterior** (' + P.rangoSemanaAnterior + ')';
+        break;
+      case 'mes':
+        periodoDesc = '**este mes** (' + P.labelMesActual + ')';
+        break;
+      case 'mes_ant':
+        periodoDesc = '**el mes anterior** (' + P.labelMesAnterior + ')';
+        break;
+      case 'anio':
+        periodoDesc = '**este año** (' + P.labelAnio + ')';
+        break;
+      case 'anio_ant':
+        periodoDesc = '**el año anterior** (' + P.labelAnioAnterior + ')';
+        break;
+      case 'trimestre':
+        periodoDesc = '**este trimestre** (' + P.labelTrimActual + ')';
+        break;
+      case 'trimestre_ant':
+        periodoDesc = '**el trimestre anterior** (' + P.labelTrimAnterior + ')';
+        break;
+      case 'fecha':
+        periodoDesc = '**el día ' + intent.iso + '**';
+        break;
+      default:
+        return false;
+    }
+
+    let body =
+      '**Datos ilustrativos (demo)** — Para ' +
+      periodoDesc +
+      ', el total de ventas en este prototipo es **' +
+      moneyMx(amount) +
+      '**. ';
+    body +=
+      'Las cifras **cambian por periodo** (día, semana, mes, año): si no hay movimientos en el set demo, se muestra un importe ilustrativo coherente. Para la **comparativa mes vs mes anterior** o el **informe con Excel/PDF**, indíquelo en su pregunta.';
+
+    ctx.addMsg('bot', ctx.mdLite(body));
+    ctx.speak('Total de ventas en el periodo solicitado, datos de demostración.');
+    return true;
+  }
+
   function tryVentasAnalytics(text, ctx) {
+    if (tryVentasPorPeriodoFlexible(text, ctx)) return true;
+
     const D = window.SCORECARD_REPORT_DATA;
     if (!D || typeof D.totalVentas !== 'number') return false;
     const hasPrev = typeof D.totalVentasPrev === 'number';

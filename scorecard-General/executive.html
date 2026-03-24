@@ -16,9 +16,10 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
   <link rel="preconnect" href="https://cdn.sheetjs.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="scorecard-status.css" />
-  <link rel="stylesheet" href="scorecard-audio.css" />
-  <link rel="stylesheet" href="scorecard-report.css" />
+  <!-- ?v= fuerza recarga tras desplegar (evita JS/CSS viejos en caché del navegador o CDN) -->
+  <link rel="stylesheet" href="scorecard-status.css?v=20250323c" />
+  <link rel="stylesheet" href="scorecard-audio.css?v=20250323c" />
+  <link rel="stylesheet" href="scorecard-report.css?v=20250323c" />
   <!--
     Auto-actualización (opcional): descomenta y pon tu URL cuando tengas API.
     El servidor debe devolver JSON con al menos uno: checksum | version | updatedAt | etag
@@ -32,21 +33,21 @@
   </script>
   -->
   <!-- defer: clics UI primero; luego Chart → XLSX → estado → app → asistente → gráficas → live → audio -->
-  <script src="scorecard-ui-sounds.js" defer></script>
+  <script src="scorecard-ui-sounds.js?v=20250323c" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
   <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js" defer></script>
-  <script src="scorecard-status.js" defer></script>
-  <script src="scorecard-app.js" defer></script>
-  <script src="scorecard-report-data.js" defer></script>
-  <script src="scorecard-report-export.js" defer></script>
-  <script src="scorecard-report-agent.js" defer></script>
-  <script src="scorecard-assistant-intelligence.js" defer></script>
-  <script src="scorecard-assistant.js" defer></script>
-  <script src="scorecard-charts.js" defer></script>
-  <script src="scorecard-live.js" defer></script>
-  <script src="scorecard-audio.js" defer></script>
+  <script src="scorecard-status.js?v=20250323c" defer></script>
+  <script src="scorecard-app.js?v=20250323c" defer></script>
+  <script src="scorecard-report-data.js?v=20250323c" defer></script>
+  <script src="scorecard-report-export.js?v=20250323c" defer></script>
+  <script src="scorecard-report-agent.js?v=20250323c" defer></script>
+  <script src="scorecard-assistant-intelligence.js?v=20250323c" defer></script>
+  <script src="scorecard-assistant.js?v=20250323c" defer></script>
+  <script src="scorecard-charts.js?v=20250323c" defer></script>
+  <script src="scorecard-live.js?v=20250323c" defer></script>
+  <script src="scorecard-audio.js?v=20250323c" defer></script>
   <style>
     /* === Marca blanca (cliente): edita también window.SCORECARD_BRAND en scorecard-app.js === */
     :root {
@@ -1515,6 +1516,39 @@
   </style>
 </head>
 <body>
+  <!-- Carga inicial: si la red es lenta, aparece tras ~320 ms hasta window.load -->
+  <div id="scorecard-page-loading" class="scorecard-global-loading" hidden aria-hidden="true">
+    <img src="Animated-Gifts/LoadingGift.gif" width="72" height="72" alt="" class="scorecard-global-loading__gif" />
+    <div class="scorecard-global-loading__text">
+      <p class="scorecard-global-loading__title">Cargando el panel…</p>
+      <p class="scorecard-global-loading__sub">Preparando gráficas, scripts y datos de demostración</p>
+    </div>
+  </div>
+  <!-- Pantalla previa a imprimir (informe o página completa): GIF arriba-derecha -->
+  <div id="scorecard-print-prep" class="scorecard-global-loading" hidden aria-hidden="true">
+    <img src="Animated-Gifts/LoadingGift.gif" width="72" height="72" alt="" class="scorecard-global-loading__gif" />
+    <div class="scorecard-global-loading__text">
+      <p class="scorecard-global-loading__title" id="scorecard-print-prep-title">Preparando la impresión…</p>
+      <p class="scorecard-global-loading__sub" id="scorecard-print-prep-sub">Generando la vista; en un momento abrirá el cuadro de su sistema</p>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var el = document.getElementById('scorecard-page-loading');
+      if (!el) return;
+      var showTimer = setTimeout(function () {
+        el.hidden = false;
+        el.setAttribute('aria-hidden', 'false');
+      }, 320);
+      function finish() {
+        clearTimeout(showTimer);
+        el.hidden = true;
+        el.setAttribute('aria-hidden', 'true');
+      }
+      window.addEventListener('load', finish);
+      if (document.readyState === 'complete') finish();
+    })();
+  </script>
   <div class="shell">
     <div id="scorecard-status-mount"></div>
     <header class="top">
@@ -1556,7 +1590,7 @@
         <button type="button" class="btn-soft" id="btn-demo" title="Modo presentación: tipografía grande y sin badge demo" aria-pressed="false">Presentación</button>
         <button type="button" class="btn-soft" id="btn-cmd" title="Paleta de comandos">⌘K Buscar</button>
         <button type="button" class="icon-btn" id="btn-theme" title="Tema claro / oscuro">☼</button>
-        <button type="button" class="icon-btn" id="btn-print" title="Imprimir / PDF" onclick="window.print()">⎙</button>
+        <button type="button" class="icon-btn" id="btn-print" title="Imprimir / PDF">⎙</button>
       </div>
     </header>
 
@@ -1969,6 +2003,10 @@
 
   <!-- Informe ventas (demo): agente por texto + exportaciones -->
   <div id="scorecard-report-panel" hidden role="dialog" aria-modal="true" aria-labelledby="scorecard-report-title">
+    <div id="scorecard-report-loading" class="report-loading-overlay" hidden aria-hidden="true">
+      <img src="Animated-Gifts/LoadingGift.gif" width="56" height="56" alt="" class="report-loading-gif" />
+      <span class="report-loading-text">Generando informe…</span>
+    </div>
     <div class="report-dialog">
       <div class="report-head">
         <div>
