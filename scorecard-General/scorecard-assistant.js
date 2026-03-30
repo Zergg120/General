@@ -789,7 +789,8 @@
     try {
       saved = localStorage.getItem('scorecard_theme');
     } catch (_) {}
-    if (saved === 'light') document.body.classList.add('light');
+    if (saved === 'dark') document.body.classList.remove('light');
+    else document.body.classList.add('light');
     btn?.addEventListener('click', () => {
       document.body.classList.toggle('light');
       try {

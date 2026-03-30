@@ -15,12 +15,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
   <link rel="preconnect" href="https://cdn.sheetjs.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&family=Outfit:wght@500;600;700;800&family=Figtree:wght@300..900&family=Fraunces:opsz,wght@9..144,400..900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&family=Outfit:wght@300..900&family=Figtree:wght@300..900&family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..900&display=swap" rel="stylesheet" />
   <!-- ?v= fuerza recarga tras desplegar (evita JS/CSS viejos en caché del navegador o CDN) -->
   <link rel="stylesheet" href="scorecard-status.css?v=20250324f" />
   <link rel="stylesheet" href="scorecard-audio.css?v=20260330f" />
   <link rel="stylesheet" href="scorecard-report.css?v=20250324f" />
   <link rel="stylesheet" href="scorecard-covia.css?v=20260330b" />
+  <link rel="stylesheet" href="assets/theme.css?v=20260331b" />
+  <link rel="stylesheet" href="scorecard-fusion.css?v=20260331b" />
   <!--
     Auto-actualización (opcional): descomenta y pon tu URL cuando tengas API.
     El servidor debe devolver JSON con al menos uno: checksum | version | updatedAt | etag
@@ -1692,7 +1694,7 @@
     }
   </style>
 </head>
-<body>
+<body class="light app-fusion pagina-2bi">
   <!-- Carga inicial: si la red es lenta, aparece tras ~320 ms hasta window.load -->
   <div id="scorecard-page-loading" class="scorecard-global-loading" hidden aria-hidden="true">
     <img src="Animated-Gifts/LoadingGift.gif" width="72" height="72" alt="" class="scorecard-global-loading__gif" />
@@ -1884,11 +1886,9 @@
     <header class="nav" aria-label="Navegación 2BI">
       <div class="nav__inner">
         <div class="sr-left">
-          <a class="sr-logo" href="#" aria-label="2BI Technology Solutions">
-            <div class="sr-logo-text">
-              <strong>2BI</strong>
-              <span>TECHNOLOGY SOLUTIONS</span>
-            </div>
+          <a class="logo fusion-logo" href="#" aria-label="2BI Inteligencia" onclick="return false">
+            <span class="logo__mark">2BI</span>
+            <span class="logo__suffix">inteligencia</span>
           </a>
         </div>
 
@@ -2480,10 +2480,10 @@
         </div>
         <div class="module-dialog__body">
           <p class="drill-p" style="margin-top:0">
-            Esta versión es “tipo Suminregio”: una sola página, varias pestañas. La música y los controles (bocina, Ctrl+K, IA) se mantienen.
+            Una sola página: diseño 2BI y tablero juntos. Usa las pestañas para cambiar de vista; la música y los controles (bocina, Ctrl+K, tema, IA) se mantienen.
           </p>
           <ul class="drill-list">
-            <li><strong>Inicio</strong>: mini portada.</li>
+            <li><strong>Inicio</strong>: portada y métricas.</li>
             <li><strong>Ejecutivo</strong>: KPIs, tabla mensual, gráficas, exportación, IA.</li>
             <li><strong>Táctico</strong>: matriz táctica (stub) embebida.</li>
             <li><strong>Operaciones</strong>: reporte operativo (stub) embebido.</li>

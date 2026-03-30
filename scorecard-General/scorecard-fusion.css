@@ -1,0 +1,85 @@
+/* Una sola app (executive.html): look PAGINA 2BI + datos scorecard */
+/* theme.css fuerza body{display:flex}; aquí restauramos flujo del scorecard */
+body.app-fusion {
+  display: block !important;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--snow, #f4f9fd) !important;
+  color: var(--ink, #041221) !important;
+  font-family: var(--font-sans, "Outfit", "IBM Plex Sans", system-ui, sans-serif);
+}
+
+body.app-fusion::after {
+  opacity: 0.015;
+}
+
+body.app-fusion .nav {
+  background: rgba(244, 249, 253, 0.92) !important;
+  border-bottom: 1px solid rgba(10, 74, 124, 0.11) !important;
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+}
+
+body.app-fusion .nav__inner {
+  max-width: 1160px;
+}
+
+body.app-fusion .fusion-logo.logo {
+  text-decoration: none;
+}
+
+body.app-fusion .sr-nav {
+  gap: 0.35rem;
+}
+
+body.app-fusion .sr-tab {
+  border: 1px solid rgba(10, 74, 124, 0.12);
+  background: rgba(255, 255, 255, 0.85);
+  color: #0f2944;
+  font-size: 0.88rem;
+  padding: 0.48rem 0.9rem;
+  font-weight: 650;
+}
+
+body.app-fusion .sr-tab:hover {
+  color: #1d8ef0;
+  background: rgba(29, 142, 240, 0.08);
+}
+
+body.app-fusion .sr-tab.is-active {
+  background: rgba(29, 142, 240, 0.14);
+  border-color: rgba(29, 142, 240, 0.3);
+  color: #0a4a7c;
+}
+
+body.app-fusion .sr-ico {
+  background: linear-gradient(180deg, #ffffff, #f0f7fc);
+  border: 1px solid rgba(10, 74, 124, 0.14);
+  color: #0a4a7c;
+  box-shadow: 0 2px 8px rgba(4, 18, 33, 0.06);
+}
+
+body.app-fusion .sr-ico:hover {
+  border-color: rgba(29, 142, 240, 0.45);
+  color: #1d8ef0;
+}
+
+body.app-fusion .shell {
+  padding-left: clamp(1rem, 4vw, 1.5rem);
+  padding-right: clamp(1rem, 4vw, 1.5rem);
+}
+
+body.app-fusion .sr-subbar {
+  border-bottom-color: rgba(10, 74, 124, 0.1);
+}
+
+body.app-fusion .btn-soft {
+  border-color: rgba(10, 74, 124, 0.14);
+  background: rgba(255, 255, 255, 0.9);
+  color: #0a4a7c;
+}
+
+body.app-fusion .btn-soft:hover {
+  border-color: rgba(29, 142, 240, 0.35);
+  color: #1d8ef0;
+}
