@@ -187,20 +187,5 @@
       line.style.strokeDashoffset = "0";
     } catch (err) {}
   }
-
-  /* Tablero overlay (Scorecard) */
-  var openBtn = document.querySelector(".js-open-tablero");
-  var closeBtn = document.querySelector(".js-close-tablero");
-  var overlay = document.querySelector(".tablero-overlay");
-  function setTablero(open) {
-    if (!overlay) return;
-    overlay.hidden = !open;
-    overlay.setAttribute("aria-hidden", open ? "false" : "true");
-    document.body.style.overflow = open ? "hidden" : "";
-  }
-  if (openBtn) openBtn.addEventListener("click", function (e) { e.preventDefault(); setTablero(true); });
-  if (closeBtn) closeBtn.addEventListener("click", function (e) { e.preventDefault(); setTablero(false); });
-  if (overlay) overlay.addEventListener("click", function (e) { if (e.target === overlay) setTablero(false); });
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape") setTablero(false); });
 })();
 

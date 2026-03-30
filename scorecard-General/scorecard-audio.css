@@ -109,6 +109,28 @@
   outline-offset: 3px;
 }
 
+/* Landing 2BI: bocina misma línea visual que header claro */
+body.pagina-2bi #scorecard-audio-wrap.scorecard-audio--header #scorecard-audio-toggle,
+body.pagina-2bi #scorecard-audio-wrap #scorecard-audio-toggle {
+  background: linear-gradient(180deg, #ffffff, #f0f7fc) !important;
+  border: 1px solid rgba(10, 74, 124, 0.14) !important;
+  color: #0a4a7c !important;
+  box-shadow: 0 2px 10px rgba(4, 18, 33, 0.08) !important;
+}
+
+body.pagina-2bi #scorecard-audio-wrap.scorecard-audio--header #scorecard-audio-toggle:hover,
+body.pagina-2bi #scorecard-audio-wrap #scorecard-audio-toggle:hover {
+  border-color: rgba(29, 142, 240, 0.45) !important;
+  color: #1d8ef0 !important;
+}
+
+body.pagina-2bi #scorecard-audio-wrap.scorecard-audio--header #scorecard-audio-toggle[aria-pressed="true"],
+body.pagina-2bi #scorecard-audio-wrap #scorecard-audio-toggle[aria-pressed="true"] {
+  background: rgba(29, 142, 240, 0.12) !important;
+  border-color: rgba(29, 142, 240, 0.35) !important;
+  color: #0a4a7c !important;
+}
+
 /* Flecha: ▲ oculta panel / ▼ muestra panel */
 .scorecard-audio-vol-chevron {
   width: 46px;

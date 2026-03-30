@@ -110,3 +110,42 @@
     display: none !important;
   }
 }
+
+/* Landing 2BI (2bi.html): barra clara, misma familia que assets/theme.css */
+body.pagina-2bi #scorecard-status-mount .scorecard-status-bar {
+  margin-bottom: 0 !important;
+  padding: 0.32rem 0.7rem !important;
+  font-size: 0.72rem !important;
+  font-family: "Outfit", system-ui, sans-serif !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(10, 74, 124, 0.14) !important;
+  background: linear-gradient(180deg, #ffffff 0%, #eef6fc 100%) !important;
+  color: #4d6b88 !important;
+  box-shadow: 0 2px 10px rgba(4, 18, 33, 0.06) !important;
+}
+
+body.pagina-2bi #scorecard-status-mount .scorecard-status-bar strong,
+body.pagina-2bi #scorecard-status-mount .scorecard-status-clock {
+  color: #0a4a7c !important;
+  font-weight: 600 !important;
+}
+
+body.pagina-2bi #scorecard-status-mount .scorecard-status-clock-wrap {
+  color: #4d6b88 !important;
+}
+
+body.pagina-2bi #scorecard-status-mount .scorecard-status-pill--ok {
+  background: rgba(13, 122, 90, 0.12) !important;
+  color: #0d7a5a !important;
+  border: 1px solid rgba(13, 122, 90, 0.28) !important;
+}
+
+body.pagina-2bi #scorecard-status-mount .scorecard-status-pill--bad {
+  background: rgba(180, 35, 24, 0.08) !important;
+  color: #b42318 !important;
+  border: 1px solid rgba(180, 35, 24, 0.22) !important;
+}
+
+body.pagina-2bi #scorecard-status-mount .scorecard-status-sep {
+  background: rgba(10, 74, 124, 0.22) !important;
+}
