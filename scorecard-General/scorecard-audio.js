@@ -15,7 +15,6 @@
 
   var STORAGE_MUTED = 'scorecard_audio_muted';
   var STORAGE_MUSIC_VOL = 'scorecard_audio_music_volume';
-  var SYNC_KEY = 'scorecard_audio_sync_v2';
   var MIGRATE_FLAG = 'scorecard_audio_prefs_v3';
   /** '1' = panel volumen visible, '0' = colapsado (solo bocina + flecha) */
   var STORAGE_VOL_UI_EXPANDED = 'scorecard_audio_vol_ui_expanded';
@@ -53,7 +52,6 @@
         if (!d || d.from === tabId) return;
         if (d.type === 'pause') {
           if (audioEl && !audioEl.paused) {
-            savePlayingState(true);
             try {
               audioEl.pause();
             } catch (_) {}
@@ -170,55 +168,9 @@
     } catch (_) {}
   }
 
-  function readSync() {
-    try {
-      var raw = localStorage.getItem(SYNC_KEY);
-      if (!raw) return null;
-      var o = JSON.parse(raw);
-      if (!o || typeof o !== 'object') return null;
-      return o;
-    } catch (_) {
-      return null;
-    }
-  }
-
-  function writeSync(opts) {
-    try {
-      var o = opts || {};
-      var payload = {
-        v: 2,
-        src: o.src != null ? String(o.src) : src,
-        t: typeof o.t === 'number' ? o.t : 0,
-        wallMs: typeof o.wallMs === 'number' ? o.wallMs : Date.now(),
-        clockRunning: !!o.clockRunning,
-      };
-      localStorage.setItem(SYNC_KEY, JSON.stringify(payload));
-    } catch (_) {}
-  }
-
-  function computeSeekSeconds(sync) {
-    if (!sync || typeof sync.t !== 'number') return 0;
-    var dur = 0;
-    var loop = true;
-    if (audioEl && audioEl.duration && isFinite(audioEl.duration)) {
-      dur = audioEl.duration;
-      loop = !!audioEl.loop;
-    }
-    if (!sync.clockRunning) {
-      var t0 = sync.t;
-      if (dur > 0 && loop) t0 = t0 % dur;
-      return dur > 0 ? Math.min(Math.max(0, t0), dur - 0.05) : Math.max(0, t0);
-    }
-    var elapsed = (Date.now() - sync.wallMs) / 1000;
-    var nt = sync.t + elapsed;
-    if (dur > 0 && loop) {
-      nt = nt % dur;
-      if (nt < 0) nt += dur;
-    } else if (dur > 0) {
-      nt = Math.min(nt, Math.max(0, dur - 0.05));
-    }
-    return Math.max(0, nt);
-  }
+  // Nota: En Scorecard el portal navega por páginas HTML distintas (no SPA).
+  // En algunos móviles, persistir/forzar `currentTime` entre cargas puede trabar el MP3.
+  // Para estabilidad, aquí NO sincronizamos posición entre páginas; solo mantenemos mute/volumen.
 
   function isMutedPref() {
     try {
@@ -285,13 +237,7 @@
     stopSynth();
   }
 
-  function savePlayingState(clockRunning) {
-    if (!audioEl || !fileOk) return;
-    try {
-      var t = audioEl.currentTime;
-      writeSync({ t: t, wallMs: Date.now(), clockRunning: clockRunning, src: src });
-    } catch (_) {}
-  }
+  function savePlayingState() {}
 
   function onUserMute() {
     userWantsSound = false;
@@ -353,14 +299,7 @@
   }
 
   function applySeekFromStorage() {
-    if (!audioEl || !fileOk) return;
-    if (audioEl.readyState < 1) return;
-    var sync = readSync();
-    if (!sync || sync.src !== src) return;
-    var seek = computeSeekSeconds(sync);
-    try {
-      audioEl.currentTime = seek;
-    } catch (_) {}
+    // Intencionalmente vacío (ver nota arriba).
   }
 
   function tryPlayMp3() {
@@ -371,7 +310,6 @@
       return;
     }
 
-    applySeekFromStorage();
     audioEl.volume = getMusicVolume();
     audioEl.muted = false;
 
@@ -381,14 +319,12 @@
     if (p && p.then) {
       p.then(function () {
         applyMusicVolumeToOutputs();
-        savePlayingState(true);
         updateBtn();
       }).catch(function () {
         updateBtn();
       });
     } else {
       applyMusicVolumeToOutputs();
-      savePlayingState(true);
       updateBtn();
     }
   }
@@ -426,19 +362,11 @@
   }
 
   function startTick() {
-    stopTick();
-    tickTimer = setInterval(function () {
-      if (audioEl && fileOk && !audioEl.paused && userWantsSound && !isMutedPref()) {
-        savePlayingState(true);
-      }
-    }, 400);
+    // Sincronización de posición desactivada para evitar trabas al navegar entre páginas.
   }
 
   function stopTick() {
-    if (tickTimer) {
-      clearInterval(tickTimer);
-      tickTimer = null;
-    }
+    tickTimer = null;
   }
 
   function scheduleResumeBgm() {
@@ -460,18 +388,15 @@
         return;
       }
       audioEl.muted = false;
-      applySeekFromStorage();
       var p = audioEl.play();
       if (p && p.then) {
         p.then(function () {
           applyMusicVolumeToOutputs();
-          savePlayingState(true);
           updateBtn();
           startTick();
         }).catch(function () {});
       } else {
         applyMusicVolumeToOutputs();
-        savePlayingState(true);
         updateBtn();
         startTick();
       }
@@ -677,10 +602,9 @@
         startTick();
       });
       audioEl.addEventListener('pause', function () {
-        if (userWantsSound && !isMutedPref() && fileOk) savePlayingState(true);
+        // no-op
       });
       if (userWantsSound && !isMutedPref()) {
-        applySeekFromStorage();
         startPlayback();
         startTick();
       }
@@ -693,28 +617,7 @@
       if (ev.persisted) scheduleResumeBgm();
     });
 
-    window.addEventListener(
-      'pagehide',
-      function () {
-        if (audioEl && fileOk && userWantsSound && !isMutedPref()) savePlayingState(true);
-      },
-      { capture: true }
-    );
-
-    window.addEventListener('beforeunload', function () {
-      if (audioEl && fileOk && userWantsSound && !isMutedPref()) savePlayingState(true);
-    });
-
-    window.addEventListener('storage', function (e) {
-      if (e.key !== SYNC_KEY || !audioEl || !fileOk) return;
-      if (!userWantsSound || isMutedPref()) return;
-      if (audioEl && !audioEl.paused) {
-        try {
-          var seek = computeSeekSeconds(readSync());
-          if (Math.abs(audioEl.currentTime - seek) > 1.5) audioEl.currentTime = seek;
-        } catch (_) {}
-      }
-    });
+    // Sin persistencia de posición entre páginas.
 
     setTimeout(function () {
       resumeAfterBootOk = true;
