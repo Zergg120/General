@@ -2,11 +2,59 @@
 (function () {
   'use strict';
 
-  // Datos demo para maqueta tipo COVIA.
-  // Reglas por KPI:
-  // - compare: 'gte' => verde si value >= target
-  // - compare: 'lte' => verde si value <= target
-  // - compare: 'between' => verde si min <= value <= max (target = { min, max })
+  /**
+   * Datos demo para maqueta (sin marca de empresa).
+   * Valores Productivity/Inventory, EHS y Quality/Labor alineados a las capturas de referencia (abril 2024).
+   * Delivery & Financials: mismos KPIs que el ejemplo; números demo coherentes (sin captura detallada).
+   *
+   * cmp: 'gte' | 'lte' (meta alcanzada si valor cumple vs umbral numérico)
+   * trend: 12 puntos para sparkline (Ene–Dic)
+   */
+  function trendAround(last, spread, n) {
+    const out = [];
+    let x = last;
+    for (let i = 0; i < (n || 12); i++) {
+      x = last + (Math.sin(i * 0.7) * spread * 0.25) + (i - 6) * (spread / 24);
+      out.push(Math.max(0, x));
+    }
+    out[11] = last;
+    return out;
+  }
+
+  function row(id, label, unit, month, targetM, ytd, targetY, cmp, override) {
+    const m = Number(month);
+    const t = trendAround(m, Math.abs(m) * 0.08 || 5, 12);
+    const base = {
+      id,
+      label,
+      unit,
+      month: m,
+      targetMonth: Number(targetM),
+      ytd: Number(ytd),
+      targetYtd: Number(targetY),
+      cmp,
+      targetMonthLabel: null,
+      targetYtdLabel: null,
+      trend: t,
+      okMonth: null,
+      okYtd: null,
+    };
+    if (override && typeof override === 'object') {
+      if (override.okMonth != null) base.okMonth = override.okMonth;
+      if (override.okYtd != null) base.okYtd = override.okYtd;
+      if (override.targetMonthLabel != null) base.targetMonthLabel = override.targetMonthLabel;
+      if (override.targetYtdLabel != null) base.targetYtdLabel = override.targetYtdLabel;
+    }
+    return base;
+  }
+
+  /** Metas con texto en pantalla (ej. umbral &lt; 1.0) pero comparación numérica interna */
+  function rowLabeled(id, label, unit, month, targetM, ytd, targetY, cmp, labelM, labelY) {
+    const r = row(id, label, unit, month, targetM, ytd, targetY, cmp);
+    r.targetMonthLabel = labelM;
+    r.targetYtdLabel = labelY;
+    return r;
+  }
 
   const MONTHS = [
     { key: '01', label: 'enero' },
@@ -23,29 +71,6 @@
     { key: '12', label: 'diciembre' },
   ];
 
-  function spark(seed, base, noise, len) {
-    const out = [];
-    let x = seed;
-    for (let i = 0; i < (len || 12); i++) {
-      // LCG simple determinístico
-      x = (x * 1103515245 + 12345) & 0x7fffffff;
-      const r = (x % 1000) / 1000;
-      out.push(Math.max(0, base + (r - 0.5) * 2 * noise));
-    }
-    return out;
-  }
-
-  function kpi(id, label, unit, compare, trendBase, trendNoise) {
-    return {
-      id,
-      label,
-      unit,
-      compare,
-      // valores demo del mes y ytd se “derivan” del trend (para maqueta)
-      trend: spark(id.length * 97, trendBase, trendNoise, 12),
-    };
-  }
-
   const TABS = {
     delivery_financials: {
       title: 'Delivery & Financials',
@@ -54,24 +79,24 @@
           area: 'Delivery',
           icon: '🚚',
           kpis: [
-            kpi('del_volume_budget', 'Volume shipped in Tons vs Budget', '%', 'gte', 90, 10),
-            kpi('del_volume_new', 'Volume shipped in Tons vs New Order', '%', 'gte', 95, 8),
-            kpi('del_otif', 'OTIF — On Time In Full', '%', 'gte', 96, 6),
-            kpi('del_otd', 'On Time Delivery (OTD)', '%', 'gte', 92, 9),
-            kpi('del_forecast', 'Forecast Accuracy', '%', 'gte', 88, 12),
+            row('del_vol_budget', 'Volume shipped in Tons vs Budget', '%', 94, 92, 93, 91, 'gte'),
+            row('del_vol_new', 'Volume shipped in Tons vs New Order', '%', 91, 93, 89, 90, 'gte'),
+            row('del_otif', 'OTIF — On Time In Full', '%', 96, 95, 95.2, 94.5, 'gte'),
+            row('del_otd', 'On Time Delivery (OTD)', '%', 93, 92, 92.1, 91, 'gte'),
+            row('del_forecast', 'Forecast Accuracy', '%', 87, 90, 88, 89, 'gte'),
           ],
         },
         {
           area: 'Financials',
           icon: '📊',
           kpis: [
-            kpi('fin_unit_cost', 'Unit Cost (CPT)', '$/MT', 'lte', 680, 60),
-            kpi('fin_labor_cost', 'Costo de Mano de Obra por producción', '$/MT', 'lte', 90, 12),
-            kpi('fin_variable_cost', 'Costo Variable', '$/MT', 'lte', 480, 80),
-            kpi('fin_fixed_cost', 'Costo Fijo', '$/MT', 'lte', 200, 30),
-            kpi('fin_budget_var', 'Variación vs presupuesto', '%', 'lte', 36, 10),
-            kpi('fin_freight_cost', 'Freight Cost por producción', '$/MT', 'lte', 610, 90),
-            kpi('fin_operating_income', 'Utilidad Operativa', '%', 'gte', 24, 9),
+            row('fin_cpt', 'Unit Cost (CPT)', '$/MT', 655, 680, 662, 670, 'lte'),
+            row('fin_mo', 'Costo de Mano de Obra por producción', '$/MT', 88, 92, 90, 91, 'lte'),
+            row('fin_var', 'Costo Variable', '$/MT', 470, 500, 485, 495, 'lte'),
+            row('fin_fijo', 'Costo Fijo', '$/MT', 195, 210, 202, 205, 'lte'),
+            row('fin_var_pres', 'Variación vs presupuesto', '%', 4.2, 5, 4.8, 5, 'lte'),
+            row('fin_freight', 'Freight Cost por producción', '$/MT', 598, 620, 605, 615, 'lte'),
+            row('fin_uo', 'Utilidad Operativa', '%', 26, 24, 25, 24, 'gte'),
           ],
         },
       ],
@@ -83,23 +108,25 @@
           area: 'Productivity',
           icon: '🏭',
           kpis: [
-            kpi('prod_oee', 'OEE — Overall Equipment Effectiveness', '%', 'gte', 86, 10),
-            kpi('prod_availability', 'Disponibilidad de equipos', '%', 'gte', 2, 2),
-            kpi('prod_daily_avg', 'Daily production average', 'MT/day', 'gte', 1150, 220),
-            kpi('prod_plan', 'Cumplimiento del plan de producción', '%', 'gte', 95, 25),
-            kpi('prod_throughput', 'Throughput / tasa de producción', '#', 'gte', 168, 30),
-            kpi('prod_downtime', 'Unplanned Downtime', '%', 'lte', 4, 3),
+            row('p_oee', 'OEE — Overall Equipment Effectiveness', '%', 86, 83, 84, 83, 'gte'),
+            row('p_disp', 'Disponibilidad de equipos', '%', 0, 2, 0, 2, 'gte'),
+            row('p_daily', 'Daily production average', 'MT/day', 1200, 1300, 987, 1300, 'gte'),
+            row('p_plan', 'Cumplimiento del plan de producción', '%', 100, 95, 3, 95, 'gte'),
+            row('p_through', 'Throughput / tasa de producción', '#', 165, 170, 166, 170, 'gte'),
+            row('p_down', 'Unplanned Downtime', '%', 3, 5, 4, 5, 'lte'),
           ],
         },
         {
           area: 'Inventory',
           icon: '🏗️',
           kpis: [
-            kpi('inv_raw', 'Raw Material Inventory', '%', 'gte', 3.6, 2),
-            kpi('inv_wip', 'Work-in-progress Inventory', '%', 'gte', 7.2, 3.2),
-            kpi('inv_fg', 'Finished Goods Inventory', '%', 'gte', 80, 18),
-            kpi('inv_stockpiles', 'Mine Stockpiles', 'Days', 'lte', 210, 30),
-            kpi('inv_dio', 'DIO', 'Days', 'lte', 36, 12),
+            row('i_raw', 'Raw Material Inventory', '%', 3.7, 3.6, 3.5, 3.6, 'gte'),
+            /* Captura: ambos en rojo; se fija semáforo explícito (reglas de negocio no claras en la imagen). */
+            row('i_wip', 'Work-in-progress Inventory', '%', 6.5, 10.6, 6.7, 10.6, 'gte', { okMonth: false, okYtd: false }),
+            /* Mes verde, YTD rojo en la referencia. */
+            row('i_fg', 'Finished Goods Inventory', '%', 82.3, 74.0, 82.0, 74.0, 'gte', { okMonth: true, okYtd: false }),
+            row('i_mine', 'Mine Stockpiles', 'Days', 210, 190, 210, 190, 'lte', { okMonth: true, okYtd: false }),
+            row('i_dio', 'DIO', 'Days', 34, 30, 45, 30, 'lte', { okMonth: true, okYtd: false }),
           ],
         },
       ],
@@ -111,23 +138,23 @@
           area: 'Safety',
           icon: '🦺',
           kpis: [
-            kpi('ehs_trir', 'TRIR — Total Recordable Incident Rate', 'Rate', 'lte', 0.6, 0.4),
-            kpi('ehs_ltir', 'LTIR — Lost Time Injury Rate', 'Rate', 'lte', 0.35, 0.3),
-            kpi('ehs_lost_days', 'Accidentes con días perdidos', 'Days', 'lte', 2, 3),
-            kpi('ehs_near_miss', 'Near Misses reportados', '#', 'gte', 80, 60),
-            kpi('ehs_sbis', '% SBIs Achievement', '%', 'gte', 90, 12),
-            kpi('ehs_wpe', '% WPE Achievement', '%', 'gte', 86, 14),
-            kpi('ehs_actions', '% Implemented Safety Actions', '%', 'gte', 94, 10),
+            rowLabeled('e_trir', 'TRIR — Total Recordable Incident Rate', 'Rate', 0.23, 1.0, 0.65, 1.0, 'lte', '< 1.0', '< 1.0'),
+            rowLabeled('e_ltir', 'LTIR — Lost Time Injury Rate', 'Rate', 0.45, 0.25, 0.35, 0.25, 'lte', '< 0.25', '< 0.25'),
+            rowLabeled('e_lost', 'Accidentes con días perdidos', 'Days', 0, 1, 3, 8, 'lte', '< 1', '< 8'),
+            row('e_near', 'Near Misses reportados', '#', 65, 72, 250, 287, 'gte'),
+            row('e_sbis', '% SBIs Achievement', '%', 85, 95, 97, 95, 'gte'),
+            row('e_wpe', '% WPE Achievement', '%', 74, 95, 88, 95, 'gte'),
+            row('e_safe_act', '% Implemented Safety Actions', '%', 100, 95, 96, 95, 'gte'),
           ],
         },
         {
           area: 'Environmental',
           icon: '🌿',
           kpis: [
-            kpi('env_actions', '% Implemented Environmental Actions', '%', 'gte', 78, 16),
-            kpi('env_electric', 'Consumo eléctrico', 'kWh/MT', 'lte', 85, 14),
-            kpi('env_thermal', 'Consumo térmico', 'mcal/MT', 'lte', 95, 16),
-            kpi('env_diesel', 'Consumo Diesel', 'l/MT', 'lte', 7.8, 2.8),
+            row('e_env_act', '% Implemented Environmental Actions', '%', 56, 95, 75, 95, 'gte'),
+            row('e_elec', 'Consumo eléctrico', 'kWh/MT', 67, 83, 85, 83, 'lte'),
+            row('e_term', 'Consumo térmico', 'mcal/MT', 95, 90, 99, 90, 'lte'),
+            row('e_die', 'Consumo Diesel', 'l/MT', 9.7, 8.5, 6.7, 8.5, 'lte'),
           ],
         },
       ],
@@ -139,21 +166,21 @@
           area: 'Quality',
           icon: '🛡️',
           kpis: [
-            kpi('q_fpy', 'First Pass Yield (FPY)', '%', 'gte', 92, 10),
-            kpi('q_scrap', 'Scrap Rate', '%', 'lte', 1.1, 1.2),
-            kpi('q_rework', 'Rework Rate', '%', 'lte', 2.2, 1.6),
-            kpi('q_claims', 'Reclamos de clientes', '#', 'lte', 1.2, 1.6),
-            kpi('q_oca', 'On Time Corrective Actions', '%', 'gte', 90, 10),
+            row('q_fpy', 'First Pass Yield (FPY)', '%', 89, 95, 96, 95, 'gte'),
+            row('q_scrap', 'Scrap Rate', '%', 0, 2, 0, 2, 'lte'),
+            row('q_rework', 'Rework Rate', '%', 0, 3, 3, 3, 'lte'),
+            row('q_claims', 'Reclamos de clientes', '#', 0, 0, 1, 0, 'lte'),
+            row('q_oca', 'On Time Corrective Actions', '%', 85, 95, 97, 95, 'gte'),
           ],
         },
         {
           area: 'Labor',
           icon: '👥',
           kpis: [
-            kpi('lab_tons_total_hours', 'Tons per total hours', 'h/MT', 'gte', 3.7, 1.2),
-            kpi('lab_ot', '% OT', '%', 'lte', 8.5, 3.6),
-            kpi('lab_tons_op_hours', 'Tons per OP hours', 'h/MT', 'gte', 82, 18),
-            kpi('lab_diesel', 'Consumo Diesel', 'l/MT', 'lte', 7.8, 2.8),
+            row('l_tons_h', 'Tons per total hours', 'h/MT', 3.7, 3.6, 3.5, 3.6, 'gte'),
+            row('l_ot', '% OT', '%', 6.5, 10.6, 6.7, 10.6, 'lte'),
+            row('l_tons_op', 'Tons per OP hours', 'h/MT', 82.3, 74.0, 82.0, 74.0, 'gte'),
+            row('l_die', 'Consumo Diesel', 'l/MT', 9.7, 8.5, 6.7, 8.5, 'lte'),
           ],
         },
       ],
@@ -161,10 +188,9 @@
   };
 
   window.SCORECARD_COVIA_DATA = {
-    version: 'demo-2026-03',
+    version: 'demo-kpis-2026-03',
     years: [2024, 2025, 2026],
     months: MONTHS,
     tabs: TABS,
   };
 })();
-

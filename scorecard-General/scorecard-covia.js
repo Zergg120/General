@@ -10,13 +10,12 @@
 
   const elYear = $('#covia-year');
   const elMonth = $('#covia-month');
-  const elTitle = $('#covia-title');
-  const elTbody = $('#covia-tbody');
   const elMainTitle = $('#covia-title');
+  const elTbody = $('#covia-tbody');
 
-  if (!elYear || !elMonth || !elTitle || !elTbody) return;
+  if (!elYear || !elMonth || !elMainTitle || !elTbody) return;
 
-  const charts = new Map(); // canvas -> Chart
+  const charts = new Map();
 
   function option(value, label) {
     const o = document.createElement('option');
@@ -25,62 +24,46 @@
     return o;
   }
 
-  function fmtNum(x) {
-    if (x == null || Number.isNaN(Number(x))) return '';
-    const n = Number(x);
+  /** Formato número / decimales para celdas */
+  function fmtCell(val) {
+    if (val == null || Number.isNaN(Number(val))) return '—';
+    const n = Number(val);
     if (Math.abs(n) >= 1000 && Number.isInteger(n)) return n.toLocaleString('en-US');
-    return String(n);
+    if (Number.isInteger(n)) return String(n);
+    const s = n.toFixed(1);
+    return s.replace(/\.0$/, '');
+  }
+
+  function fmtTarget(k, which) {
+    const lab = which === 'm' ? k.targetMonthLabel : k.targetYtdLabel;
+    if (lab) return lab;
+    return fmtCell(which === 'm' ? k.targetMonth : k.targetYtd);
   }
 
   function buildControls() {
     elYear.innerHTML = '';
     DATA.years.forEach((y) => elYear.appendChild(option(y, y)));
-
     elMonth.innerHTML = '';
     DATA.months.forEach((m) => elMonth.appendChild(option(m.key, m.label)));
-
-    // Default: 2024 / abril como screenshots
     elYear.value = String(DATA.years.includes(2024) ? 2024 : DATA.years[0]);
     elMonth.value = '04';
   }
 
-  function compareOk(compare, value, target) {
+  function compareOk(k, value, target) {
     const v = Number(value);
-    if (Number.isNaN(v)) return false;
-    if (compare === 'lte') return v <= Number(target);
-    if (compare === 'gte') return v >= Number(target);
-    if (compare === 'between') {
-      if (!target || typeof target !== 'object') return false;
-      return v >= Number(target.min) && v <= Number(target.max);
-    }
+    const t = Number(target);
+    if (Number.isNaN(v) || Number.isNaN(t)) return false;
+    if (k.cmp === 'lte') return v <= t;
+    if (k.cmp === 'gte') return v >= t;
     return false;
   }
 
-  function deriveMonthValue(k) {
-    // demo: usa el último punto del trend como “Month”
-    const v = k.trend && k.trend.length ? k.trend[k.trend.length - 1] : 0;
-    return k.unit === 'Rate' ? Number(v).toFixed(2) : Number(v).toFixed(0);
-  }
-
-  function deriveYtdValue(k) {
-    // demo: promedio del trend como “YTD”
-    if (!k.trend || !k.trend.length) return 0;
-    const avg = k.trend.reduce((s, x) => s + x, 0) / k.trend.length;
-    return k.unit === 'Rate' ? Number(avg).toFixed(2) : Number(avg).toFixed(0);
-  }
-
-  function deriveTargets(k) {
-    // demo targets por unidad (solo maqueta)
-    const last = Number(k.trend[k.trend.length - 1] || 0);
-    if (k.compare === 'gte') {
-      const t = k.unit === '$/MT' ? Math.max(0, last - 35) : Math.max(0, last - (last * 0.03));
-      return { month: t, ytd: t };
-    }
-    if (k.compare === 'lte') {
-      const t = k.unit === '$/MT' ? last - 35 : last - (last * 0.03);
-      return { month: Math.max(0, t), ytd: Math.max(0, t) };
-    }
-    return { month: last, ytd: last };
+  function statusFor(k, which) {
+    if (which === 'm' && k.okMonth != null) return k.okMonth;
+    if (which === 'y' && k.okYtd != null) return k.okYtd;
+    const v = which === 'm' ? k.month : k.ytd;
+    const t = which === 'm' ? k.targetMonth : k.targetYtd;
+    return compareOk(k, v, t);
   }
 
   function destroyCharts() {
@@ -93,7 +76,6 @@
     const ctx = canvas.getContext('2d');
     const existing = charts.get(canvas);
     if (existing) existing.destroy();
-
     const chart = new Chart(ctx, {
       type: 'bar',
       data: {
@@ -121,12 +103,10 @@
   }
 
   function setActiveTab(tabKey) {
-    const tabs = $$('.covia-tab');
-    tabs.forEach((b) => {
+    $$('.covia-tab').forEach((b) => {
       const on = b.dataset.coviaTab === tabKey;
       b.setAttribute('aria-selected', on ? 'true' : 'false');
       b.classList.toggle('covia-tab--active', on);
-      if (on) b.focus({ preventScroll: true });
     });
   }
 
@@ -149,56 +129,51 @@
           const tdArea = document.createElement('td');
           tdArea.className = 'covia-area';
           tdArea.rowSpan = areaRowspan;
-          tdArea.innerHTML = `<div class=\"covia-area__inner\"><div class=\"covia-area__icon\" aria-hidden=\"true\">${g.icon}</div><div class=\"covia-area__name\">${g.area}</div></div>`;
+          tdArea.innerHTML = `<div class="covia-area__inner"><div class="covia-area__icon" aria-hidden="true">${g.icon}</div><div class="covia-area__name">${g.area}</div></div>`;
           tr.appendChild(tdArea);
         }
 
-        const tds = [];
         const tdKpi = document.createElement('td');
         tdKpi.className = 'covia-kpi';
         tdKpi.textContent = k.label;
-        tds.push(tdKpi);
+        tr.appendChild(tdKpi);
 
         const tdUnit = document.createElement('td');
         tdUnit.className = 'covia-unit';
         tdUnit.textContent = k.unit;
-        tds.push(tdUnit);
-
-        const monthVal = deriveMonthValue(k);
-        const ytdVal = deriveYtdValue(k);
-        const targets = deriveTargets(k);
+        tr.appendChild(tdUnit);
 
         const tdMonth = document.createElement('td');
         tdMonth.className = 'covia-num';
-        tdMonth.textContent = fmtNum(monthVal);
-        tds.push(tdMonth);
+        tdMonth.textContent = fmtCell(k.month);
+        tr.appendChild(tdMonth);
 
         const tdTargetM = document.createElement('td');
         tdTargetM.className = 'covia-num covia-num--muted';
-        tdTargetM.textContent = fmtNum(targets.month);
-        tds.push(tdTargetM);
+        tdTargetM.textContent = fmtTarget(k, 'm');
+        tr.appendChild(tdTargetM);
 
-        const okM = compareOk(k.compare, monthVal, targets.month);
+        const okM = statusFor(k, 'm');
         const tdStatusM = document.createElement('td');
         tdStatusM.className = 'covia-status';
-        tdStatusM.innerHTML = `<span class=\"covia-dot ${okM ? 'covia-dot--ok' : 'covia-dot--bad'}\" aria-label=\"${okM ? 'OK' : 'Atención'}\"></span>`;
-        tds.push(tdStatusM);
+        tdStatusM.innerHTML = `<span class="covia-dot ${okM ? 'covia-dot--ok' : 'covia-dot--bad'}" aria-label="${okM ? 'OK' : 'Atención'}"></span>`;
+        tr.appendChild(tdStatusM);
 
         const tdYtd = document.createElement('td');
         tdYtd.className = 'covia-num';
-        tdYtd.textContent = fmtNum(ytdVal);
-        tds.push(tdYtd);
+        tdYtd.textContent = fmtCell(k.ytd);
+        tr.appendChild(tdYtd);
 
         const tdTargetY = document.createElement('td');
         tdTargetY.className = 'covia-num covia-num--muted';
-        tdTargetY.textContent = fmtNum(targets.ytd);
-        tds.push(tdTargetY);
+        tdTargetY.textContent = fmtTarget(k, 'y');
+        tr.appendChild(tdTargetY);
 
-        const okY = compareOk(k.compare, ytdVal, targets.ytd);
+        const okY = statusFor(k, 'y');
         const tdStatusY = document.createElement('td');
         tdStatusY.className = 'covia-status';
-        tdStatusY.innerHTML = `<span class=\"covia-dot ${okY ? 'covia-dot--ok' : 'covia-dot--bad'}\" aria-label=\"${okY ? 'OK' : 'Atención'}\"></span>`;
-        tds.push(tdStatusY);
+        tdStatusY.innerHTML = `<span class="covia-dot ${okY ? 'covia-dot--ok' : 'covia-dot--bad'}" aria-label="${okY ? 'OK' : 'Atención'}"></span>`;
+        tr.appendChild(tdStatusY);
 
         const tdTrend = document.createElement('td');
         tdTrend.className = 'covia-trend';
@@ -207,13 +182,11 @@
         canvas.height = 44;
         canvas.className = 'covia-spark';
         tdTrend.appendChild(canvas);
-        tds.push(tdTrend);
+        tr.appendChild(tdTrend);
 
-        tds.forEach((td) => tr.appendChild(td));
         if (rowIdx % 2 === 0) tr.classList.add('covia-row--alt');
         frag.appendChild(tr);
 
-        // Dibuja el trend al final para que el canvas ya esté en el DOM
         requestAnimationFrame(() => sparkline(canvas, k.trend));
         rowIdx++;
       });
@@ -226,19 +199,15 @@
     $$('.covia-tab').forEach((b) => {
       b.addEventListener('click', () => render(b.dataset.coviaTab));
     });
-    elYear.addEventListener('change', () => {
-      // En demo no cambia cálculos; se deja para API real
-      const active = $('.covia-tab[aria-selected=\"true\"]');
+    const rerender = () => {
+      const active = $('.covia-tab[aria-selected="true"]');
       render(active ? active.dataset.coviaTab : 'delivery_financials');
-    });
-    elMonth.addEventListener('change', () => {
-      const active = $('.covia-tab[aria-selected=\"true\"]');
-      render(active ? active.dataset.coviaTab : 'delivery_financials');
-    });
+    };
+    elYear.addEventListener('change', rerender);
+    elMonth.addEventListener('change', rerender);
   }
 
   buildControls();
   bind();
   render('delivery_financials');
 })();
-

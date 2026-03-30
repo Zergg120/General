@@ -20,7 +20,7 @@
   <link rel="stylesheet" href="scorecard-status.css?v=20250324f" />
   <link rel="stylesheet" href="scorecard-audio.css?v=20250324f" />
   <link rel="stylesheet" href="scorecard-report.css?v=20250324f" />
-  <link rel="stylesheet" href="scorecard-covia.css?v=20260330a" />
+  <link rel="stylesheet" href="scorecard-covia.css?v=20260330b" />
   <!--
     Auto-actualización (opcional): descomenta y pon tu URL cuando tengas API.
     El servidor debe devolver JSON con al menos uno: checksum | version | updatedAt | etag
@@ -45,8 +45,8 @@
   <script src="scorecard-report-data.js?v=20250324f" defer></script>
   <script src="scorecard-report-export.js?v=20250324f" defer></script>
   <script src="scorecard-report-agent.js?v=20250324f" defer></script>
-  <script src="scorecard-covia-data.js?v=20260330a" defer></script>
-  <script src="scorecard-covia.js?v=20260330a" defer></script>
+  <script src="scorecard-covia-data.js?v=20260330b" defer></script>
+  <script src="scorecard-covia.js?v=20260330b" defer></script>
   <script src="scorecard-assistant-intelligence.js?v=20250324f" defer></script>
   <script src="scorecard-assistant.js?v=20250324f" defer></script>
   <script src="scorecard-charts.js?v=20250324f" defer></script>
@@ -1608,12 +1608,12 @@
       </div>
     </header>
 
-    <!-- Reporte mensual (COVIA-style) -->
+    <!-- Reporte mensual (tabla + tendencias, datos demo) -->
     <section class="section reveal" id="sec-covia" data-module="covia" aria-label="Reporte mensual tipo scorecard">
       <div class="section-head">
         <div class="section-head__left">
           <h2 class="section-title">Reporte Mensual — Scorecard</h2>
-          <span class="section-hint">Estructura tipo COVIA (tablas + tendencia)</span>
+          <span class="section-hint">Demostración: mismos KPIs que el ejemplo de referencia (sin marca comercial)</span>
         </div>
         <div class="covia-controls" aria-label="Controles de reporte mensual">
           <div class="covia-control">
@@ -1640,11 +1640,6 @@
             <span class="covia-eyebrow">Monthly Operations Scorecard</span>
             <strong id="covia-title">Delivery &amp; Financials</strong>
           </div>
-          <div class="covia-brand">
-            <span class="covia-brand__pill">Mx Staff w SC</span>
-            <span class="covia-brand__pill covia-brand__pill--muted">New</span>
-            <span class="covia-brand__logo" aria-hidden="true">COVIA</span>
-          </div>
         </div>
 
         <div class="covia-table-wrap">
@@ -1666,7 +1661,7 @@
             <tbody id="covia-tbody"></tbody>
           </table>
         </div>
-        <p class="covia-footnote">Nota: datos demo para maqueta. Después se conecta a Excel/API con los mismos IDs de KPI.</p>
+        <p class="covia-footnote">Datos de demostración (sin empresa asociada). Productivity/Inventory, EHS y Quality/Labor siguen los valores del ejemplo visual; Delivery/Financials usa números demo coherentes. Conectar luego a Excel o API por ID de KPI.</p>
       </div>
     </section>
 
