@@ -2,10 +2,12 @@
  * Música ambiental + bocina + control de volumen (solo música de fondo).
  * Clics de UI y voz del asistente van aparte (30% en sus scripts).
  *
- * Opcional: window.SCORECARD_AUDIO = { src, volume (0–1, default música ~5% como gestor David), crossOrigin };
+ * Opcional: window.SCORECARD_AUDIO = { src, volume (0–1, default música ~10%), crossOrigin };
  *
- * Misma idea que sistema-cotizacion-web: WAV `Technology-Song.wav` si existe; si falla, MP3 de respaldo.
- * Primer clic / tecla desbloquea audio; Num+ / Num− ajustan volumen (±5%).
+ * Pista por defecto: `audio/Music-Background.mp3`. Reanudación al volver a la pestaña o al foco (como
+ * sistema-cotizacion-web): `play()` con `.catch` vacío; no se hace `currentTime` hasta tener metadata
+ * (evita que el MP3 se trabe). `pageshow` con `persisted` cubre vuelta por bfcache.
+ * Primer clic / tecla desbloquea audio; Num+ / Num− ajustan volumen (±10%).
  */
 (function () {
   'use strict';
@@ -19,9 +21,7 @@
 
   var cfg = window.SCORECARD_AUDIO || {};
   var userSrc = cfg.src != null ? String(cfg.src) : null;
-  var primaryBgm = userSrc || 'audio/Technology-Song.wav';
-  var fallbackBgm = 'audio/Music-Background.mp3';
-  var src = primaryBgm;
+  var src = userSrc || 'audio/Music-Background.mp3';
 
   var audioEl = null;
   var synthCtx = null;
@@ -35,8 +35,10 @@
   var fileOk = null;
   var tickTimer = null;
   var userWantsSound = false;
-  /** Paso de volumen con teclado numérico (mismo criterio que el gestor David). */
-  var NUMPAD_VOL_STEP = 5;
+  /** Paso de volumen con teclado numérico (alineado a ±10% de los botones). */
+  var NUMPAD_VOL_STEP = 10;
+  /** Evita doble resume cuando visibility + focus disparan seguido. */
+  var resumeBgmTimer = null;
 
   var tabId = 't' + Math.random().toString(36).slice(2) + Date.now();
   var bc = null;
@@ -61,7 +63,7 @@
 
   function defaultMusicPercent() {
     if (cfg.volume != null) return Math.min(100, Math.max(0, Math.round(Number(cfg.volume) * 100)));
-    return 5;
+    return 10;
   }
 
   function getMusicVolume() {
@@ -339,25 +341,17 @@
   function ensureAudio() {
     if (audioEl && fileOk) return Promise.resolve(true);
     return tryLoadUrl(src).then(function (ok) {
-      if (ok) return true;
-      if (!userSrc && src === primaryBgm) {
-        src = fallbackBgm;
-        return tryLoadUrl(src).then(function (ok2) {
-          if (!ok2) {
-            fileOk = false;
-            audioEl = null;
-          }
-          return ok2;
-        });
+      if (!ok) {
+        fileOk = false;
+        audioEl = null;
       }
-      fileOk = false;
-      audioEl = null;
-      return false;
+      return ok;
     });
   }
 
   function applySeekFromStorage() {
     if (!audioEl || !fileOk) return;
+    if (audioEl.readyState < 1) return;
     var sync = readSync();
     if (!sync || sync.src !== src) return;
     var seek = computeSeekSeconds(sync);
@@ -387,9 +381,6 @@
         savePlayingState(true);
         updateBtn();
       }).catch(function () {
-        try {
-          audioEl.pause();
-        } catch (_) {}
         updateBtn();
       });
     } else {
@@ -447,16 +438,39 @@
     }
   }
 
-  function onBecameVisible() {
+  function scheduleResumeBgm() {
+    if (isMutedPref() || !userWantsSound) return;
+    if (resumeBgmTimer) clearTimeout(resumeBgmTimer);
+    resumeBgmTimer = setTimeout(function () {
+      resumeBgmTimer = null;
+      resumeBgmFromHidden();
+    }, 60);
+  }
+
+  /** Misma idea que sistema-cotizacion-web: al volver a visible/foco, empujar play sin pausar en el catch. */
+  function resumeBgmFromHidden() {
     if (isMutedPref() || !userWantsSound) return;
     ensureAudio().then(function (ok) {
       if (!ok || !audioEl) {
         if (userWantsSound && !isMutedPref()) tryPlayFallback();
         return;
       }
+      audioEl.muted = false;
       applySeekFromStorage();
-      tryPlayMp3();
-      startTick();
+      var p = audioEl.play();
+      if (p && p.then) {
+        p.then(function () {
+          applyMusicVolumeToOutputs();
+          savePlayingState(true);
+          updateBtn();
+          startTick();
+        }).catch(function () {});
+      } else {
+        applyMusicVolumeToOutputs();
+        savePlayingState(true);
+        updateBtn();
+        startTick();
+      }
     });
   }
 
@@ -669,12 +683,13 @@
     });
 
     document.addEventListener('visibilitychange', function () {
-      if (document.visibilityState === 'visible') {
-        onBecameVisible();
-      }
+      if (document.visibilityState === 'visible') scheduleResumeBgm();
     });
     window.addEventListener('focus', function () {
-      onBecameVisible();
+      scheduleResumeBgm();
+    });
+    window.addEventListener('pageshow', function (ev) {
+      if (ev.persisted) scheduleResumeBgm();
     });
 
     window.addEventListener(

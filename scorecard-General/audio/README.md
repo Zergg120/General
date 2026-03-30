@@ -1,10 +1,10 @@
 # Música ambiental
 
-El reproductor intenta primero **`Technology-Song.wav`** (misma pista que el gestor David / `sistema-cotizacion-web`); si no carga, usa **`Music-Background.mp3`**. También puedes forzar una sola URL con `window.SCORECARD_AUDIO = { src: 'audio/…' }` antes de `scorecard-audio.js`.
+El reproductor usa por defecto **`Music-Background.mp3`** en esta carpeta (puedes sustituirlo manteniendo el nombre o cambiando `window.SCORECARD_AUDIO.src` antes de `scorecard-audio.js`).
 
 - Pistas **libres de derechos**: [Pixabay Music](https://pixabay.com/music/search/corporate/) o similar.
-- Volumen música: **~5%** por defecto (como el gestor David); **Num+** / **Num−** del teclado numérico suben/bajan **5%** (fuera de campos de texto). Bajo la bocina: **flecha** (**▲** / **▼**), botones **−** y **+** (±**10%**), píldoras y **%**. Panel cerrado la primera vez; `scorecard_audio_vol_ui_expanded` y `scorecard_audio_music_volume`. Clics UI y voz IA al **30%** (otros scripts).
-- **Continuidad**: la posición se guarda en el navegador; al refrescar u otra página del mismo sitio, la música **sigue el hilo** en la medida que permite un sitio estático (cada página vuelve a cargar el MP3; con **precarga** + `canplay` el salto es mínimo).
+- Volumen música: **~10%** por defecto; **Num+** / **Num−** del teclado numérico suben/bajan **10%** (fuera de campos de texto). Bajo la bocina: **flecha** (**▲** / **▼**), botones **−** y **+** (±**10%**), píldoras y **%**. Panel cerrado la primera vez; `scorecard_audio_vol_ui_expanded` y `scorecard_audio_music_volume`. Clics UI y voz IA al **30%** (otros scripts).
+- **Continuidad y volver a la pestaña**: la posición se guarda en `localStorage`; al volver desde portada, otra pestaña o el historial (bfcache), el script **reanuda** el MP3 como en `sistema-cotizacion-web` (`play()` tras visible/foco; sin forzar `seek` antes de tener metadata, para evitar cortes o “trabado”).
 - **Por defecto** la preferencia es **sonido encendido**; el usuario puede silenciar con la bocina. Muchos navegadores piden **un gesto** (clic/tecla) antes de reproducir: el **primer** clic en la página también inicia la música.
 - Si el MP3 **no** carga, se usa un **tono sintético** muy suave (Web Audio).
 
