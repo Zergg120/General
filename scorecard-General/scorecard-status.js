@@ -31,8 +31,10 @@
   }
 
   function tickClock() {
-    var el = document.getElementById('scorecard-live-clock');
-    if (el) el.textContent = formatLiveClock(new Date());
+    var nodes = document.querySelectorAll('.scorecard-live-clock');
+    if (!nodes || !nodes.length) return;
+    var txt = formatLiveClock(new Date());
+    for (var i = 0; i < nodes.length; i++) nodes[i].textContent = txt;
   }
 
   function todayKey() {
@@ -69,14 +71,16 @@
       (online ? 'En línea' : 'Sin conexión') +
       '</span>' +
       '<span class="scorecard-status-sep" aria-hidden="true"></span>' +
-      '<span class="scorecard-status-clock-wrap"><strong id="scorecard-live-clock" class="scorecard-status-clock"></strong></span>';
+      '<span class="scorecard-status-clock-wrap"><strong class="scorecard-status-clock scorecard-live-clock"></strong></span>';
   }
 
   function mount() {
     var mountEl = document.getElementById('scorecard-status-mount');
     if (!mountEl) return;
-    // Evita duplicar la barra si el script corre más de una vez.
-    if (mountEl.querySelector && mountEl.querySelector('.scorecard-status-bar')) return;
+    // Estado final determinista: si por cualquier razón quedó duplicado, limpiamos y dejamos solo una barra.
+    try {
+      mountEl.textContent = '';
+    } catch (_) {}
     var bar = document.createElement('div');
     bar.className = 'scorecard-status-bar';
     bar.setAttribute('role', 'region');
