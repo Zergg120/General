@@ -17,7 +17,7 @@
     </filter>
   </defs>
 
-  <!-- Fondo transparente fuera del círculo -->
+  <!-- Fondo transparente fuera del cï¿½rculo -->
   <circle cx="29" cy="29" r="28" fill="url(#g)"/>
 
   <!-- Robot -->

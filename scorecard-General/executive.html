@@ -52,16 +52,6 @@
   <script src="scorecard-charts.js?v=20250324f" defer></script>
   <script src="scorecard-live.js?v=20250324f" defer></script>
   <script src="scorecard-audio.js?v=20260330f" defer></script>
-  <script>
-    (function () {
-      // Si abren este HTML directo, redirigir al contenedor para que la música no se corte entre módulos.
-      try {
-        if (window.top === window && location.pathname && !/portal\.html$/i.test(location.pathname)) {
-          location.replace('portal.html?view=executive');
-        }
-      } catch (_) {}
-    })();
-  </script>
   <style>
     /* === Marca blanca (cliente): edita también window.SCORECARD_BRAND en scorecard-app.js === */
     :root {
@@ -832,6 +822,11 @@
       user-select: none;
     }
 
+    /* Tabs shell (una sola página con secciones) */
+    .score-tabs { display: flex; gap: 0.35rem; flex-wrap: wrap; align-items: center; }
+    .score-tab.is-active { background: rgba(61, 139, 253, 0.18); border-color: rgba(61, 139, 253, 0.35); }
+    .score-view[hidden] { display: none !important; }
+
     #asst-fab:hover { transform: scale(1.06); box-shadow: 0 16px 48px rgba(61, 139, 253, 0.45); }
 
     #asst-drawer {
@@ -1573,11 +1568,77 @@
       if (document.readyState === 'complete') finish();
     })();
   </script>
+  <script>
+    (function () {
+      'use strict';
+      function showView(view) {
+        var views = document.querySelectorAll('.score-view[data-view]');
+        for (var i = 0; i < views.length; i++) {
+          views[i].hidden = views[i].getAttribute('data-view') !== view;
+        }
+        var tabs = document.querySelectorAll('.score-tab[data-view]');
+        for (var ti = 0; ti < tabs.length; ti++) {
+          var isOn = tabs[ti].getAttribute('data-view') === view;
+          tabs[ti].classList.toggle('is-active', isOn);
+          tabs[ti].setAttribute('aria-selected', isOn ? 'true' : 'false');
+        }
+        try { localStorage.setItem('scorecard_active_view', view); } catch (_) {}
+      }
+
+      function openTour(open) {
+        var dlg = document.getElementById('tour-dialog');
+        if (!dlg) return;
+        dlg.hidden = !open;
+        dlg.setAttribute('aria-hidden', open ? 'false' : 'true');
+        if (open) dlg.focus();
+      }
+
+      document.addEventListener('click', function (e) {
+        var t = e.target;
+        if (t && t.closest) {
+          var tab = t.closest('.score-tab[data-view]');
+          if (tab) {
+            e.preventDefault();
+            showView(tab.getAttribute('data-view'));
+            return;
+          }
+        }
+      });
+
+      document.addEventListener('click', function (e) {
+        var t = e.target;
+        if (t && t.getAttribute) {
+          if (t.id === 'btn-tour' || t.id === 'btn-tour-cta') { e.preventDefault(); openTour(true); }
+          if (t.id === 'tour-close' || t.id === 'tour-ok') { e.preventDefault(); openTour(false); }
+        }
+      }, true);
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') openTour(false);
+      });
+
+      document.addEventListener('DOMContentLoaded', function () {
+        var v = 'inicio';
+        try {
+          var stored = localStorage.getItem('scorecard_active_view');
+          if (stored) v = stored;
+        } catch (_) {}
+        showView(v);
+        document.addEventListener('click', function (e) {
+          var t = e.target;
+          if (t && t.getAttribute && t.getAttribute('data-jump-view')) {
+            e.preventDefault();
+            showView(t.getAttribute('data-jump-view'));
+          }
+        });
+      });
+    })();
+  </script>
   <div class="shell">
     <div id="scorecard-status-mount"></div>
     <header class="top">
       <div class="brand">
-        <span class="eyebrow" id="brand-eyebrow">Proyecto</span>
+        <span class="eyebrow" id="brand-eyebrow">2BI</span>
         <h1 id="brand-title">Scorecard General</h1>
         <p class="subtitle">
           Indicadores dummy por área, animaciones al scroll, tema claro/oscuro, buscador de KPIs,
@@ -1604,7 +1665,13 @@
         </div>
       </div>
       <div class="action-bar">
-        <a href="portal.html?view=home" class="btn-soft" title="Volver a la portada del portal (sin cortar música)">Portada</a>
+        <div class="score-tabs" role="tablist" aria-label="Secciones">
+          <button type="button" class="btn-soft score-tab is-active" data-view="inicio" role="tab" aria-selected="true">Inicio</button>
+          <button type="button" class="btn-soft score-tab" data-view="ejecutivo" role="tab" aria-selected="false">Ejecutivo</button>
+          <button type="button" class="btn-soft score-tab" data-view="tactical" role="tab" aria-selected="false">Táctico</button>
+          <button type="button" class="btn-soft score-tab" data-view="operaciones" role="tab" aria-selected="false">Operaciones</button>
+          <button type="button" class="btn-soft score-tab" data-view="oee" role="tab" aria-selected="false">OEE</button>
+        </div>
         <div class="search-kpi">
           <input type="search" id="kpi-search" placeholder="Buscar KPI o métrica…" autocomplete="off" aria-label="Filtrar tarjetas KPI" />
         </div>
@@ -1613,10 +1680,34 @@
         <button type="button" class="btn-soft" id="btn-modules" title="Mostrar u ocultar bloques del scorecard">Módulos</button>
         <button type="button" class="btn-soft" id="btn-demo" title="Modo presentación: tipografía grande y sin badge demo" aria-pressed="false">Presentación</button>
         <button type="button" class="btn-soft" id="btn-cmd" title="Paleta de comandos">⌘K Buscar</button>
+        <button type="button" class="icon-btn" id="btn-tour" title="Tour (¿qué hace cada pestaña?)">?</button>
+        <button type="button" class="icon-btn" id="btn-tour" title="Tour (¿qué hace cada pestaña?)">?</button>
         <button type="button" class="icon-btn" id="btn-theme" title="Tema claro / oscuro">☼</button>
         <button type="button" class="icon-btn" id="btn-print" title="Imprimir / PDF">⎙</button>
       </div>
     </header>
+
+    <!-- Vista Inicio -->
+    <section class="section reveal score-view" id="view-inicio" data-view="inicio" aria-label="Inicio">
+      <div class="hero-card">
+        <div class="inner">
+          <div class="hero-meta">
+            <span class="badge-live">EN LÍNEA</span>
+            <span class="badge-mini">2BI</span>
+          </div>
+          <h2 class="hero-title">2BI — Tablero</h2>
+          <p class="hero-sub">
+            Todo en una sola página (pestañas). La música no se corta al cambiar de sección. Usa <strong>Ctrl+K</strong> para buscar acciones.
+          </p>
+          <div class="hero-actions">
+            <button type="button" class="btn-solid" data-jump-view="ejecutivo">Entrar al ejecutivo</button>
+            <button type="button" class="btn-soft" id="btn-tour-cta">Ver tour</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="score-view" id="view-ejecutivo" data-view="ejecutivo" hidden>
 
     <!-- Reporte mensual (tabla + tendencias, datos demo) -->
     <section class="section reveal" id="sec-covia" data-module="covia" aria-label="Reporte mensual tipo scorecard">
@@ -2028,6 +2119,62 @@
         </article>
       </div>
     </section>
+
+    </div>
+
+    <section class="section reveal score-view" id="view-tactical" data-view="tactical" hidden aria-label="Táctico">
+      <div class="section-head">
+        <div class="section-head__left">
+          <h2 class="section-title">Táctico</h2>
+          <span class="section-hint">Matriz táctica embebida (sin cortar música).</span>
+        </div>
+      </div>
+      <iframe src="tactical.html" title="Táctico" style="width:100%;height:78vh;border:0;border-radius:14px;background:var(--bg-card)"></iframe>
+    </section>
+
+    <section class="section reveal score-view" id="view-operaciones" data-view="operaciones" hidden aria-label="Operaciones">
+      <div class="section-head">
+        <div class="section-head__left">
+          <h2 class="section-title">Operaciones</h2>
+          <span class="section-hint">Reporte operativo embebido.</span>
+        </div>
+      </div>
+      <iframe src="operaciones.html" title="Operaciones" style="width:100%;height:78vh;border:0;border-radius:14px;background:var(--bg-card)"></iframe>
+    </section>
+
+    <section class="section reveal score-view" id="view-oee" data-view="oee" hidden aria-label="OEE">
+      <div class="section-head">
+        <div class="section-head__left">
+          <h2 class="section-title">OEE</h2>
+          <span class="section-hint">Planta / OEE embebido.</span>
+        </div>
+      </div>
+      <iframe src="oee.html" title="OEE" style="width:100%;height:78vh;border:0;border-radius:14px;background:var(--bg-card)"></iframe>
+    </section>
+
+    <div class="module-dialog" id="tour-dialog" tabindex="-1" hidden aria-hidden="true">
+      <div class="module-dialog__card" role="dialog" aria-modal="true" aria-label="Tour de pestañas">
+        <div class="module-dialog__head">
+          <strong>Tour — ¿qué hace cada pestaña?</strong>
+          <button type="button" class="icon-btn" id="tour-close" title="Cerrar">✕</button>
+        </div>
+        <div class="module-dialog__body">
+          <p class="drill-p" style="margin-top:0">
+            Esta versión es “tipo Suminregio”: una sola página, varias pestañas. La música y los controles (bocina, Ctrl+K, IA) se mantienen.
+          </p>
+          <ul class="drill-list">
+            <li><strong>Inicio</strong>: mini portada.</li>
+            <li><strong>Ejecutivo</strong>: KPIs, tabla mensual, gráficas, exportación, IA.</li>
+            <li><strong>Táctico</strong>: matriz táctica (stub) embebida.</li>
+            <li><strong>Operaciones</strong>: reporte operativo (stub) embebido.</li>
+            <li><strong>OEE</strong>: planta/OEE (stub) embebido.</li>
+          </ul>
+        </div>
+        <div class="module-dialog__foot">
+          <button type="button" class="btn-soft" id="tour-ok">Entendido</button>
+        </div>
+      </div>
+    </div>
 
     <footer>
       <div>Scorecard General — plantilla HTML · KPIs ficticios · Asistente local + voz + IA opcional · <span id="footer-year">2026</span></div>
