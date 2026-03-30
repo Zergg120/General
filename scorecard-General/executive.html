@@ -2102,14 +2102,40 @@
 
   <!-- Asistente -->
   <button type="button" id="asst-fab" aria-label="Abrir asistente" title="Asistente">
-    <img
-      src="Animated-Gifts/IA-face2.svg?v=20260330g"
-      alt=""
-      class="asst-fab__face"
-      width="58"
-      height="58"
-      decoding="async"
-    />
+    <svg class="asst-fab__face" width="58" height="58" viewBox="0 0 58 58" role="img" aria-hidden="true" focusable="false">
+      <defs>
+        <radialGradient id="asstG" cx="32%" cy="28%" r="76%">
+          <stop offset="0" stop-color="#3d8bfd" />
+          <stop offset="1" stop-color="#2356d6" />
+        </radialGradient>
+        <linearGradient id="asstM" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#f3f6ff" />
+          <stop offset="1" stop-color="#d8e2ff" />
+        </linearGradient>
+        <linearGradient id="asstS" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#0f1630" stop-opacity=".9" />
+          <stop offset="1" stop-color="#0b1226" stop-opacity=".9" />
+        </linearGradient>
+        <filter id="asstShadow" x="-30%" y="-30%" width="160%" height="160%">
+          <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity=".25" />
+        </filter>
+      </defs>
+      <circle cx="29" cy="29" r="28" fill="url(#asstG)" />
+      <g filter="url(#asstShadow)">
+        <path d="M29 9.6c0-1.9 1.2-3.2 2.8-3.2s2.8 1.3 2.8 3.2-1.2 3.2-2.8 3.2S29 11.5 29 9.6z" fill="#ffb020" />
+        <path d="M31.8 12.3v3.7" stroke="#cfe0ff" stroke-width="2" stroke-linecap="round" />
+        <rect x="16" y="15" width="26" height="22" rx="7" fill="url(#asstM)" />
+        <rect x="16" y="15" width="26" height="22" rx="7" fill="none" stroke="#b9c8ff" stroke-width="1.2" opacity=".8" />
+        <rect x="19" y="20" width="20" height="10" rx="5" fill="url(#asstS)" />
+        <circle cx="25" cy="25" r="2.2" fill="#7cf3ff" />
+        <circle cx="33" cy="25" r="2.2" fill="#7cf3ff" />
+        <path d="M23.4 27.8c1.2 1.6 3.1 2.5 5.6 2.5s4.4-.9 5.6-2.5" fill="none" stroke="#6ee7ff" stroke-width="1.6" stroke-linecap="round" opacity=".75" />
+        <path d="M20 37.5c0-4.2 3.8-7.5 9-7.5s9 3.3 9 7.5v5.2c0 2.2-1.8 4-4 4H24c-2.2 0-4-1.8-4-4z" fill="#eef3ff" />
+        <path d="M24 41.2h10" stroke="#b7c7ff" stroke-width="1.6" stroke-linecap="round" opacity=".85" />
+        <path d="M17 38.6c-2.2 1.1-3.6 2.8-3.6 4.7 0 1.5 1.2 2.7 2.7 2.7h3" fill="none" stroke="#e7efff" stroke-width="3" stroke-linecap="round" />
+        <path d="M41 38.6c2.2 1.1 3.6 2.8 3.6 4.7 0 1.5-1.2 2.7-2.7 2.7h-3" fill="none" stroke="#e7efff" stroke-width="3" stroke-linecap="round" />
+      </g>
+    </svg>
   </button>
   <aside id="asst-drawer" aria-label="Panel asistente">
     <div class="asst-head">

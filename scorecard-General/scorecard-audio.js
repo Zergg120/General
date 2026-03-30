@@ -24,43 +24,19 @@
   var src = userSrc || 'audio/Music-Background.mp3';
 
   var audioEl = null;
-  var synthCtx = null;
-  var synthOsc = [];
-  var synthMasterGain = null;
   var btn = null;
   var volPctEl = null;
   var pillNodes = null;
   var volChevronBtn = null;
   var volPanelEl = null;
-  var fileOk = null;
-  var tickTimer = null;
   var userWantsSound = false;
   /** Paso de volumen con teclado numérico (alineado a ±10% de los botones). */
   var NUMPAD_VOL_STEP = 10;
-  /** Evita doble resume cuando visibility + focus disparan seguido. */
-  var resumeBgmTimer = null;
-  /** Tras cargar una página nueva, ignorar resume hasta que termine el arranque (evita play() doble con mount). */
-  var resumeAfterBootOk = false;
+  var fileOk = false;
 
-  var tabId = 't' + Math.random().toString(36).slice(2) + Date.now();
-  var bc = null;
-  try {
-    if (typeof BroadcastChannel !== 'undefined') {
-      bc = new BroadcastChannel('scorecard-audio-v1');
-      bc.onmessage = function (ev) {
-        var d = ev.data;
-        if (!d || d.from === tabId) return;
-        if (d.type === 'pause') {
-          if (audioEl && !audioEl.paused) {
-            try {
-              audioEl.pause();
-            } catch (_) {}
-          }
-          stopSynth();
-        }
-      };
-    }
-  } catch (_) {}
+  // Nota importante: en Scorecard el portal navega por páginas HTML distintas (no SPA).
+  // En móviles, intentar “sincronizar” tiempo/estado entre páginas suele causar trabas.
+  // Estrategia estable (como David, pero multi-página): Audio simple + gesto para desbloquear + play() en visible/pageshow.
 
   function defaultMusicPercent() {
     if (cfg.volume != null) return Math.min(100, Math.max(0, Math.round(Number(cfg.volume) * 100)));
@@ -141,17 +117,6 @@
   function applyMusicVolumeToOutputs() {
     var v = getMusicVolume();
     if (audioEl) audioEl.volume = v;
-    if (synthMasterGain) {
-      try {
-        synthMasterGain.gain.value = v * 0.32;
-      } catch (_) {}
-    }
-  }
-
-  function broadcastPauseOthers() {
-    try {
-      if (bc) bc.postMessage({ type: 'pause', from: tabId });
-    } catch (_) {}
   }
 
   function migratePrefsOnce() {
@@ -167,10 +132,6 @@
       }
     } catch (_) {}
   }
-
-  // Nota: En Scorecard el portal navega por páginas HTML distintas (no SPA).
-  // En algunos móviles, persistir/forzar `currentTime` entre cargas puede trabar el MP3.
-  // Para estabilidad, aquí NO sincronizamos posición entre páginas; solo mantenemos mute/volumen.
 
   function isMutedPref() {
     try {
@@ -188,219 +149,37 @@
     } catch (_) {}
   }
 
-  function stopSynth() {
-    synthOsc.forEach(function (o) {
-      try {
-        o.stop();
-      } catch (_) {}
-    });
-    synthOsc = [];
-    synthMasterGain = null;
-    if (synthCtx) {
-      try {
-        synthCtx.close();
-      } catch (_) {}
-      synthCtx = null;
-    }
-  }
-
-  function startSynth() {
-    stopSynth();
-    var Ctx = window.AudioContext || window.webkitAudioContext;
-    if (!Ctx) return;
-    synthCtx = new Ctx();
-    var master = synthCtx.createGain();
-    synthMasterGain = master;
-    master.gain.value = getMusicVolume() * 0.32;
-    var freqs = [196, 247, 293.66];
-    freqs.forEach(function (hz, i) {
-      var o = synthCtx.createOscillator();
-      o.type = 'sine';
-      o.frequency.value = hz;
-      var g = synthCtx.createGain();
-      g.gain.value = 0.14 / (i + 1);
-      o.connect(g);
-      g.connect(master);
-      o.start();
-      synthOsc.push(o);
-    });
-    master.connect(synthCtx.destination);
-    if (synthCtx.state === 'suspended') synthCtx.resume();
-  }
-
-  function stopPlaybackHard() {
+  function onUserMute() {
+    userWantsSound = false;
     if (audioEl) {
       try {
         audioEl.pause();
       } catch (_) {}
     }
-    stopSynth();
   }
 
-  function savePlayingState() {}
-
-  function onUserMute() {
-    userWantsSound = false;
-    stopPlaybackHard();
-    savePlayingState(false);
+  function ensureAudioOnce() {
+    if (audioEl) return;
+    var a = new Audio();
+    a.loop = true;
+    a.preload = 'auto';
+    a.volume = getMusicVolume();
+    if (cfg.crossOrigin) a.crossOrigin = cfg.crossOrigin;
+    a.src = src;
+    audioEl = a;
+    fileOk = true;
   }
 
-  function tryLoadUrl(url) {
-    return new Promise(function (resolve) {
-      var a = new Audio();
-      a.loop = true;
-      a.preload = 'auto';
-      a.volume = getMusicVolume();
-      if (cfg.crossOrigin) a.crossOrigin = cfg.crossOrigin;
-      a.src = url;
-      var done = false;
-      function fin(ok) {
-        if (done) return;
-        done = true;
-        if (ok) {
-          src = url;
-          fileOk = true;
-          audioEl = a;
-          resolve(true);
-        } else {
-          resolve(false);
-        }
-      }
-      a.addEventListener(
-        'canplay',
-        function () {
-          fin(true);
-        },
-        { once: true }
-      );
-      a.addEventListener(
-        'error',
-        function () {
-          fin(false);
-        },
-        { once: true }
-      );
-      a.load();
-      setTimeout(function () {
-        if (!done) fin(false);
-      }, 6000);
-    });
-  }
-
-  function ensureAudio() {
-    if (audioEl && fileOk) return Promise.resolve(true);
-    return tryLoadUrl(src).then(function (ok) {
-      if (!ok) {
-        fileOk = false;
-        audioEl = null;
-      }
-      return ok;
-    });
-  }
-
-  function applySeekFromStorage() {
-    // Intencionalmente vacío (ver nota arriba).
-  }
-
-  function tryPlayMp3() {
+  function tryPlay(reason) {
+    if (isMutedPref() || !userWantsSound) return;
+    ensureAudioOnce();
     if (!audioEl || !fileOk) return;
-    if (!userWantsSound || isMutedPref()) return;
-    if (!audioEl.paused) {
-      applyMusicVolumeToOutputs();
-      return;
-    }
-
-    audioEl.volume = getMusicVolume();
     audioEl.muted = false;
-
-    broadcastPauseOthers();
-
+    audioEl.volume = getMusicVolume();
     var p = audioEl.play();
-    if (p && p.then) {
-      p.then(function () {
-        applyMusicVolumeToOutputs();
-        updateBtn();
-      }).catch(function () {
-        updateBtn();
-      });
-    } else {
-      applyMusicVolumeToOutputs();
-      updateBtn();
-    }
-  }
-
-  function tryPlayFallback() {
-    if (!userWantsSound || isMutedPref()) return;
-    broadcastPauseOthers();
-    startSynth();
-    if (!synthCtx) {
-      updateBtn();
-      return;
-    }
-    if (synthCtx.state === 'suspended') {
-      synthCtx.resume().then(function () {
-        applyMusicVolumeToOutputs();
-        updateBtn();
-      }).catch(function () {
-        updateBtn();
-      });
-    } else {
-      applyMusicVolumeToOutputs();
-      updateBtn();
-    }
-  }
-
-  function startPlayback() {
-    ensureAudio().then(function (ok) {
-      if (!userWantsSound || isMutedPref()) return;
-      if (ok && audioEl) {
-        tryPlayMp3();
-      } else {
-        tryPlayFallback();
-      }
-    });
-  }
-
-  function startTick() {
-    // Sincronización de posición desactivada para evitar trabas al navegar entre páginas.
-  }
-
-  function stopTick() {
-    tickTimer = null;
-  }
-
-  function scheduleResumeBgm() {
-    if (!resumeAfterBootOk) return;
-    if (isMutedPref() || !userWantsSound) return;
-    if (resumeBgmTimer) clearTimeout(resumeBgmTimer);
-    resumeBgmTimer = setTimeout(function () {
-      resumeBgmTimer = null;
-      resumeBgmFromHidden();
-    }, 120);
-  }
-
-  /** Misma idea que sistema-cotizacion-web: al volver a visible/foco, empujar play sin pausar en el catch. */
-  function resumeBgmFromHidden() {
-    if (isMutedPref() || !userWantsSound) return;
-    ensureAudio().then(function (ok) {
-      if (!ok || !audioEl) {
-        if (userWantsSound && !isMutedPref()) tryPlayFallback();
-        return;
-      }
-      audioEl.muted = false;
-      var p = audioEl.play();
-      if (p && p.then) {
-        p.then(function () {
-          applyMusicVolumeToOutputs();
-          updateBtn();
-          startTick();
-        }).catch(function () {});
-      } else {
-        applyMusicVolumeToOutputs();
-        updateBtn();
-        startTick();
-      }
-    });
+    if (p && p.catch) p.catch(function () {});
+    applyMusicVolumeToOutputs();
+    updateBtn();
   }
 
   var audioWrapEl = null;
@@ -420,12 +199,12 @@
 
   function onUserGestureResume() {
     if (!userWantsSound || isMutedPref()) return;
+    ensureAudioOnce();
     if (audioEl && fileOk && !audioEl.paused) {
       applyMusicVolumeToOutputs();
       return;
     }
-    startPlayback();
-    startTick();
+    tryPlay('gesture');
   }
 
   function mount() {
@@ -557,14 +336,7 @@
       unlockAudioFirstGesture._done = true;
       if (isMutedPref()) return;
       userWantsSound = true;
-      ensureAudio().then(function (ok) {
-        if (ok) {
-          tryPlayMp3();
-          startTick();
-        } else if (!isMutedPref()) {
-          tryPlayFallback();
-        }
-      });
+      tryPlay('unlock');
     }
     document.addEventListener('click', unlockAudioFirstGesture, { once: true, capture: true });
     document.addEventListener('pointerdown', unlockAudioFirstGesture, { once: true, capture: true });
@@ -585,43 +357,24 @@
           setMutedPref(false);
           userWantsSound = true;
           updateBtn();
-          startPlayback();
-          startTick();
+          tryPlay('numpad');
         }
       },
       true
     );
 
-    ensureAudio().then(function (ok) {
-      if (!ok || !audioEl) return;
-      applyMusicVolumeToOutputs();
-      audioEl.addEventListener('loadedmetadata', function () {
-        applySeekFromStorage();
-      });
-      audioEl.addEventListener('play', function () {
-        startTick();
-      });
-      audioEl.addEventListener('pause', function () {
-        // no-op
-      });
-      if (userWantsSound && !isMutedPref()) {
-        startPlayback();
-        startTick();
-      }
-    });
+    ensureAudioOnce();
+    applyMusicVolumeToOutputs();
+    if (userWantsSound && !isMutedPref()) {
+      tryPlay('boot');
+    }
 
     document.addEventListener('visibilitychange', function () {
-      if (document.visibilityState === 'visible') scheduleResumeBgm();
+      if (document.visibilityState === 'visible') tryPlay('visible');
     });
-    window.addEventListener('pageshow', function (ev) {
-      if (ev.persisted) scheduleResumeBgm();
+    window.addEventListener('pageshow', function () {
+      tryPlay('pageshow');
     });
-
-    // Sin persistencia de posición entre páginas.
-
-    setTimeout(function () {
-      resumeAfterBootOk = true;
-    }, 450);
   }
 
   if (document.readyState === 'loading') {
