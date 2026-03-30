@@ -2,7 +2,10 @@
  * Música ambiental + bocina + control de volumen (solo música de fondo).
  * Clics de UI y voz del asistente van aparte (30% en sus scripts).
  *
- * Opcional: window.SCORECARD_AUDIO = { src, volume (0–1, default música 10%), crossOrigin };
+ * Opcional: window.SCORECARD_AUDIO = { src, volume (0–1, default música ~5% como gestor David), crossOrigin };
+ *
+ * Misma idea que sistema-cotizacion-web: WAV `Technology-Song.wav` si existe; si falla, MP3 de respaldo.
+ * Primer clic / tecla desbloquea audio; Num+ / Num− ajustan volumen (±5%).
  */
 (function () {
   'use strict';
@@ -15,8 +18,10 @@
   var STORAGE_VOL_UI_EXPANDED = 'scorecard_audio_vol_ui_expanded';
 
   var cfg = window.SCORECARD_AUDIO || {};
-  var defaultSrc = 'audio/Music-Background.mp3';
-  var src = cfg.src != null ? String(cfg.src) : defaultSrc;
+  var userSrc = cfg.src != null ? String(cfg.src) : null;
+  var primaryBgm = userSrc || 'audio/Technology-Song.wav';
+  var fallbackBgm = 'audio/Music-Background.mp3';
+  var src = primaryBgm;
 
   var audioEl = null;
   var synthCtx = null;
@@ -30,7 +35,8 @@
   var fileOk = null;
   var tickTimer = null;
   var userWantsSound = false;
-  var useMutedAutoplayOnce = true;
+  /** Paso de volumen con teclado numérico (mismo criterio que el gestor David). */
+  var NUMPAD_VOL_STEP = 5;
 
   var tabId = 't' + Math.random().toString(36).slice(2) + Date.now();
   var bc = null;
@@ -55,7 +61,7 @@
 
   function defaultMusicPercent() {
     if (cfg.volume != null) return Math.min(100, Math.max(0, Math.round(Number(cfg.volume) * 100)));
-    return 10;
+    return 5;
   }
 
   function getMusicVolume() {
@@ -288,26 +294,24 @@
     savePlayingState(false);
   }
 
-  function ensureAudio() {
-    if (audioEl && fileOk) return Promise.resolve(true);
-    if (fileOk === false) return Promise.resolve(false);
+  function tryLoadUrl(url) {
     return new Promise(function (resolve) {
       var a = new Audio();
       a.loop = true;
       a.preload = 'auto';
       a.volume = getMusicVolume();
       if (cfg.crossOrigin) a.crossOrigin = cfg.crossOrigin;
-      a.src = src;
+      a.src = url;
       var done = false;
       function fin(ok) {
         if (done) return;
         done = true;
-        fileOk = ok;
         if (ok) {
+          src = url;
+          fileOk = true;
           audioEl = a;
           resolve(true);
         } else {
-          audioEl = null;
           resolve(false);
         }
       }
@@ -332,6 +336,26 @@
     });
   }
 
+  function ensureAudio() {
+    if (audioEl && fileOk) return Promise.resolve(true);
+    return tryLoadUrl(src).then(function (ok) {
+      if (ok) return true;
+      if (!userSrc && src === primaryBgm) {
+        src = fallbackBgm;
+        return tryLoadUrl(src).then(function (ok2) {
+          if (!ok2) {
+            fileOk = false;
+            audioEl = null;
+          }
+          return ok2;
+        });
+      }
+      fileOk = false;
+      audioEl = null;
+      return false;
+    });
+  }
+
   function applySeekFromStorage() {
     if (!audioEl || !fileOk) return;
     var sync = readSync();
@@ -352,39 +376,23 @@
 
     applySeekFromStorage();
     audioEl.volume = getMusicVolume();
-
-    var tryMuted = useMutedAutoplayOnce;
-    if (tryMuted) {
-      audioEl.muted = true;
-    } else {
-      audioEl.muted = false;
-    }
+    audioEl.muted = false;
 
     broadcastPauseOthers();
 
     var p = audioEl.play();
     if (p && p.then) {
       p.then(function () {
-        if (tryMuted) {
-          audioEl.muted = false;
-          useMutedAutoplayOnce = false;
-        }
         applyMusicVolumeToOutputs();
         savePlayingState(true);
         updateBtn();
       }).catch(function () {
-        audioEl.muted = false;
-        useMutedAutoplayOnce = false;
         try {
           audioEl.pause();
         } catch (_) {}
         updateBtn();
       });
     } else {
-      if (tryMuted) {
-        audioEl.muted = false;
-        useMutedAutoplayOnce = false;
-      }
       applyMusicVolumeToOutputs();
       savePlayingState(true);
       updateBtn();
@@ -473,7 +481,6 @@
       applyMusicVolumeToOutputs();
       return;
     }
-    useMutedAutoplayOnce = false;
     startPlayback();
     startTick();
   }
@@ -578,14 +585,12 @@
       if (m) {
         setMutedPref(false);
         userWantsSound = true;
-        useMutedAutoplayOnce = false;
         updateBtn();
         startPlayback();
         startTick();
       } else {
         setMutedPref(true);
         userWantsSound = false;
-        useMutedAutoplayOnce = false;
         updateBtn();
         onUserMute();
         stopTick();
@@ -603,6 +608,46 @@
 
     document.addEventListener('pointerdown', onUserGestureResume, { passive: true, capture: true });
     document.addEventListener('keydown', onUserGestureResume, { passive: true, capture: true });
+
+    function unlockAudioFirstGesture() {
+      if (unlockAudioFirstGesture._done) return;
+      unlockAudioFirstGesture._done = true;
+      if (isMutedPref()) return;
+      userWantsSound = true;
+      ensureAudio().then(function (ok) {
+        if (ok) {
+          tryPlayMp3();
+          startTick();
+        } else if (!isMutedPref()) {
+          tryPlayFallback();
+        }
+      });
+    }
+    document.addEventListener('click', unlockAudioFirstGesture, { once: true, capture: true });
+    document.addEventListener('pointerdown', unlockAudioFirstGesture, { once: true, capture: true });
+    document.addEventListener('keydown', unlockAudioFirstGesture, { once: true, capture: true });
+
+    document.addEventListener(
+      'keydown',
+      function onNumpadBgmVol(e) {
+        var t = e.target;
+        if (t && t.closest && t.closest('input, textarea, select, [contenteditable="true"]')) return;
+        if (e.code !== 'NumpadAdd' && e.code !== 'NumpadSubtract') return;
+        e.preventDefault();
+        var p = Math.round(getMusicVolume() * 100);
+        var next = e.code === 'NumpadAdd' ? p + NUMPAD_VOL_STEP : p - NUMPAD_VOL_STEP;
+        setMusicVolumePercent(next);
+        applyMusicVolumeToOutputs();
+        if (next > 0 && isMutedPref()) {
+          setMutedPref(false);
+          userWantsSound = true;
+          updateBtn();
+          startPlayback();
+          startTick();
+        }
+      },
+      true
+    );
 
     ensureAudio().then(function (ok) {
       if (!ok || !audioEl) return;
