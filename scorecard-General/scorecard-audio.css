@@ -44,6 +44,7 @@
 #scorecard-audio-wrap.scorecard-audio--header .scorecard-audio-vol-panel {
   position: absolute;
   margin-top: 0.5rem;
+  right: 0;
   padding: 0.55rem 0.6rem;
   border-radius: 12px;
   border: 1px solid var(--border, rgba(255, 255, 255, 0.12));
