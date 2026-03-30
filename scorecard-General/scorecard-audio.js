@@ -4,9 +4,10 @@
  *
  * Opcional: window.SCORECARD_AUDIO = { src, volume (0–1, default música ~10%), crossOrigin };
  *
- * Pista por defecto: `audio/Music-Background.mp3`. Reanudación al volver a la pestaña o al foco (como
- * sistema-cotizacion-web): `play()` con `.catch` vacío; no se hace `currentTime` hasta tener metadata
- * (evita que el MP3 se trabe). `pageshow` con `persisted` cubre vuelta por bfcache.
+ * Pista por defecto: `audio/Music-Background.mp3`. Reanudación al volver a la pestaña (como
+ * sistema-cotizacion-web: solo `visibilitychange`, sin `focus` en cada carga — evitaba `play()` duplicado).
+ * `play()` con `.catch` vacío; `currentTime` solo con metadata lista. `pageshow` + `persisted` = bfcache.
+ * Tras cargar página, ~450 ms sin resume automático para no competir con el arranque del reproductor.
  * Primer clic / tecla desbloquea audio; Num+ / Num− ajustan volumen (±10%).
  */
 (function () {
@@ -39,6 +40,8 @@
   var NUMPAD_VOL_STEP = 10;
   /** Evita doble resume cuando visibility + focus disparan seguido. */
   var resumeBgmTimer = null;
+  /** Tras cargar una página nueva, ignorar resume hasta que termine el arranque (evita play() doble con mount). */
+  var resumeAfterBootOk = false;
 
   var tabId = 't' + Math.random().toString(36).slice(2) + Date.now();
   var bc = null;
@@ -439,12 +442,13 @@
   }
 
   function scheduleResumeBgm() {
+    if (!resumeAfterBootOk) return;
     if (isMutedPref() || !userWantsSound) return;
     if (resumeBgmTimer) clearTimeout(resumeBgmTimer);
     resumeBgmTimer = setTimeout(function () {
       resumeBgmTimer = null;
       resumeBgmFromHidden();
-    }, 60);
+    }, 120);
   }
 
   /** Misma idea que sistema-cotizacion-web: al volver a visible/foco, empujar play sin pausar en el catch. */
@@ -685,9 +689,6 @@
     document.addEventListener('visibilitychange', function () {
       if (document.visibilityState === 'visible') scheduleResumeBgm();
     });
-    window.addEventListener('focus', function () {
-      scheduleResumeBgm();
-    });
     window.addEventListener('pageshow', function (ev) {
       if (ev.persisted) scheduleResumeBgm();
     });
@@ -714,6 +715,10 @@
         } catch (_) {}
       }
     });
+
+    setTimeout(function () {
+      resumeAfterBootOk = true;
+    }, 450);
   }
 
   if (document.readyState === 'loading') {
