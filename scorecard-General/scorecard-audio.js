@@ -195,11 +195,7 @@
     var m = isMutedPref();
     btn.setAttribute('aria-pressed', m ? 'false' : 'true');
     btn.setAttribute('aria-label', m ? 'Activar música ambiental' : 'Silenciar música');
-    btn.title = m
-      ? !isVolPanelExpanded()
-        ? 'Activar música de fondo (flecha ▼ debajo para mostrar volumen)'
-        : 'Activar música de fondo (usa + / − para el volumen)'
-      : 'Silenciar música de fondo';
+    btn.title = m ? 'Activar música de fondo (usa Num+ / Num− para volumen)' : 'Silenciar música de fondo';
     btn.textContent = m ? '🔇' : '🔊';
   }
 
@@ -233,80 +229,11 @@
     btn.setAttribute('data-no-ui-sound', '');
     updateBtn();
 
-    var volRow = document.createElement('div');
-    volRow.className = 'scorecard-audio-volrow';
-
-    var btnMinus = document.createElement('button');
-    btnMinus.type = 'button';
-    btnMinus.className = 'scorecard-audio-vol-btn scorecard-audio-vol-minus';
-    btnMinus.setAttribute('data-no-ui-sound', '');
-    btnMinus.title = 'Bajar volumen música';
-    btnMinus.setAttribute('aria-label', 'Bajar volumen de la música');
-    btnMinus.textContent = '−';
-    btnMinus.addEventListener('click', function (e) {
-      e.stopPropagation();
-      var p = Math.round(getMusicVolume() * 100);
-      setMusicVolumePercent(p - VOL_STEP);
-    });
-
-    var btnPlus = document.createElement('button');
-    btnPlus.type = 'button';
-    btnPlus.className = 'scorecard-audio-vol-btn scorecard-audio-vol-plus';
-    btnPlus.setAttribute('data-no-ui-sound', '');
-    btnPlus.title = 'Subir volumen música';
-    btnPlus.setAttribute('aria-label', 'Subir volumen de la música');
-    btnPlus.textContent = '+';
-    btnPlus.addEventListener('click', function (e) {
-      e.stopPropagation();
-      var p = Math.round(getMusicVolume() * 100);
-      setMusicVolumePercent(p + VOL_STEP);
-    });
-
-    volRow.appendChild(btnMinus);
-    volRow.appendChild(btnPlus);
-
-    var pillBar = document.createElement('div');
-    pillBar.id = 'scorecard-audio-pillbar';
-    pillBar.className = 'scorecard-audio-pillbar';
-    pillBar.setAttribute('role', 'meter');
-    pillBar.setAttribute('aria-valuemin', '0');
-    pillBar.setAttribute('aria-valuemax', '100');
-    pillBar.setAttribute('aria-label', 'Nivel de volumen de la música');
-    pillBar.setAttribute('data-no-ui-sound', '');
-
-    pillNodes = [];
-    for (var pi = 0; pi < PILL_COUNT; pi++) {
-      var pill = document.createElement('span');
-      pill.className = 'scorecard-audio-pill';
-      pill.setAttribute('aria-hidden', 'true');
-      pillBar.appendChild(pill);
-      pillNodes.push(pill);
-    }
-
-    volPctEl = document.createElement('span');
-    volPctEl.className = 'scorecard-audio-vpct';
-    volPctEl.setAttribute('data-no-ui-sound', '');
-
-    volPanelEl = document.createElement('div');
-    volPanelEl.id = 'scorecard-audio-vol-panel';
-    volPanelEl.className = 'scorecard-audio-vol-panel';
-    volPanelEl.setAttribute('data-no-ui-sound', '');
-    volPanelEl.appendChild(volRow);
-    volPanelEl.appendChild(pillBar);
-    volPanelEl.appendChild(volPctEl);
-
-    volChevronBtn = document.createElement('button');
-    volChevronBtn.type = 'button';
-    volChevronBtn.id = 'scorecard-audio-vol-chevron';
-    volChevronBtn.className = 'scorecard-audio-vol-chevron';
-    volChevronBtn.setAttribute('data-no-ui-sound', '');
-    volChevronBtn.setAttribute('aria-controls', 'scorecard-audio-vol-panel');
-    volChevronBtn.addEventListener('click', function (e) {
-      e.stopPropagation();
-      e.preventDefault();
-      setVolPanelExpanded(!isVolPanelExpanded());
-      updateBtn();
-    });
+    // UI de volumen removida (estorbaba en header). Volumen por teclado: Num+ / Num−.
+    pillNodes = null;
+    volPctEl = null;
+    volChevronBtn = null;
+    volPanelEl = null;
 
     btn.addEventListener('click', function () {
       var m = isMutedPref();
@@ -326,8 +253,6 @@
     });
 
     stack.appendChild(btn);
-    stack.appendChild(volChevronBtn);
-    stack.appendChild(volPanelEl);
     wrap.appendChild(stack);
 
     var mountEl = document.getElementById('scorecard-audio-mount');
@@ -338,8 +263,7 @@
       document.body.appendChild(wrap);
     }
 
-    syncVolPanelUi();
-    renderPillBar();
+    // Sin panel de volumen.
 
     document.addEventListener('pointerdown', onUserGestureResume, { passive: true, capture: true });
     document.addEventListener('keydown', onUserGestureResume, { passive: true, capture: true });

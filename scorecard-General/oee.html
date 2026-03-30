@@ -192,6 +192,37 @@
 
   <script>
     (function () {
+      // Modo embebido: unifica tema con la página padre (executive.html).
+      var embedded = false;
+      try { embedded = window.top && window.top !== window; } catch (_) {}
+      if (!embedded) return;
+
+      document.documentElement.style.background = 'transparent';
+      document.body.style.background = 'transparent';
+
+      var topbar = document.querySelector('.portal-topbar');
+      var back = document.querySelector('.portal-back');
+      var themeBtn = document.getElementById('portal-btn-theme');
+      if (topbar) topbar.style.display = 'none';
+      if (back) back.style.display = 'none';
+      if (themeBtn) themeBtn.style.display = 'none';
+      var mount = document.getElementById('scorecard-status-mount');
+      if (mount) mount.style.display = 'none';
+
+      function applyTheme(mode) {
+        document.body.classList.toggle('light', mode === 'light');
+      }
+      window.addEventListener('message', function (ev) {
+        var d = ev && ev.data;
+        if (!d || typeof d !== 'object') return;
+        if (d.type === 'scorecard:theme') applyTheme(d.mode);
+      });
+      applyTheme('dark');
+    })();
+  </script>
+
+  <script>
+    (function () {
       function activateTab(tab) {
         var tabs = document.querySelectorAll('.portal-oee-tab');
         var panels = document.querySelectorAll('.portal-oee-panel');
