@@ -12,6 +12,7 @@
   const elMonth = $('#covia-month');
   const elMainTitle = $('#covia-title');
   const elTbody = $('#covia-tbody');
+  const elEyebrow = $('.covia-eyebrow');
 
   if (!elYear || !elMonth || !elMainTitle || !elTbody) return;
 
@@ -110,10 +111,28 @@
     });
   }
 
+  function periodLabel(monthKey) {
+    const mk = String(monthKey).padStart(2, '0');
+    const m = DATA.months.find((x) => x.key === mk);
+    return m ? m.label : mk;
+  }
+
   function render(tabKey) {
-    const tab = DATA.tabs[tabKey] || DATA.tabs.delivery_financials;
+    const year = parseInt(elYear.value, 10) || 2024;
+    const monthKey = elMonth.value;
+    const materialize = typeof DATA.materializeTab === 'function' ? DATA.materializeTab : null;
+    const tab = materialize
+      ? materialize(tabKey, year, monthKey)
+      : DATA.tabs[tabKey] || DATA.tabs.delivery_financials;
+
     setActiveTab(tabKey);
     elMainTitle.textContent = tab.title;
+    if (elEyebrow) {
+      const ref = DATA.referencePeriod === `${year}-${String(monthKey).padStart(2, '0')}`;
+      elEyebrow.textContent = ref
+        ? `Monthly Operations Scorecard · ${year} · ${periodLabel(monthKey)} (datos de referencia)`
+        : `Monthly Operations Scorecard · ${year} · ${periodLabel(monthKey)} (variación demo)`;
+    }
 
     destroyCharts();
     elTbody.innerHTML = '';

@@ -71,6 +71,75 @@
     { key: '12', label: 'diciembre' },
   ];
 
+  /** Periodo con valores exactos del ejemplo visual (capturas). */
+  const REFERENCE_PERIOD = '2024-04';
+
+  function hash32(str) {
+    let h = 2166136261;
+    for (let i = 0; i < str.length; i++) {
+      h ^= str.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return h >>> 0;
+  }
+
+  function roundKpi(unit, v) {
+    const n = Number(v);
+    if (Number.isNaN(n)) return 0;
+    if (unit === 'Rate' || unit === 'h/MT' || unit === 'l/MT') return Math.round(n * 100) / 100;
+    if (unit === '%') return Math.round(n * 10) / 10;
+    if (unit === '$/MT' || unit === 'kWh/MT' || unit === 'mcal/MT' || unit === 'MT/day' || unit === 'Days' || unit === '#')
+      return Math.round(n);
+    return Math.round(n * 10) / 10;
+  }
+
+  function cloneKpi(k) {
+    return {
+      ...k,
+      trend: k.trend.slice(),
+    };
+  }
+
+  /**
+   * Devuelve una copia del tab lista para pintar, según año y mes.
+   * En REFERENCE_PERIOD los datos coinciden con el ejemplo; en otros meses
+   * se aplica variación determinista (demo) para que Year/Month “hagan algo” hasta conectar API.
+   */
+  function materializeTab(tabKey, year, monthKey) {
+    const tab = TABS[tabKey];
+    if (!tab) return { title: '', groups: [] };
+    const mk = String(monthKey).padStart(2, '0');
+    const pid = `${year}-${mk}`;
+    const isRef = pid === REFERENCE_PERIOD;
+
+    return {
+      title: tab.title,
+      groups: tab.groups.map((g) => ({
+        area: g.area,
+        icon: g.icon,
+        kpis: g.kpis.map((k) => {
+          const c = cloneKpi(k);
+          if (isRef) return c;
+          const h = hash32(pid + ':' + c.id);
+          const vBump = 1 + ((h % 19) - 9) / 100;
+          const tBump = 1 + (((h >> 7) % 11) - 5) / 200;
+          c.month = roundKpi(c.unit, c.month * vBump);
+          c.ytd = roundKpi(c.unit, c.ytd * (vBump * 0.96 + 0.04));
+          c.targetMonth = roundKpi(c.unit, c.targetMonth * tBump);
+          c.targetYtd = roundKpi(c.unit, c.targetYtd * tBump);
+          c.trend = c.trend.map((x) => Math.max(0, roundKpi(c.unit, x * vBump)));
+          c.okMonth = null;
+          c.okYtd = null;
+          if (c.targetMonthLabel) {
+            c.targetMonthLabel = null;
+            c.targetYtdLabel = null;
+          }
+          return c;
+        }),
+      })),
+    };
+  }
+
   const TABS = {
     delivery_financials: {
       title: 'Delivery & Financials',
@@ -189,8 +258,10 @@
 
   window.SCORECARD_COVIA_DATA = {
     version: 'demo-kpis-2026-03',
+    referencePeriod: REFERENCE_PERIOD,
     years: [2024, 2025, 2026],
     months: MONTHS,
     tabs: TABS,
+    materializeTab,
   };
 })();
