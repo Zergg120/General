@@ -270,29 +270,37 @@
       border-bottom: 1px solid var(--border);
     }
 
-    /* === Layout tipo Suminregio (topbar + tabs + icons) === */
-    .sr-topbar {
+    /* === Shell estilo 2bi.html (principal) === */
+    .shell { padding: 0; }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      background: rgba(12, 15, 20, 0.68);
+      border-bottom: 1px solid var(--border);
+    }
+    body.light .nav { background: rgba(246, 251, 255, 0.82); }
+    .nav__inner {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0.85rem 1.35rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
-      padding: 0.6rem 0.8rem;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      background: var(--glass);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      box-shadow: var(--shadow);
-      margin-bottom: 0.8rem;
     }
-    .sr-left { display: flex; align-items: center; gap: 0.8rem; min-width: 220px; }
-    .sr-logo { display: flex; align-items: center; gap: 0.6rem; }
+    .sr-left { display: flex; align-items: center; gap: 0.8rem; min-width: 210px; }
+    .sr-logo { display: flex; align-items: baseline; gap: 0.2rem; text-decoration: none; color: var(--text); }
+    body.light .sr-logo { color: #061426; }
     .sr-logo-text { display: flex; flex-direction: column; line-height: 1.05; }
     /* 2bi.html-inspired wordmark */
     .sr-logo-text strong {
       font-family: "Fraunces", Georgia, serif;
       font-weight: 700;
-      font-size: 1.25rem;
+      font-size: 1.65rem;
       letter-spacing: -0.03em;
       background: linear-gradient(135deg, #0b3d6d, #1d8ef0);
       -webkit-background-clip: text;
@@ -300,95 +308,17 @@
       color: transparent;
     }
     .sr-logo-text span {
-      font-size: 0.62rem;
-      font-weight: 800;
+      font-size: 0.72rem;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.22em;
-      color: rgba(29, 142, 240, 0.85);
+      color: rgba(21, 101, 184, 0.9);
       font-family: "IBM Plex Mono", ui-monospace, monospace;
     }
 
-    /* Landing 2BI (scoped) */
-    .twoBi { padding: clamp(1.2rem, 3vw, 2rem) 0 clamp(2rem, 5vw, 3rem); }
-    .twoBi__wrap { max-width: 1180px; margin: 0 auto; padding: 0 1.35rem; }
-    .twoBi__hero { padding: clamp(1.5rem, 3.2vw, 2.5rem) 0 clamp(2rem, 4vw, 3rem); }
-    .twoBi__grid { display: grid; gap: clamp(1.25rem, 3vw, 2rem); align-items: center; }
-    @media (min-width: 900px) { .twoBi__grid { grid-template-columns: 1.05fr 0.95fr; } }
-    .twoBi__eyebrow {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      font-size: 0.78rem; font-weight: 800; text-transform: uppercase;
-      letter-spacing: 0.16em; color: rgba(29, 142, 240, 0.85); margin-bottom: 1rem;
-      font-family: "IBM Plex Mono", ui-monospace, monospace;
-    }
-    .twoBi__eyebrow::before { content:""; width:28px; height:2px; background: linear-gradient(90deg, #1d8ef0, transparent); border-radius:2px; }
-    .twoBi__h { font-size: clamp(2.05rem, 4.8vw, 3.1rem); line-height: 1.08; margin-bottom: 1.1rem; }
-    .twoBi__h em { font-style: italic; font-weight: 500; color: #0b3d6d; }
-    body:not(.light) .twoBi__h em { color: #93c5fd; }
-    .twoBi__lead { font-size: 1.04rem; color: var(--text-muted); max-width: 52ch; margin-bottom: 1.25rem; }
-    .twoBi__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
-    .twoBi__btn {
-      display: inline-flex; align-items: center; justify-content: center;
-      gap: 0.45rem; padding: 0.72rem 1.25rem; border-radius: 999px;
-      font-weight: 750; font-size: 0.92rem; border: 1px solid rgba(13, 74, 130, 0.12);
-      cursor: pointer; text-decoration: none;
-      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-    }
-    .twoBi__btn--primary { background: linear-gradient(135deg, #0b3d6d, #1d8ef0); color: #fff; box-shadow: 0 10px 32px rgba(21, 101, 184, 0.25); border-color: transparent; }
-    .twoBi__btn--primary:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(21, 101, 184, 0.32); }
-    .twoBi__btn--ghost { background: rgba(255,255,255,0.75); color: #0b3d6d; }
-    body:not(.light) .twoBi__btn--ghost { background: rgba(255,255,255,0.06); color: var(--text); border-color: var(--border); }
-
-    .twoBi__panel {
-      position: relative; border-radius: 20px;
-      background: linear-gradient(145deg, rgba(255,255,255,0.92), rgba(232,244,255,0.9));
-      border: 1px solid rgba(13, 74, 130, 0.12);
-      box-shadow: 0 24px 80px rgba(6, 20, 38, 0.12);
-      padding: 1.5rem;
-    }
-    body:not(.light) .twoBi__panel {
-      background: rgba(255,255,255,0.04);
-      border-color: var(--border);
-      box-shadow: 0 24px 80px rgba(0,0,0,0.28);
-    }
-    .twoBi__spark { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; margin-bottom: 1.1rem; }
-    .twoBi__sparkCard { background: rgba(255,255,255,0.9); border-radius: 14px; padding: 0.95rem 1.05rem; border: 1px solid rgba(13, 74, 130, 0.12); }
-    body:not(.light) .twoBi__sparkCard { background: rgba(255,255,255,0.04); border-color: var(--border); }
-    .twoBi__sparkLabel { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 0.35rem; font-family:"IBM Plex Mono", ui-monospace, monospace; }
-    .twoBi__sparkValue { font-family: "Fraunces", Georgia, serif; font-size: 1.55rem; font-weight: 650; color: #0b3d6d; }
-    body:not(.light) .twoBi__sparkValue { color: #bfdbfe; }
-    .twoBi__sparkDelta { font-size: 0.78rem; font-weight: 750; color: rgba(29, 142, 240, 0.9); margin-top: 0.15rem; }
-    .twoBi__mini { height: 120px; }
-    .twoBi__mini svg { width: 100%; height: 100%; overflow: visible; }
-    .twoBi__panelNote { font-size: 0.82rem; color: var(--text-muted); margin-top: 0.5rem; font-weight: 650; }
-
-    .twoBi__stats { margin: 0 0 clamp(1.6rem, 3vw, 2.2rem); border-radius: 20px; background: linear-gradient(135deg, #0b3d6d 0%, #0a4a7a 50%, #1565b8 100%); color: #fff; padding: clamp(1.3rem, 3vw, 1.8rem); }
-    .twoBi__statsGrid { display: grid; gap: 1rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    @media (min-width: 900px) { .twoBi__statsGrid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-    .twoBi__statNum { font-family:"Fraunces", Georgia, serif; font-size: 1.8rem; font-weight: 700; }
-    .twoBi__suffix { opacity: 0.85; margin-left: 2px; }
-    .twoBi__statLabel { font-size: 0.82rem; opacity: 0.88; margin-top: 0.25rem; }
-
-    .twoBi__sectionHead { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1rem; }
-    .twoBi__sectionHead p { color: var(--text-muted); max-width: 70ch; }
-    .twoBi__cards { display: grid; gap: 0.9rem; grid-template-columns: repeat(1, minmax(0,1fr)); }
-    @media (min-width: 860px) { .twoBi__cards { grid-template-columns: repeat(3, minmax(0,1fr)); } }
-    .twoBi__card { border-radius: 20px; border: 1px solid var(--border); background: var(--glass); padding: 1.1rem 1.15rem; box-shadow: var(--shadow); }
-    .twoBi__cardIco { font-size: 1.3rem; }
-    .twoBi__card h4 { margin-top: 0.55rem; font-size: 1.12rem; }
-    .twoBi__card p { margin-top: 0.45rem; color: var(--text-muted); }
-
-    .twoBi__cta {
-      margin-top: 1.75rem;
-      border-radius: 20px;
-      border: 1px solid rgba(13, 74, 130, 0.12);
-      background: linear-gradient(135deg, rgba(232,244,255,0.9), rgba(255,255,255,0.75));
-      padding: 1.35rem 1.35rem;
-      box-shadow: 0 24px 80px rgba(6, 20, 38, 0.12);
-    }
-    body:not(.light) .twoBi__cta { background: rgba(255,255,255,0.04); border-color: var(--border); box-shadow: 0 24px 80px rgba(0,0,0,0.28); }
-    .twoBi__cta p { color: var(--text-muted); margin-top: 0.5rem; max-width: 75ch; }
-
-    .sr-nav { display: flex; align-items: center; gap: 0.35rem; flex: 1 1 auto; justify-content: center; flex-wrap: wrap; }
+    /* Tabs dentro del header (tipo 2bi.html) */
+    .sr-nav { display: none; align-items: center; gap: 0.45rem; flex: 1 1 auto; justify-content: center; flex-wrap: wrap; }
+    @media (min-width: 980px) { .sr-nav { display: flex; } }
     .sr-tab {
       border: 1px solid var(--border);
       background: rgba(255, 255, 255, 0.02);
@@ -428,11 +358,10 @@
       align-items: center;
       justify-content: space-between;
       gap: 0.8rem;
-      padding: 0.55rem 0.8rem;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.02);
-      margin-bottom: 1.25rem;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+      background: transparent;
+      margin: 0 0 1.25rem;
     }
     .sr-sub-left { display: flex; align-items: center; gap: 0.8rem; flex: 1 1 auto; flex-wrap: wrap; }
     .sr-sub-right { display: flex; align-items: center; gap: 0.45rem; flex: 0 0 auto; flex-wrap: wrap; justify-content: flex-end; }
@@ -1885,6 +1814,64 @@
       });
     })();
   </script>
+  <script>
+    (function () {
+      'use strict';
+
+      function easeOutQuart(t) { return 1 - Math.pow(1 - t, 4); }
+      function animateCounter(el, target, duration) {
+        var start = performance.now();
+        function frame(now) {
+          var p = Math.min(1, (now - start) / duration);
+          var v = Math.round(target * easeOutQuart(p));
+          el.textContent = String(v);
+          if (p < 1) requestAnimationFrame(frame);
+          else el.textContent = String(target);
+        }
+        requestAnimationFrame(frame);
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        var statsBlock = document.getElementById('estadisticas');
+        var statsDone = false;
+        if (statsBlock && 'IntersectionObserver' in window) {
+          var ioStats = new IntersectionObserver(function (entries) {
+            for (var i = 0; i < entries.length; i++) {
+              var e = entries[i];
+              if (!e.isIntersecting || statsDone) continue;
+              statsDone = true;
+              var counters = statsBlock.querySelectorAll('.counter[data-target]');
+              for (var c = 0; c < counters.length; c++) {
+                var t = parseInt(counters[c].getAttribute('data-target') || '0', 10);
+                animateCounter(counters[c], isFinite(t) ? t : 0, 1600);
+              }
+            }
+          }, { threshold: 0.35 });
+          ioStats.observe(statsBlock);
+        }
+
+        var revealEls = document.querySelectorAll('.reveal');
+        if (!('IntersectionObserver' in window)) {
+          for (var r = 0; r < revealEls.length; r++) revealEls[r].classList.add('is-visible');
+          return;
+        }
+        for (var j = 0; j < revealEls.length; j++) {
+          (function (el) {
+            var io = new IntersectionObserver(function (entries) {
+              for (var k = 0; k < entries.length; k++) {
+                var en = entries[k];
+                if (en.isIntersecting) {
+                  en.target.classList.add('is-visible');
+                  io.unobserve(en.target);
+                }
+              }
+            }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+            io.observe(el);
+          })(revealEls[j]);
+        }
+      });
+    })();
+  </script>
   <div class="shell">
     <!-- 2bi.html ambient background (subtle) -->
     <div class="ambient" aria-hidden="true">
@@ -1894,41 +1881,44 @@
     </div>
     <div class="grain" aria-hidden="true"></div>
 
-    <header class="sr-topbar" aria-label="Barra superior">
-      <div class="sr-left">
-        <div class="sr-logo" aria-label="2BI Technology Solutions">
-          <div class="sr-logo-text">
-            <strong>2BI</strong>
-            <span>TECHNOLOGY SOLUTIONS</span>
-          </div>
+    <header class="nav" aria-label="Navegación 2BI">
+      <div class="nav__inner">
+        <div class="sr-left">
+          <a class="sr-logo" href="#" aria-label="2BI Technology Solutions">
+            <div class="sr-logo-text">
+              <strong>2BI</strong>
+              <span>TECHNOLOGY SOLUTIONS</span>
+            </div>
+          </a>
         </div>
-      </div>
 
-      <nav class="sr-nav" aria-label="Secciones">
-        <button type="button" class="sr-tab is-active score-tab" data-view="inicio" aria-selected="true">Inicio</button>
-        <button type="button" class="sr-tab score-tab" data-view="ejecutivo" aria-selected="false">Director</button>
-        <button type="button" class="sr-tab score-tab" data-view="tactical" aria-selected="false">Ventas</button>
-        <button type="button" class="sr-tab score-tab" data-view="operaciones" aria-selected="false">Operación</button>
-        <button type="button" class="sr-tab score-tab" data-view="oee" aria-selected="false">OEE</button>
-      </nav>
+        <nav class="sr-nav" aria-label="Pestañas del tablero">
+          <button type="button" class="sr-tab is-active score-tab" data-view="inicio" aria-selected="true">Inicio</button>
+          <button type="button" class="sr-tab score-tab" data-view="ejecutivo" aria-selected="false">Director</button>
+          <button type="button" class="sr-tab score-tab" data-view="tactical" aria-selected="false">Ventas</button>
+          <button type="button" class="sr-tab score-tab" data-view="operaciones" aria-selected="false">Operación</button>
+          <button type="button" class="sr-tab score-tab" data-view="oee" aria-selected="false">OEE</button>
+        </nav>
 
-      <div class="sr-right">
-        <div id="scorecard-status-mount" class="sr-live"></div>
-        <div class="sr-icons">
-          <button type="button" class="sr-ico" id="btn-cmd" title="Paleta de comandos">⌘K</button>
-          <div id="scorecard-audio-mount" class="scorecard-audio-mount" aria-label="Música"></div>
-          <button type="button" class="sr-ico" id="btn-tour" title="Tour" aria-label="Tour">
-            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path fill="currentColor" d="M6 2h8l4 4v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm8 1.5V7h3.5L14 3.5ZM7 10h10v1.7H7V10Zm0 4h10v1.7H7V14Zm0 4h7v1.7H7V18Z"/>
-            </svg>
-          </button>
-          <button type="button" class="sr-ico" id="btn-theme" title="Tema">☼</button>
-          <button type="button" class="sr-ico" id="btn-print" title="Imprimir">⎙</button>
+        <div class="sr-right" aria-label="Acciones">
+          <div id="scorecard-status-mount" class="sr-live"></div>
+          <div class="sr-icons">
+            <button type="button" class="sr-ico" id="btn-cmd" title="Paleta de comandos">⌘K</button>
+            <div id="scorecard-audio-mount" class="scorecard-audio-mount" aria-label="Música"></div>
+            <button type="button" class="sr-ico" id="btn-tour" title="Tour" aria-label="Tour">
+              <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path fill="currentColor" d="M6 2h8l4 4v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm8 1.5V7h3.5L14 3.5ZM7 10h10v1.7H7V10Zm0 4h10v1.7H7V14Zm0 4h7v1.7H7V18Z"/>
+              </svg>
+            </button>
+            <button type="button" class="sr-ico" id="btn-theme" title="Tema">☼</button>
+            <button type="button" class="sr-ico" id="btn-print" title="Imprimir">⎙</button>
+          </div>
         </div>
       </div>
     </header>
 
-    <div class="sr-subbar" aria-label="Filtros">
+    <div class="wrap">
+      <div class="sr-subbar" aria-label="Filtros">
       <div class="sr-sub-left">
         <div class="period-wrap">
           <label for="period-select">Periodo</label>
@@ -1950,87 +1940,91 @@
         <button type="button" class="btn-soft" id="btn-demo" title="Modo presentación" aria-pressed="false">Presentación</button>
       </div>
     </div>
+    </div>
 
-    <!-- Inicio: landing 2BI (basada en 2bi.html de Memo) -->
+    <!-- Inicio: ahora es el "sitio oficial" 2BI + acceso al tablero -->
     <section class="section reveal score-view" id="view-inicio" data-view="inicio" aria-label="Inicio">
-      <div class="twoBi">
-        <div class="twoBi__wrap">
-          <section class="twoBi__hero">
-            <div class="twoBi__grid">
-              <div>
-                <p class="twoBi__eyebrow">Data · BI · Performance</p>
-                <h2 class="twoBi__h display">Convertimos <em>datos</em> en claridad, colaboración y resultados que importan.</h2>
-                <p class="twoBi__lead">
-                  2BI es tu partner estratégico: modelamos, visualizamos y operamos inteligencia de negocio para que cada decisión tenga respaldo
-                  y cada proceso tenga medición honesta.
-                </p>
-                <div class="twoBi__actions">
-                  <button type="button" class="twoBi__btn twoBi__btn--primary" data-jump-view="ejecutivo">Entrar al tablero</button>
-                  <button type="button" class="twoBi__btn twoBi__btn--ghost" id="btn-tour-cta">Ver tour</button>
-                </div>
-              </div>
-              <div class="twoBi__panel">
-                <div class="twoBi__spark">
-                  <div class="twoBi__sparkCard">
-                    <div class="twoBi__sparkLabel">Precisión modelo</div>
-                    <div class="twoBi__sparkValue">94.2%</div>
-                    <div class="twoBi__sparkDelta">↑ vs. trimestre anterior</div>
-                  </div>
-                  <div class="twoBi__sparkCard">
-                    <div class="twoBi__sparkLabel">Tiempo a insight</div>
-                    <div class="twoBi__sparkValue">−38%</div>
-                    <div class="twoBi__sparkDelta">Automatización + gobernanza</div>
-                  </div>
-                </div>
-                <div class="twoBi__mini" aria-hidden="true">
-                  <svg viewBox="0 0 400 120" preserveAspectRatio="none">
-                    <defs>
-                      <linearGradient id="twoBiGradArea" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stop-color="#1d8ef0" stop-opacity="0.35"/>
-                        <stop offset="100%" stop-color="#1d8ef0" stop-opacity="0"/>
-                      </linearGradient>
-                      <linearGradient id="twoBiGradLine" x1="0" y1="0" x2="1" y2="0">
-                        <stop offset="0%" stop-color="#0b3d6d"/>
-                        <stop offset="100%" stop-color="#4db2ff"/>
-                      </linearGradient>
-                    </defs>
-                    <path fill="url(#twoBiGradArea)" d="M0,100 L0,85 C40,90 60,40 100,55 C140,70 160,25 200,40 C240,55 260,15 300,30 C340,45 360,20 400,35 L400,120 L0,120 Z"/>
-                    <path fill="none" stroke="url(#twoBiGradLine)" stroke-width="2.5" stroke-linecap="round" d="M0,85 C40,90 60,40 100,55 C140,70 160,25 200,40 C240,55 260,15 300,30 C340,45 360,20 400,35"/>
-                  </svg>
-                </div>
-                <p class="twoBi__panelNote">Indicador ilustrativo — KPIs reales bajo tu stack y tus definiciones.</p>
+      <main>
+        <section class="hero wrap">
+          <div class="hero__grid">
+            <div>
+              <p class="hero__eyebrow">Data · BI · Performance</p>
+              <h1 class="display">Convertimos <em>datos</em> en confianza, colaboración y resultados que importan.</h1>
+              <p class="hero__lead">2BI es tu partner estratégico: modelamos, visualizamos y operamos la inteligencia de negocio para que cada decisión tenga respaldo y cada campaña tenga medición honesta.</p>
+              <div class="hero__actions">
+                <button type="button" class="btn btn--primary" data-jump-view="ejecutivo">Entrar al tablero</button>
+                <button type="button" class="btn btn--ghost" id="btn-tour-cta">Ver tour</button>
               </div>
             </div>
-          </section>
-
-          <section class="twoBi__stats" aria-label="Estadísticas">
-            <div class="twoBi__statsGrid">
-              <div class="twoBi__stat"><div class="twoBi__statNum">20<span class="twoBi__suffix">+</span></div><div class="twoBi__statLabel">Años de experiencia combinada</div></div>
-              <div class="twoBi__stat"><div class="twoBi__statNum">120<span class="twoBi__suffix">+</span></div><div class="twoBi__statLabel">Especialistas y aliados</div></div>
-              <div class="twoBi__stat"><div class="twoBi__statNum">350<span class="twoBi__suffix">+</span></div><div class="twoBi__statLabel">Proyectos y entregables</div></div>
-              <div class="twoBi__stat"><div class="twoBi__statNum">1000<span class="twoBi__suffix">+</span></div><div class="twoBi__statLabel">Fuentes y conectores integrados</div></div>
+            <div class="hero__panel">
+              <div class="spark">
+                <div class="spark__card">
+                  <div class="spark__label">Precisión modelo</div>
+                  <div class="spark__value">94.2%</div>
+                  <div class="spark__delta">↑ vs. trimestre anterior</div>
+                </div>
+                <div class="spark__card">
+                  <div class="spark__label">Tiempo a insight</div>
+                  <div class="spark__value">−38%</div>
+                  <div class="spark__delta">Automatización + gobernanza</div>
+                </div>
+              </div>
+              <div class="mini-chart" aria-hidden="true">
+                <svg viewBox="0 0 400 120" preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="gradArea" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#1d8ef0" stop-opacity="0.35"/>
+                      <stop offset="100%" stop-color="#1d8ef0" stop-opacity="0"/>
+                    </linearGradient>
+                    <linearGradient id="gradLine" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stop-color="#0b3d6d"/>
+                      <stop offset="100%" stop-color="#4db2ff"/>
+                    </linearGradient>
+                  </defs>
+                  <path class="area" d="M0,100 L0,85 C40,90 60,40 100,55 C140,70 160,25 200,40 C240,55 260,15 300,30 C340,45 360,20 400,35 L400,120 L0,120 Z"/>
+                  <path class="line" d="M0,85 C40,90 60,40 100,55 C140,70 160,25 200,40 C240,55 260,15 300,30 C340,45 360,20 400,35"/>
+                </svg>
+              </div>
+              <p style="font-size:0.82rem;color:var(--text-muted);margin-top:0.5rem;font-weight:650;">Indicador ilustrativo — KPIs reales bajo tu stack y tus definiciones.</p>
             </div>
-          </section>
+          </div>
+        </section>
 
-          <section class="twoBi__section" aria-label="Soluciones">
-            <div class="twoBi__sectionHead">
-              <h3 class="display">Soluciones</h3>
-              <p>Capas modulares de datos, BI y automatización — adaptadas a tu realidad operativa.</p>
+        <div class="wrap">
+          <div class="stats reveal" id="estadisticas">
+            <div class="stats__grid">
+              <div class="stat">
+                <div class="stat__num"><span class="counter" data-target="20">0</span><span class="suffix">+</span></div>
+                <div class="stat__label">Años de experiencia combinada</div>
+              </div>
+              <div class="stat">
+                <div class="stat__num"><span class="counter" data-target="120">0</span><span class="suffix">+</span></div>
+                <div class="stat__label">Especialistas y aliados</div>
+              </div>
+              <div class="stat">
+                <div class="stat__num"><span class="counter" data-target="350">0</span><span class="suffix">+</span></div>
+                <div class="stat__label">Proyectos y entregables</div>
+              </div>
+              <div class="stat">
+                <div class="stat__num"><span class="counter" data-target="1000">0</span><span class="suffix">+</span></div>
+                <div class="stat__label">Fuentes y conectores integrados</div>
+              </div>
             </div>
-            <div class="twoBi__cards">
-              <article class="twoBi__card"><div class="twoBi__cardIco">📊</div><h4 class="display">BI &amp; Analytics</h4><p>Modelos semánticos y tableros ejecutivos con narrativa de negocio.</p></article>
-              <article class="twoBi__card"><div class="twoBi__cardIco">⚙️</div><h4 class="display">Ingeniería de datos</h4><p>Pipelines robustos (SQL/APIs), calidad, linaje y documentación auditables.</p></article>
-              <article class="twoBi__card"><div class="twoBi__cardIco">🚀</div><h4 class="display">Automatización</h4><p>Alertas, webhooks y orquestación para que el dato dispare workflows.</p></article>
-            </div>
-          </section>
+          </div>
 
-          <section class="twoBi__cta" aria-label="Contacto">
-            <h3 class="display">¿Listo para el siguiente nivel de BI?</h3>
-            <p>Cuéntanos tu contexto: volumen de datos, herramientas actuales y el decisor que necesita claridad. Respondemos con una ruta concreta.</p>
-            <a class="twoBi__btn twoBi__btn--primary" href="mailto:hola@2bi.example">hola@2bi.example</a>
+          <section class="reveal" id="soluciones">
+            <div class="section-head">
+              <h2 class="display">Soluciones</h2>
+              <p>Capas modulares inspiradas en los mejores partners de Data &amp; Performance — adaptadas a tu realidad operativa.</p>
+            </div>
+            <div class="cards">
+              <article class="card"><div class="card__icon" aria-hidden="true">📊</div><h3 class="display" style="font-size:1.15rem;">BI &amp; Analytics</h3><p>Modelos semánticos, tableros ejecutivos, autoría compartida y narrativa de datos alineada a OKRs.</p></article>
+              <article class="card"><div class="card__icon" aria-hidden="true">⚙️</div><h3 class="display" style="font-size:1.15rem;">Ingeniería de datos</h3><p>Pipelines robustos (SQL, APIs, lakes), calidad, linaje y documentación que soporta auditoría.</p></article>
+              <article class="card"><div class="card__icon" aria-hidden="true">🚀</div><h3 class="display" style="font-size:1.15rem;">Activación &amp; automatización</h3><p>Alertas, webhooks y orquestación para que el dato dispare workflows, no solo reportes.</p></article>
+            </div>
           </section>
         </div>
-      </div>
+      </main>
     </section>
 
     <div class="score-view" id="view-ejecutivo" data-view="ejecutivo" hidden>
