@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#3d8bfd" />
+  <meta name="description" content="Portal Scorecard (contenedor) — mantiene música viva entre módulos." />
+  <title>Scorecard — Portal</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="preload" href="audio/Music-Background.mp3" as="audio" type="audio/mpeg" />
+
+  <!-- Cache-bust coordinado -->
+  <link rel="stylesheet" href="portal-shared.css?v=20260330h" />
+  <link rel="stylesheet" href="scorecard-status.css?v=20260330h" />
+  <link rel="stylesheet" href="scorecard-audio.css?v=20260330h" />
+
+  <style>
+    html, body { height: 100%; }
+    body { margin: 0; }
+    .portal-shell {
+      min-height: 100%;
+      background: var(--bg, #0c0f14);
+    }
+    .portal-frame {
+      width: 100%;
+      height: 100vh;
+      border: 0;
+      display: block;
+      background: transparent;
+    }
+    /* Si el usuario imprime desde dentro del iframe, ocultamos el shell UI. */
+    @media print {
+      #scorecard-status-mount, #scorecard-audio-wrap { display: none !important; }
+      .portal-frame { height: auto !important; }
+    }
+  </style>
+
+  <script>
+    (function () {
+      'use strict';
+      function pickView() {
+        var p = new URLSearchParams(location.search);
+        var v = (p.get('view') || 'home').toLowerCase();
+        if (v === 'executive') return 'executive.html';
+        if (v === 'tactical') return 'tactical.html';
+        if (v === 'operaciones') return 'operaciones.html';
+        if (v === 'oee') return 'oee.html';
+        return 'index.html';
+      }
+      window.SCORECARD_PORTAL = {
+        viewToUrl: pickView,
+      };
+    })();
+  </script>
+
+  <script src="scorecard-ui-sounds.js?v=20260330h" defer></script>
+  <script src="portal-shared.js?v=20260330h" defer></script>
+  <script src="scorecard-status.js?v=20260330h" defer></script>
+  <script src="scorecard-live.js?v=20260330h" defer></script>
+  <script src="scorecard-audio.js?v=20260330h" defer></script>
+</head>
+<body class="portal-body">
+  <div class="portal-shell">
+    <div id="scorecard-status-mount"></div>
+    <iframe class="portal-frame" id="portal-frame" title="Módulo Scorecard" loading="eager"></iframe>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+      var frame = document.getElementById('portal-frame');
+      if (!frame) return;
+      var target = (window.SCORECARD_PORTAL && window.SCORECARD_PORTAL.viewToUrl ? window.SCORECARD_PORTAL.viewToUrl() : 'index.html');
+      frame.src = target;
+
+      // Mantener URL “bonita” al navegar desde dentro del iframe (links con ?view=...).
+      window.addEventListener('message', function (ev) {
+        var d = ev && ev.data;
+        if (!d || typeof d !== 'object') return;
+        if (d.type !== 'scorecard:navigate' || typeof d.view !== 'string') return;
+        try {
+          var p = new URLSearchParams(location.search);
+          p.set('view', d.view);
+          history.replaceState(null, '', location.pathname + '?' + p.toString());
+        } catch (_) {}
+      });
+    })();
+  </script>
+</body>
+</html>
+

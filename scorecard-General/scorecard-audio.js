@@ -13,6 +13,12 @@
 (function () {
   'use strict';
 
+  // Si esta página está embebida en el portal contenedor, NO crear otro reproductor aquí.
+  // El audio persistente vive en `portal.html` (top-level) para que no se corte al cambiar de módulo.
+  try {
+    if (window.top && window.top !== window) return;
+  } catch (_) {}
+
   var STORAGE_MUTED = 'scorecard_audio_muted';
   var STORAGE_MUSIC_VOL = 'scorecard_audio_music_volume';
   var MIGRATE_FLAG = 'scorecard_audio_prefs_v3';

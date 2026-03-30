@@ -52,6 +52,16 @@
   <script src="scorecard-charts.js?v=20250324f" defer></script>
   <script src="scorecard-live.js?v=20250324f" defer></script>
   <script src="scorecard-audio.js?v=20260330f" defer></script>
+  <script>
+    (function () {
+      // Si abren este HTML directo, redirigir al contenedor para que la música no se corte entre módulos.
+      try {
+        if (window.top === window && location.pathname && !/portal\.html$/i.test(location.pathname)) {
+          location.replace('portal.html?view=executive');
+        }
+      } catch (_) {}
+    })();
+  </script>
   <style>
     /* === Marca blanca (cliente): edita también window.SCORECARD_BRAND en scorecard-app.js === */
     :root {
@@ -1594,7 +1604,7 @@
         </div>
       </div>
       <div class="action-bar">
-        <a href="index.html" class="btn-soft" title="Volver a la portada del portal">Portada</a>
+        <a href="portal.html?view=home" class="btn-soft" title="Volver a la portada del portal (sin cortar música)">Portada</a>
         <div class="search-kpi">
           <input type="search" id="kpi-search" placeholder="Buscar KPI o métrica…" autocomplete="off" aria-label="Filtrar tarjetas KPI" />
         </div>
