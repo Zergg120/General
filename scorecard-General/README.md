@@ -20,10 +20,10 @@ Plantilla de **panel ejecutivo** (HTML + JS) con KPIs de ejemplo, diseño premiu
 | `scorecard-version.example.json` | Ejemplo de respuesta JSON para el endpoint de versión |
 | `scorecard-app.js` | **Marca blanca** (`SCORECARD_BRAND`), periodo dummy, **módulos** on/off, **drill-down** en hero, modo **Presentación** |
 | `scorecard-assistant.js` | **Ctrl+K**, asistente, voz, IA opcional (tono formal, alcance del panel) |
-| `scorecard-assistant-intelligence.js` | Navegación *¿dónde está…?*, comparativas de ventas demo (mes vs mes anterior), rechazo educado de temas ajenos al scorecard |
-| `scorecard-report-data.js` | Datos demo **coherentes** de ventas del mes (líneas que suman al total) |
+| `scorecard-assistant-intelligence.js` | Navegación *¿dónde está…?*, **ventas demo por periodo** (hoy, ayer, semana, mes, año, trimestre, fecha concreta) **y** comparativa mes vs mes anterior, rechazo educado de temas ajenos al scorecard |
+| `scorecard-report-data.js` | Datos demo **coherentes** de ventas (líneas que suman al total) + `computeVentasPorPeriodo()` para el asistente |
 | `scorecard-report-export.js` | Export del informe: **Excel** (SheetJS), **PNG/PDF** (html2canvas + jsPDF) |
-| `scorecard-report-agent.js` + `scorecard-report.css` | Intención *ventas del mes* / informe → panel con vista previa y exportar / imprimir |
+| `scorecard-report-agent.js` + `scorecard-report.css` | Intención *ventas del mes* / informe → panel con **carga ~0,7 s**, GIF arriba-izquierda, **entrada animada** del diálogo; periodo flexible (hoy, ayer, antier, semana, año…) + exportar / imprimir |
 | `favicon.svg` / `manifest.json` | Icono y PWA ligera |
 | `PLANTILLA_BORRADOR.md` | Checklist para clonar por cliente |
 

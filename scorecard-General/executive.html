@@ -20,6 +20,7 @@
   <link rel="stylesheet" href="scorecard-status.css?v=20250324f" />
   <link rel="stylesheet" href="scorecard-audio.css?v=20250324f" />
   <link rel="stylesheet" href="scorecard-report.css?v=20250324f" />
+  <link rel="stylesheet" href="scorecard-covia.css?v=20260330a" />
   <!--
     Auto-actualización (opcional): descomenta y pon tu URL cuando tengas API.
     El servidor debe devolver JSON con al menos uno: checksum | version | updatedAt | etag
@@ -44,6 +45,8 @@
   <script src="scorecard-report-data.js?v=20250324f" defer></script>
   <script src="scorecard-report-export.js?v=20250324f" defer></script>
   <script src="scorecard-report-agent.js?v=20250324f" defer></script>
+  <script src="scorecard-covia-data.js?v=20260330a" defer></script>
+  <script src="scorecard-covia.js?v=20260330a" defer></script>
   <script src="scorecard-assistant-intelligence.js?v=20250324f" defer></script>
   <script src="scorecard-assistant.js?v=20250324f" defer></script>
   <script src="scorecard-charts.js?v=20250324f" defer></script>
@@ -800,16 +803,26 @@
       width: 58px;
       height: 58px;
       border-radius: 50%;
-      border: none;
+      padding: 0;
+      overflow: hidden;
       cursor: pointer;
-      background: linear-gradient(135deg, var(--accent), var(--violet));
-      color: #fff;
-      font-size: 1.45rem;
-      box-shadow: 0 12px 40px rgba(61, 139, 253, 0.4);
+      border: 2px solid rgba(255, 255, 255, 0.14);
+      background: #0f172a;
+      box-shadow: 0 12px 40px rgba(15, 23, 42, 0.55);
       transition: transform 0.2s, box-shadow 0.2s;
     }
 
-    #asst-fab:hover { transform: scale(1.06); box-shadow: 0 16px 48px rgba(61, 139, 253, 0.5); }
+    #asst-fab .asst-fab__face {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    #asst-fab:hover { transform: scale(1.06); box-shadow: 0 16px 48px rgba(61, 139, 253, 0.45); }
 
     #asst-drawer {
       position: fixed;
@@ -1595,6 +1608,68 @@
       </div>
     </header>
 
+    <!-- Reporte mensual (COVIA-style) -->
+    <section class="section reveal" id="sec-covia" data-module="covia" aria-label="Reporte mensual tipo scorecard">
+      <div class="section-head">
+        <div class="section-head__left">
+          <h2 class="section-title">Reporte Mensual — Scorecard</h2>
+          <span class="section-hint">Estructura tipo COVIA (tablas + tendencia)</span>
+        </div>
+        <div class="covia-controls" aria-label="Controles de reporte mensual">
+          <div class="covia-control">
+            <label for="covia-year">Year</label>
+            <select id="covia-year"></select>
+          </div>
+          <div class="covia-control">
+            <label for="covia-month">Month</label>
+            <select id="covia-month"></select>
+          </div>
+        </div>
+      </div>
+
+      <div class="covia-tabs" role="tablist" aria-label="Secciones del scorecard mensual">
+        <button class="covia-tab" role="tab" aria-selected="true" aria-controls="covia-panel" data-covia-tab="delivery_financials">Delivery &amp; Financials</button>
+        <button class="covia-tab" role="tab" aria-selected="false" aria-controls="covia-panel" data-covia-tab="productivity_inventory">Productivity &amp; Inventory</button>
+        <button class="covia-tab" role="tab" aria-selected="false" aria-controls="covia-panel" data-covia-tab="ehs">EHS</button>
+        <button class="covia-tab" role="tab" aria-selected="false" aria-controls="covia-panel" data-covia-tab="quality_labor">Quality &amp; Labor</button>
+      </div>
+
+      <div class="covia-card" id="covia-panel" role="tabpanel" aria-label="Tabla mensual">
+        <div class="covia-headline">
+          <div class="covia-title">
+            <span class="covia-eyebrow">Monthly Operations Scorecard</span>
+            <strong id="covia-title">Delivery &amp; Financials</strong>
+          </div>
+          <div class="covia-brand">
+            <span class="covia-brand__pill">Mx Staff w SC</span>
+            <span class="covia-brand__pill covia-brand__pill--muted">New</span>
+            <span class="covia-brand__logo" aria-hidden="true">COVIA</span>
+          </div>
+        </div>
+
+        <div class="covia-table-wrap">
+          <table class="covia-table" aria-label="Tabla de KPIs">
+            <thead>
+              <tr>
+                <th class="covia-col-area">Area</th>
+                <th class="covia-col-kpi">KPI</th>
+                <th class="covia-col-unit">Unit</th>
+                <th class="covia-col-month">Month</th>
+                <th class="covia-col-target">Target</th>
+                <th class="covia-col-status" title="Estado vs meta (mes)"> </th>
+                <th class="covia-col-ytd">YTD</th>
+                <th class="covia-col-target">Target</th>
+                <th class="covia-col-status" title="Estado vs meta (YTD)"> </th>
+                <th class="covia-col-trend">Trend</th>
+              </tr>
+            </thead>
+            <tbody id="covia-tbody"></tbody>
+          </table>
+        </div>
+        <p class="covia-footnote">Nota: datos demo para maqueta. Después se conecta a Excel/API con los mismos IDs de KPI.</p>
+      </div>
+    </section>
+
     <!-- Resumen ejecutivo -->
     <section class="section reveal" id="sec-resumen" data-module="resumen" aria-label="Resumen ejecutivo">
       <div class="section-head">
@@ -2031,7 +2106,16 @@
   </div>
 
   <!-- Asistente -->
-  <button type="button" id="asst-fab" aria-label="Abrir asistente" title="Asistente">✦</button>
+  <button type="button" id="asst-fab" aria-label="Abrir asistente" title="Asistente">
+    <img
+      src="Animated-Gifts/IA-FACE.gif"
+      alt=""
+      class="asst-fab__face"
+      width="58"
+      height="58"
+      decoding="async"
+    />
+  </button>
   <aside id="asst-drawer" aria-label="Panel asistente">
     <div class="asst-head">
       <h3>Asistente Scorecard</h3>
