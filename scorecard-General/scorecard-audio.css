@@ -7,6 +7,60 @@
   max-width: min(200px, calc(100vw - 2rem));
 }
 
+.scorecard-audio-mount {
+  display: flex;
+  align-items: center;
+}
+
+/* Cuando la bocina vive en el header (montada en #scorecard-audio-mount) */
+#scorecard-audio-wrap.scorecard-audio--header {
+  position: static;
+  bottom: auto;
+  left: auto;
+  z-index: auto;
+  max-width: none;
+}
+
+#scorecard-audio-wrap.scorecard-audio--header .scorecard-audio-stack {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+#scorecard-audio-wrap.scorecard-audio--header #scorecard-audio-toggle {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  box-shadow: none;
+}
+
+#scorecard-audio-wrap.scorecard-audio--header .scorecard-audio-vol-chevron {
+  width: 38px;
+  height: 22px;
+  border-radius: 8px;
+  box-shadow: none;
+}
+
+#scorecard-audio-wrap.scorecard-audio--header .scorecard-audio-vol-panel {
+  position: absolute;
+  margin-top: 0.5rem;
+  padding: 0.55rem 0.6rem;
+  border-radius: 12px;
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.12));
+  background: var(--glass, rgba(22, 28, 39, 0.82));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+#scorecard-audio-wrap.scorecard-audio--header .scorecard-audio-vol-btn {
+  width: 38px;
+}
+
+#scorecard-audio-wrap.scorecard-audio--header .scorecard-audio-pillbar {
+  min-width: 132px;
+}
+
 .scorecard-audio-stack {
   display: flex;
   flex-direction: column;

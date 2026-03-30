@@ -75,6 +75,8 @@
   function mount() {
     var mountEl = document.getElementById('scorecard-status-mount');
     if (!mountEl) return;
+    // Evita duplicar la barra si el script corre más de una vez.
+    if (mountEl.querySelector && mountEl.querySelector('.scorecard-status-bar')) return;
     var bar = document.createElement('div');
     bar.className = 'scorecard-status-bar';
     bar.setAttribute('role', 'region');

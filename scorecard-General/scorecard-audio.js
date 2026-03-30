@@ -329,7 +329,14 @@
     stack.appendChild(volChevronBtn);
     stack.appendChild(volPanelEl);
     wrap.appendChild(stack);
-    document.body.appendChild(wrap);
+
+    var mountEl = document.getElementById('scorecard-audio-mount');
+    if (mountEl) {
+      wrap.classList.add('scorecard-audio--header');
+      mountEl.appendChild(wrap);
+    } else {
+      document.body.appendChild(wrap);
+    }
 
     syncVolPanelUi();
     renderPillBar();
