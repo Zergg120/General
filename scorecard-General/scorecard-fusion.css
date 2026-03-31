@@ -26,6 +26,25 @@ body.app-fusion .nav__inner {
 
 body.app-fusion .fusion-logo.logo {
   text-decoration: none;
+  align-items: center;
+  gap: 0.5rem;
+}
+/* Acento vertical a la izquierda del logo (misma idea que PAGINA-2BI) */
+body.app-fusion .fusion-logo.logo::before {
+  content: "";
+  flex-shrink: 0;
+  width: 4px;
+  border-radius: 999px;
+  align-self: stretch;
+  min-height: 2.2rem;
+  background: linear-gradient(180deg, var(--blue-deep, #0a4a7c), var(--blue-bright, #1d8ef0));
+  box-shadow: 0 0 0 1px rgba(29, 142, 240, 0.22);
+}
+body.app-fusion .fusion-logo .logo__suffix {
+  letter-spacing: 0.1em;
+  font-size: 0.62rem;
+  max-width: 20ch;
+  line-height: 1.15;
 }
 
 body.app-fusion .sr-nav {

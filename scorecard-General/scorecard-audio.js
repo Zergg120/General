@@ -307,7 +307,13 @@
     }
 
     document.addEventListener('visibilitychange', function () {
-      if (document.visibilityState === 'visible') tryPlay('visible');
+      if (document.visibilityState !== 'visible') return;
+      // Evita solapar play() si el audio ya sigue en curso (menos tirones al volver de otra pestaña).
+      if (audioEl && fileOk && !audioEl.paused && !audioEl.ended) {
+        applyMusicVolumeToOutputs();
+        return;
+      }
+      tryPlay('visible');
     });
     window.addEventListener('pageshow', function () {
       tryPlay('pageshow');
