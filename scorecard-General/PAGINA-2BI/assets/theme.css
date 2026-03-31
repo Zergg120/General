@@ -52,6 +52,45 @@ body {
   flex-direction: column;
 }
 
+/* Tema Luna (oscuro) — versión 1: misma UI, paleta oscura */
+body.p2bi-dark {
+  --ink: #eaf2ff;
+  --ink-soft: #cfe2ff;
+  --blue-abyss: #0a2036;
+  --blue-deep: #0d2b47;
+  --blue-mid: #2d77c7;
+  --blue-bright: #49a7ff;
+  --blue-glow: #8ad0ff;
+  --ice: #0f253d;
+  --ice-2: #13304f;
+  --snow: #071423;
+  --white: #0d1b2a;
+  --muted: #9bb4d6;
+  --success: #2bd4a6;
+  --line: rgba(138, 208, 255, 0.16);
+  --line-strong: rgba(138, 208, 255, 0.24);
+  --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.28);
+  --shadow: 0 20px 60px rgba(0, 0, 0, 0.42);
+  --shadow-lg: 0 32px 90px rgba(0, 0, 0, 0.55);
+
+  background-color: var(--snow);
+  background-image:
+    radial-gradient(ellipse 120% 80% at 100% -10%, rgba(73, 167, 255, 0.12), transparent 52%),
+    radial-gradient(ellipse 90% 70% at -5% 50%, rgba(45, 119, 199, 0.1), transparent 50%),
+    radial-gradient(ellipse 70% 50% at 50% 100%, rgba(15, 37, 61, 0.9), transparent 55%),
+    linear-gradient(180deg, #06101c 0%, var(--snow) 40%, #081a2d 100%);
+}
+
+body.p2bi-dark .site-header {
+  background: rgba(7, 20, 35, 0.92);
+  border-bottom-color: rgba(138, 208, 255, 0.12);
+}
+@supports (backdrop-filter: blur(12px)) {
+  body.p2bi-dark .site-header {
+    background: rgba(7, 20, 35, 0.65);
+  }
+}
+
 ::selection {
   background: rgba(29, 142, 240, 0.22);
   color: var(--ink);

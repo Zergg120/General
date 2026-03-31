@@ -51,6 +51,29 @@
     }, 1000);
   }
 
+  var THEME_KEY = 'p2bi_theme';
+  function getTheme() {
+    try {
+      return localStorage.getItem(THEME_KEY);
+    } catch (_) {
+      return null;
+    }
+  }
+  function applyTheme(mode) {
+    var dark = mode === 'dark';
+    document.body.classList.toggle('p2bi-dark', dark);
+    try {
+      localStorage.setItem(THEME_KEY, dark ? 'dark' : 'light');
+    } catch (_) {}
+    var b = document.getElementById('p2bi-btn-theme');
+    if (b) {
+      b.setAttribute('aria-pressed', dark ? 'true' : 'false');
+      b.setAttribute('aria-label', dark ? 'Cambiar a modo Sol (claro)' : 'Cambiar a modo Luna (oscuro)');
+      b.title = dark ? 'Modo Luna (oscuro)' : 'Modo Sol (claro)';
+      b.textContent = dark ? '🌙' : '☀';
+    }
+  }
+
   function closeDialog(id) {
     var o = document.getElementById(id);
     if (!o) return;
@@ -133,6 +156,7 @@
   function wireButtons() {
     var bt = document.getElementById('p2bi-btn-tour');
     var bc = document.getElementById('p2bi-btn-cmd');
+    var th = document.getElementById('p2bi-btn-theme');
     if (bt) {
       bt.addEventListener('click', function () {
         var c = document.getElementById('p2bi-overlay-cmd');
@@ -145,6 +169,12 @@
         var t = document.getElementById('p2bi-overlay-tour');
         if (t && !t.hidden) closeDialog('p2bi-overlay-tour');
         openDialog('p2bi-overlay-cmd');
+      });
+    }
+    if (th) {
+      th.addEventListener('click', function () {
+        var isDark = document.body.classList.contains('p2bi-dark');
+        applyTheme(isDark ? 'light' : 'dark');
       });
     }
     document.addEventListener('keydown', function (e) {
@@ -164,6 +194,10 @@
   }
 
   function init() {
+    // Default: Sol (claro). Si ya eligió, respetar.
+    var t = getTheme();
+    if (t === 'dark') applyTheme('dark');
+    else applyTheme('light');
     mountDatetime();
     ensureDialogs();
     wireButtons();

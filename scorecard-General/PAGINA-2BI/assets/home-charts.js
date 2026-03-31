@@ -158,6 +158,99 @@
         },
       });
     }
+
+    var funnelEl = document.getElementById("chartKpiFunnel");
+    if (funnelEl && !funnelEl.dataset.rendered) {
+      funnelEl.dataset.rendered = "1";
+      new Chart(funnelEl, {
+        type: "bar",
+        data: {
+          labels: ["Sesiones", "Vistas clave", "Leads", "Ventas"],
+          datasets: [
+            {
+              label: "Volumen (demo)",
+              data: [12000, 4200, 680, 120],
+              backgroundColor: ["#5eb8ff", "#1d8ef0", "#0a4a7c", "#062a4a"],
+              borderRadius: 12,
+              borderSkipped: false,
+              barThickness: 22,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: reduced ? false : { duration: 950, easing: "easeOutQuart" },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: "rgba(4, 18, 33, 0.92)",
+              titleFont: { family: "Outfit, sans-serif", size: 12 },
+              bodyFont: { family: "Outfit, sans-serif", size: 13 },
+              padding: 10,
+              cornerRadius: 10,
+            },
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: { color: "#4d6b88", font: { size: 11, family: "Outfit, sans-serif" } },
+            },
+            y: {
+              beginAtZero: true,
+              grid: { color: "rgba(10, 74, 124, 0.08)" },
+              ticks: {
+                color: "#4d6b88",
+                font: { size: 11, family: "Outfit, sans-serif" },
+              },
+            },
+          },
+        },
+      });
+    }
+
+    var chEl = document.getElementById("chartKpiChannels");
+    if (chEl && !chEl.dataset.rendered) {
+      chEl.dataset.rendered = "1";
+      new Chart(chEl, {
+        type: "doughnut",
+        data: {
+          labels: ["Orgánico", "Ads", "Referidos", "Email/CRM", "Directo"],
+          datasets: [
+            {
+              data: [34, 26, 18, 12, 10],
+              backgroundColor: ["#0a4a7c", "#1d8ef0", "#5eb8ff", "#c5ddf5", "#062a4a"],
+              borderWidth: 2,
+              borderColor: "#ffffff",
+              hoverOffset: 8,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: "62%",
+          animation: reduced ? false : { animateRotate: true, duration: 900 },
+          plugins: {
+            legend: {
+              position: "bottom",
+              labels: {
+                color: "#4d6b88",
+                boxWidth: 12,
+                padding: 12,
+                font: { size: 11, family: "Outfit, sans-serif" },
+              },
+            },
+            tooltip: {
+              backgroundColor: "rgba(4, 18, 33, 0.92)",
+              bodyFont: { family: "Outfit, sans-serif", size: 12 },
+              padding: 10,
+              cornerRadius: 10,
+            },
+          },
+        },
+      });
+    }
   }
 
   var mount = document.querySelector(".js-charts-mount");

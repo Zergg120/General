@@ -78,6 +78,19 @@
   outline-offset: 2px;
 }
 
+/* Modo oscuro (Luna) — primera versión simple */
+body.p2bi-dark .site-header__datetime {
+  background: rgba(13, 27, 42, 0.68);
+  border-color: rgba(94, 184, 255, 0.22);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08) inset;
+}
+body.p2bi-dark .site-header__datetime .p2bi-d {
+  color: var(--ink-soft);
+}
+body.p2bi-dark .site-header__datetime .p2bi-t {
+  color: var(--blue-glow);
+}
+
 .p2bi-overlay {
   position: fixed;
   inset: 0;
