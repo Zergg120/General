@@ -993,6 +993,22 @@ body.p2bi-dark .kpi-card:hover {
   z-index: 2;
   overflow: hidden;
 }
+.page-hero__bg {
+  position: absolute;
+  inset: -22% -18%;
+  background: center / cover no-repeat;
+  opacity: 0.14;
+  transform: scale(1.03);
+  filter: saturate(1.05) contrast(1.02);
+  pointer-events: none;
+  z-index: 0;
+  mask-image: radial-gradient(circle at 45% 40%, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 70%);
+  -webkit-mask-image: radial-gradient(circle at 45% 40%, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 70%);
+}
+body.p2bi-dark .page-hero__bg {
+  opacity: 0.18;
+  filter: saturate(1.1) contrast(1.06);
+}
 .page-hero::before {
   content: "";
   position: absolute;
