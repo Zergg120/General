@@ -100,6 +100,52 @@
     });
   })();
 
+  /* Imágenes externas (Unsplash u otras): fallback si la red las bloquea */
+  (function mountExternalImageFallback() {
+    function svgDataUri(label) {
+      var safe = String(label || "Imagen").replace(/[<>&"]/g, "");
+      var svg =
+        "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 750'>" +
+        "<defs>" +
+        "<linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>" +
+        "<stop offset='0' stop-color='#e4f0fb'/>" +
+        "<stop offset='1' stop-color='#d4e8f9'/>" +
+        "</linearGradient>" +
+        "</defs>" +
+        "<rect width='1200' height='750' fill='url(#g)'/>" +
+        "<circle cx='965' cy='205' r='260' fill='rgba(29,142,240,0.10)'/>" +
+        "<circle cx='290' cy='610' r='320' fill='rgba(94,184,255,0.12)'/>" +
+        "<path d='M350 520h500a40 40 0 0 1 40 40v40H310v-40a80 80 0 0 1 80-80Z' fill='rgba(10,74,124,0.10)'/>" +
+        "<path d='M360 500l110-140 120 160 90-110 160 210H360Z' fill='rgba(10,74,124,0.12)'/>" +
+        "<text x='80' y='110' font-family='Outfit,system-ui,sans-serif' font-size='44' font-weight='750' fill='#0a4a7c'>Recurso visual</text>" +
+        "<text x='80' y='170' font-family='Outfit,system-ui,sans-serif' font-size='28' font-weight='650' fill='#4d6b88'>" +
+        safe +
+        "</text>" +
+        "</svg>";
+      return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+    }
+
+    function apply(img) {
+      if (!img || img.dataset && img.dataset.fallbackApplied === "1") return;
+      try {
+        img.referrerPolicy = "no-referrer";
+      } catch (_) {}
+      img.addEventListener(
+        "error",
+        function () {
+          try {
+            if (img.dataset) img.dataset.fallbackApplied = "1";
+            img.classList.add("is-img-fallback");
+            img.src = svgDataUri(img.alt || "Imagen no disponible");
+          } catch (_) {}
+        },
+        { once: true }
+      );
+    }
+
+    document.querySelectorAll("img.js-ext-img, img[src*='images.unsplash.com']").forEach(apply);
+  })();
+
   var header = document.querySelector(".site-header");
   var toggle = document.querySelector(".js-nav-toggle");
   var panel = document.querySelector(".js-nav-panel");

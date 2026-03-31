@@ -1922,6 +1922,55 @@ body.p2bi-dark .hero-spotlight {
 }
 .hero-home__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
 
+.hero-home__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 1.05rem 0 1.05rem;
+}
+.badge {
+  max-width: 100%;
+  line-height: 1.35;
+  font-size: 0.78rem;
+  font-weight: 650;
+  padding: 0.42rem 0.88rem;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--muted);
+  box-shadow: 0 2px 12px rgba(10, 74, 124, 0.05);
+}
+body.p2bi-dark .badge {
+  background: rgba(16, 19, 40, 0.62);
+  border-color: rgba(138, 208, 255, 0.14);
+  color: var(--muted);
+}
+.badge--live {
+  border-color: rgba(13, 122, 90, 0.35);
+  color: var(--success);
+  background: rgba(255, 255, 255, 0.9);
+}
+body.p2bi-dark .badge--live {
+  background: rgba(16, 19, 40, 0.72);
+  border-color: rgba(73, 167, 255, 0.20);
+  color: rgba(190, 255, 230, 0.92);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .badge--live {
+    position: relative;
+    animation: badgeLiveGlow 2.8s ease-in-out infinite;
+  }
+}
+@keyframes badgeLiveGlow {
+  0%,
+  100% {
+    box-shadow: 0 2px 12px rgba(10, 74, 124, 0.05), 0 0 0 0 rgba(13, 122, 90, 0.35);
+  }
+  50% {
+    box-shadow: 0 4px 18px rgba(13, 122, 90, 0.12), 0 0 0 5px rgba(13, 122, 90, 0);
+  }
+}
+
 .hero-home__more {
   margin-top: 1rem;
   max-width: 42ch;
@@ -2198,6 +2247,48 @@ body.p2bi-dark .p2bi-firefly {
   box-shadow:
     0 0 24px rgba(167, 139, 250, 0.20),
     0 0 56px rgba(73, 167, 255, 0.10);
+}
+
+.fab {
+  position: fixed;
+  left: 1.1rem;
+  bottom: 1.1rem;
+  z-index: 115;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.45rem;
+  pointer-events: none;
+}
+.fab a { pointer-events: auto; }
+.fab .btn--primary { box-shadow: 0 10px 32px rgba(10, 74, 124, 0.22); }
+.fab__mini {
+  width: 46px;
+  height: 46px;
+  min-height: 46px;
+  padding: 0;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.05rem;
+  font-weight: 700;
+  border: 1px solid var(--line-strong);
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--blue-deep);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.25s var(--ease), border-color 0.2s, color 0.2s;
+  text-decoration: none;
+}
+body.p2bi-dark .fab__mini {
+  background: rgba(16, 19, 40, 0.78);
+  border-color: rgba(138, 208, 255, 0.14);
+  color: rgba(234, 242, 255, 0.92);
+}
+.fab__mini:hover {
+  transform: scale(1.06);
+  border-color: var(--blue-bright);
+  color: var(--blue-bright);
 }
 
 .trust-strip {
