@@ -107,6 +107,7 @@
       '<li><a href="index.html">Inicio</a></li>' +
       '<li><a href="nosotros.html">Nosotros</a></li>' +
       '<li><a href="soluciones.html">Soluciones</a></li>' +
+      '<li><a href="index.html#section-kpis">KPIs y ejemplos</a></li>' +
       '<li><a href="valores.html">Valores</a></li>' +
       '<li><a href="ecosistema.html">Ecosistema</a></li>' +
       '<li><a href="contacto.html">Contacto</a></li>' +
