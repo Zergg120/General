@@ -58,6 +58,22 @@
 
   var src = pickSrcForMode(activeMode);
 
+  // Si el usuario ya desbloqueó audio en esta sesión del navegador, intentamos reanudar sin esperar
+  // a un nuevo gesto (reduce cortes entre páginas).
+  var UNLOCK_KEY = 'scorecard_audio_unlocked_session';
+  function getUnlocked() {
+    try {
+      return sessionStorage.getItem(UNLOCK_KEY) === '1';
+    } catch (_) {
+      return false;
+    }
+  }
+  function setUnlocked() {
+    try {
+      sessionStorage.setItem(UNLOCK_KEY, '1');
+    } catch (_) {}
+  }
+
   var audioEl = null;
   var btn = null;
   var volPctEl = null;
@@ -328,6 +344,7 @@
 
   function onUserGestureResume() {
     if (!userWantsSound || isMutedPref()) return;
+    setUnlocked();
     ensureAudioOnce();
     if (audioEl && fileOk && !audioEl.paused) {
       applyMusicVolumeToOutputs();
@@ -398,6 +415,7 @@
       unlockAudioFirstGesture._done = true;
       if (isMutedPref()) return;
       userWantsSound = true;
+      setUnlocked();
       tryPlay('unlock');
     }
     document.addEventListener('click', unlockAudioFirstGesture, { once: true, capture: true });
@@ -429,6 +447,15 @@
     applyMusicVolumeToOutputs();
     if (userWantsSound && !isMutedPref()) {
       tryPlay('boot');
+    }
+    // Si ya hubo un gesto en esta sesión, reintenta unas veces para disminuir "corte" entre páginas.
+    if (userWantsSound && !isMutedPref() && getUnlocked()) {
+      setTimeout(function () {
+        tryPlay('boot_retry_1');
+      }, 380);
+      setTimeout(function () {
+        tryPlay('boot_retry_2');
+      }, 1200);
     }
 
     // Cambiar música cuando cambia el tema (lunita).

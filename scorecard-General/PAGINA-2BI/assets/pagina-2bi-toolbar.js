@@ -187,7 +187,6 @@
       '<a class="explore-chip" href="' +
       href('#section-kpis') +
       '"><span class="explore-chip__icon" aria-hidden="true">📈</span> KPIs y ejemplos</a>' +
-      '<a class="explore-chip" href="portafolio.html"><span class="explore-chip__icon" aria-hidden="true">🧩</span> Portafolio</a>' +
       '<a class="explore-chip" href="' +
       href('#chat-demo-heading') +
       '"><span class="explore-chip__icon" aria-hidden="true">💬</span> Chat demo</a>' +
