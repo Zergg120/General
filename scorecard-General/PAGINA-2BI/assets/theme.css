@@ -2440,26 +2440,40 @@ body.p2bi-dark .trust-strip--capsule span {
   position: fixed;
   top: 0;
   left: 0;
-  width: 14px;
-  height: 14px;
+  width: 18px;
+  height: 18px;
   border-radius: 999px;
   pointer-events: none;
   z-index: 160;
   opacity: 0.0;
   transform: translate3d(-100px, -100px, 0);
-  background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.9), rgba(94, 184, 255, 0.55) 38%, rgba(29, 142, 240, 0.0) 72%);
-  filter: blur(0.2px);
+  background: radial-gradient(
+    circle at 35% 35%,
+    rgba(255, 255, 255, 0.98),
+    rgba(94, 184, 255, 0.78) 34%,
+    rgba(29, 142, 240, 0.28) 58%,
+    rgba(29, 142, 240, 0.0) 76%
+  );
+  filter: blur(0.12px);
   mix-blend-mode: screen;
-  transition: opacity 0.25s var(--ease);
+  transition: opacity 0.18s var(--ease);
   box-shadow:
-    0 0 22px rgba(94, 184, 255, 0.22),
-    0 0 48px rgba(29, 142, 240, 0.12);
+    0 0 0 1px rgba(29, 142, 240, 0.14),
+    0 0 26px rgba(94, 184, 255, 0.45),
+    0 0 60px rgba(29, 142, 240, 0.22);
 }
 body.p2bi-dark .p2bi-firefly {
-  background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.92), rgba(167, 139, 250, 0.5) 38%, rgba(217, 70, 239, 0.0) 74%);
+  background: radial-gradient(
+    circle at 35% 35%,
+    rgba(255, 255, 255, 0.98),
+    rgba(217, 70, 239, 0.62) 32%,
+    rgba(167, 139, 250, 0.34) 58%,
+    rgba(217, 70, 239, 0.0) 78%
+  );
   box-shadow:
-    0 0 24px rgba(167, 139, 250, 0.20),
-    0 0 56px rgba(73, 167, 255, 0.10);
+    0 0 0 1px rgba(167, 139, 250, 0.16),
+    0 0 28px rgba(217, 70, 239, 0.34),
+    0 0 66px rgba(73, 167, 255, 0.14);
 }
 
 .fab {
