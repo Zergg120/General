@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="560" viewBox="0 0 980 560" fill="none">
+  <defs>
+    <linearGradient id="s1" x1="120" y1="60" x2="860" y2="520" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#062A4A" stop-opacity="0.92"/>
+      <stop offset="0.55" stop-color="#1D8EF0" stop-opacity="0.78"/>
+      <stop offset="1" stop-color="#8AD0FF" stop-opacity="0.70"/>
+    </linearGradient>
+    <radialGradient id="s2" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(720 180) rotate(90) scale(260 320)">
+      <stop stop-color="#5EB8FF" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#5EB8FF" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="b" x="-60" y="-60" width="1100" height="680" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#b)">
+    <path d="M152 136c104-90 250-98 364-50 86 36 124 98 236 106 134 9 228-35 264 70 39 112-70 214-208 226-152 13-186-70-312-44-118 25-156 110-300 72C60 483 22 350 70 262c40-72 55-80 82-126Z" fill="url(#s2)"/>
+  </g>
+
+  <!-- Cards -->
+  <g opacity="0.95">
+    <rect x="118" y="132" width="356" height="160" rx="22" stroke="url(#s1)" stroke-opacity="0.22" stroke-width="2"/>
+    <rect x="506" y="132" width="356" height="160" rx="22" stroke="url(#s1)" stroke-opacity="0.22" stroke-width="2"/>
+    <rect x="118" y="312" width="356" height="160" rx="22" stroke="url(#s1)" stroke-opacity="0.18" stroke-width="2"/>
+    <rect x="506" y="312" width="356" height="160" rx="22" stroke="url(#s1)" stroke-opacity="0.18" stroke-width="2"/>
+  </g>
+
+  <!-- Pills -->
+  <g opacity="0.85" fill="#1D8EF0">
+    <rect x="150" y="166" width="90" height="24" rx="12" fill-opacity="0.10"/>
+    <rect x="248" y="166" width="110" height="24" rx="12" fill-opacity="0.08"/>
+    <rect x="366" y="166" width="70" height="24" rx="12" fill-opacity="0.12"/>
+
+    <rect x="538" y="166" width="110" height="24" rx="12" fill-opacity="0.10"/>
+    <rect x="656" y="166" width="86" height="24" rx="12" fill-opacity="0.08"/>
+    <rect x="748" y="166" width="72" height="24" rx="12" fill-opacity="0.12"/>
+
+    <rect x="150" y="346" width="96" height="24" rx="12" fill-opacity="0.10"/>
+    <rect x="254" y="346" width="64" height="24" rx="12" fill-opacity="0.08"/>
+    <rect x="326" y="346" width="92" height="24" rx="12" fill-opacity="0.12"/>
+
+    <rect x="538" y="346" width="70" height="24" rx="12" fill-opacity="0.10"/>
+    <rect x="616" y="346" width="98" height="24" rx="12" fill-opacity="0.08"/>
+    <rect x="722" y="346" width="98" height="24" rx="12" fill-opacity="0.12"/>
+  </g>
+
+  <!-- Connectors -->
+  <g stroke="url(#s1)" stroke-opacity="0.35" stroke-width="2">
+    <path d="M474 212h32"/>
+    <path d="M474 392h32"/>
+    <path d="M296 292v20"/>
+    <path d="M684 292v20"/>
+  </g>
+</svg>

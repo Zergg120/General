@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="560" viewBox="0 0 980 560" fill="none">
+  <defs>
+    <linearGradient id="g1" x1="120" y1="40" x2="880" y2="520" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0A4A7C" stop-opacity="0.92"/>
+      <stop offset="0.55" stop-color="#1D8EF0" stop-opacity="0.75"/>
+      <stop offset="1" stop-color="#5EB8FF" stop-opacity="0.72"/>
+    </linearGradient>
+    <linearGradient id="g2" x1="180" y1="110" x2="820" y2="430" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#5EB8FF" stop-opacity="0.30"/>
+      <stop offset="1" stop-color="#1D8EF0" stop-opacity="0.06"/>
+    </linearGradient>
+    <filter id="blur" x="-40" y="-40" width="1060" height="640" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="14"/>
+    </filter>
+  </defs>
+
+  <!-- Soft blobs -->
+  <g filter="url(#blur)" opacity="0.55">
+    <path d="M165 118c88-62 210-78 312-35 83 35 108 110 222 134 122 26 212-10 250 78 44 102-58 204-180 216-142 14-183-86-302-64-114 21-147 100-276 66C59 468 18 347 56 260c31-71 55-92 109-142Z" fill="url(#g2)"/>
+  </g>
+
+  <!-- Frame -->
+  <rect x="86" y="88" width="808" height="384" rx="28" fill="white" fill-opacity="0.02"/>
+  <rect x="86" y="88" width="808" height="384" rx="28" stroke="url(#g1)" stroke-opacity="0.28" stroke-width="2"/>
+  <rect x="104" y="116" width="772" height="328" rx="22" stroke="url(#g1)" stroke-opacity="0.16" stroke-width="1.5"/>
+
+  <!-- Header pills -->
+  <g opacity="0.9">
+    <rect x="128" y="132" width="120" height="28" rx="14" fill="#1D8EF0" fill-opacity="0.10"/>
+    <rect x="256" y="132" width="96" height="28" rx="14" fill="#0A4A7C" fill-opacity="0.08"/>
+    <rect x="360" y="132" width="144" height="28" rx="14" fill="#5EB8FF" fill-opacity="0.14"/>
+  </g>
+
+  <!-- Line chart -->
+  <path d="M160 372 C230 330 246 252 318 264 C388 276 386 206 456 220 C526 234 542 162 616 188 C694 216 710 156 792 172" stroke="url(#g1)" stroke-width="4.5" stroke-linecap="round"/>
+  <path d="M160 372 C230 330 246 252 318 264 C388 276 386 206 456 220 C526 234 542 162 616 188 C694 216 710 156 792 172 L792 416 L160 416 Z" fill="url(#g1)" fill-opacity="0.10"/>
+
+  <!-- Points -->
+  <g fill="#0A4A7C" opacity="0.9">
+    <circle cx="160" cy="372" r="6"/>
+    <circle cx="318" cy="264" r="6"/>
+    <circle cx="456" cy="220" r="6"/>
+    <circle cx="616" cy="188" r="6"/>
+    <circle cx="792" cy="172" r="6"/>
+  </g>
+</svg>
