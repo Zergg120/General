@@ -130,6 +130,7 @@
       '<li><a href="index.html">Inicio</a></li>' +
       '<li><a href="nosotros.html">Nosotros</a></li>' +
       '<li><a href="soluciones.html">Soluciones</a></li>' +
+      '<li><a href="portafolio.html">Portafolio</a></li>' +
       '<li><a href="index.html#section-kpis">KPIs y ejemplos</a></li>' +
       '<li><a href="valores.html">Valores</a></li>' +
       '<li><a href="ecosistema.html">Ecosistema</a></li>' +
@@ -179,6 +180,7 @@
       '<a class="explore-chip" href="' +
       href('#section-kpis') +
       '"><span class="explore-chip__icon" aria-hidden="true">📈</span> KPIs y ejemplos</a>' +
+      '<a class="explore-chip" href="portafolio.html"><span class="explore-chip__icon" aria-hidden="true">🧩</span> Portafolio</a>' +
       '<a class="explore-chip" href="' +
       href('#chat-demo-heading') +
       '"><span class="explore-chip__icon" aria-hidden="true">💬</span> Chat demo</a>' +
