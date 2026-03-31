@@ -24,14 +24,39 @@
   var MIGRATE_FLAG = 'scorecard_audio_prefs_v3';
   /** '1' = panel volumen visible, '0' = colapsado (solo bocina + flecha) */
   var STORAGE_VOL_UI_EXPANDED = 'scorecard_audio_vol_ui_expanded';
-  /** Persistencia de posición entre páginas (multi-page) */
-  var STORAGE_TIME = 'scorecard_audio_time_s';
-  var STORAGE_TIME_AT = 'scorecard_audio_time_at_ms';
-  var STORAGE_WAS_PLAYING = 'scorecard_audio_was_playing';
-
   var cfg = window.SCORECARD_AUDIO || {};
-  var userSrc = cfg.src != null ? String(cfg.src) : null;
-  var src = userSrc || 'audio/Music-Background.mp3';
+  var THEME_KEY = 'p2bi_theme';
+
+  function getThemePref() {
+    try {
+      return localStorage.getItem(THEME_KEY);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function pickSrcForMode(mode) {
+    if (mode === 'dark') {
+      if (cfg.srcDark != null) return String(cfg.srcDark);
+    } else {
+      if (cfg.srcLight != null) return String(cfg.srcLight);
+    }
+    if (cfg.src != null) return String(cfg.src);
+    return 'audio/Music-Background.mp3';
+  }
+
+  var activeMode = getThemePref() === 'dark' ? 'dark' : 'light';
+
+  function k(base) {
+    return base + '_' + activeMode;
+  }
+
+  /** Persistencia de posición entre páginas (multi-page) por pista (light/dark) */
+  var STORAGE_TIME = k('scorecard_audio_time_s');
+  var STORAGE_TIME_AT = k('scorecard_audio_time_at_ms');
+  var STORAGE_WAS_PLAYING = k('scorecard_audio_was_playing');
+
+  var src = pickSrcForMode(activeMode);
 
   var audioEl = null;
   var btn = null;
@@ -264,6 +289,32 @@
     updateBtn();
   }
 
+  function switchTrack(mode) {
+    mode = mode === 'dark' ? 'dark' : 'light';
+    if (mode === activeMode) return;
+
+    // Guarda la pista actual antes de cambiar.
+    savePlaybackState(true);
+
+    activeMode = mode;
+    src = pickSrcForMode(activeMode);
+    STORAGE_TIME = k('scorecard_audio_time_s');
+    STORAGE_TIME_AT = k('scorecard_audio_time_at_ms');
+    STORAGE_WAS_PLAYING = k('scorecard_audio_was_playing');
+    restoredTime = false;
+
+    if (!audioEl) return;
+    try {
+      audioEl.pause();
+    } catch (_) {}
+    try {
+      audioEl.src = src;
+      audioEl.load();
+    } catch (_) {}
+
+    tryPlay('theme-switch');
+  }
+
   var audioWrapEl = null;
 
   function updateBtn() {
@@ -379,6 +430,14 @@
     if (userWantsSound && !isMutedPref()) {
       tryPlay('boot');
     }
+
+    // Cambiar música cuando cambia el tema (lunita).
+    try {
+      window.addEventListener('p2bi:theme', function (e) {
+        var m = e && e.detail && e.detail.mode;
+        switchTrack(m === 'dark' ? 'dark' : 'light');
+      });
+    } catch (_) {}
 
     document.addEventListener('visibilitychange', function () {
       if (document.visibilityState !== 'visible') return;

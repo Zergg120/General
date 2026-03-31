@@ -7,6 +7,96 @@
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   var CHART_IDS = ["chartVentas", "chartMix", "chartBarras", "chartKpiFunnel", "chartKpiChannels"];
+  var charts = {};
+
+  function cssVar(name, fallback) {
+    try {
+      var v = getComputedStyle(document.body).getPropertyValue(name);
+      v = (v || "").trim();
+      return v || fallback;
+    } catch (_) {
+      return fallback;
+    }
+  }
+
+  function isDark() {
+    return document.body && document.body.classList && document.body.classList.contains("p2bi-dark");
+  }
+
+  function palette() {
+    var dark = isDark();
+    if (!dark) {
+      return {
+        tick: "#4d6b88",
+        grid: "rgba(10, 74, 124, 0.08)",
+        tooltipBg: "rgba(4, 18, 33, 0.92)",
+        border: "#ffffff",
+        a: "#0a4a7c",
+        b: "#1d8ef0",
+        c: "#5eb8ff",
+        d: "#c5ddf5",
+        e: "#062a4a",
+      };
+    }
+    // Luna: morado/indigo como template, azul 2BI como acento (armonizado).
+    return {
+      tick: cssVar("--muted", "rgba(165, 183, 224, 0.92)"),
+      grid: "rgba(166, 132, 255, 0.14)",
+      tooltipBg: "rgba(10, 10, 24, 0.92)",
+      border: "rgba(255, 255, 255, 0.12)",
+      a: cssVar("--luna-violet", "#a78bfa"),
+      b: cssVar("--luna-fuchsia", "#d946ef"),
+      c: cssVar("--blue-glow", "#8ad0ff"),
+      d: "rgba(241, 245, 255, 0.22)",
+      e: cssVar("--blue-bright", "#49a7ff"),
+    };
+  }
+
+  function applyScaleColors(opts, pal) {
+    if (!opts || !opts.scales) return;
+    var s = opts.scales;
+    if (s.x && s.x.ticks) s.x.ticks.color = pal.tick;
+    if (s.y && s.y.ticks) s.y.ticks.color = pal.tick;
+    if (s.x && s.x.grid) s.x.grid.color = pal.grid;
+    if (s.y && s.y.grid) s.y.grid.color = pal.grid;
+  }
+
+  function applyLegendColors(opts, pal) {
+    try {
+      if (opts.plugins && opts.plugins.legend && opts.plugins.legend.labels) {
+        opts.plugins.legend.labels.color = pal.tick;
+      }
+    } catch (_) {}
+  }
+
+  function applyTooltipColors(opts, pal) {
+    try {
+      if (opts.plugins && opts.plugins.tooltip) {
+        opts.plugins.tooltip.backgroundColor = pal.tooltipBg;
+      }
+    } catch (_) {}
+  }
+
+  function updateExistingCharts() {
+    if (typeof Chart === "undefined") return;
+    var pal = palette();
+    Object.keys(charts).forEach(function (k) {
+      var c = charts[k];
+      if (!c) return;
+      try {
+        applyScaleColors(c.options, pal);
+        applyLegendColors(c.options, pal);
+        applyTooltipColors(c.options, pal);
+        // Ajusta borde de doughnuts
+        if (c.data && c.data.datasets && c.data.datasets[0]) {
+          if (c.config && (c.config.type === "doughnut" || c.config.type === "pie")) {
+            c.data.datasets[0].borderColor = pal.border;
+          }
+        }
+        c.update();
+      } catch (_) {}
+    });
+  }
 
   function allRendered() {
     for (var i = 0; i < CHART_IDS.length; i++) {
@@ -18,10 +108,11 @@
 
   function makeCharts() {
     if (typeof Chart === "undefined") return false;
+    var pal = palette();
     var lineEl = document.getElementById("chartVentas");
     if (lineEl && !lineEl.dataset.rendered) {
       lineEl.dataset.rendered = "1";
-      new Chart(lineEl, {
+      charts.chartVentas = new Chart(lineEl, {
         type: "line",
         data: {
           labels: ["Ene", "Feb", "Mar", "Abr", "May", "Jun"],
@@ -29,14 +120,14 @@
             {
               label: "Ventas netas (índice)",
               data: [100, 108, 105, 118, 124, 132],
-              borderColor: "#1d8ef0",
-              backgroundColor: "rgba(29, 142, 240, 0.14)",
+              borderColor: pal.e,
+              backgroundColor: isDark() ? "rgba(167, 139, 250, 0.10)" : "rgba(29, 142, 240, 0.14)",
               fill: true,
               tension: 0.38,
               borderWidth: 2.5,
               pointRadius: 4,
-              pointBackgroundColor: "#0a4a7c",
-              pointBorderColor: "#fff",
+              pointBackgroundColor: pal.a,
+              pointBorderColor: pal.border,
               pointBorderWidth: 2,
             },
           ],
@@ -49,7 +140,7 @@
           plugins: {
             legend: { display: false },
             tooltip: {
-              backgroundColor: "rgba(4, 18, 33, 0.92)",
+              backgroundColor: pal.tooltipBg,
               titleFont: { family: "Outfit, sans-serif", size: 12 },
               bodyFont: { family: "Outfit, sans-serif", size: 13 },
               padding: 10,
@@ -59,12 +150,12 @@
           scales: {
             x: {
               grid: { display: false },
-              ticks: { color: "#4d6b88", font: { size: 11, family: "Outfit, sans-serif" } },
+              ticks: { color: pal.tick, font: { size: 11, family: "Outfit, sans-serif" } },
             },
             y: {
               beginAtZero: false,
-              grid: { color: "rgba(10, 74, 124, 0.08)" },
-              ticks: { color: "#4d6b88", font: { size: 11, family: "Outfit, sans-serif" } },
+              grid: { color: pal.grid },
+              ticks: { color: pal.tick, font: { size: 11, family: "Outfit, sans-serif" } },
             },
           },
         },
@@ -74,16 +165,16 @@
     var doughEl = document.getElementById("chartMix");
     if (doughEl && !doughEl.dataset.rendered) {
       doughEl.dataset.rendered = "1";
-      new Chart(doughEl, {
+      charts.chartMix = new Chart(doughEl, {
         type: "doughnut",
         data: {
           labels: ["Power BI / Fabric", "SQL & almacén", "APIs & streams", "Legacy / flat files"],
           datasets: [
             {
               data: [40, 30, 18, 12],
-              backgroundColor: ["#0a4a7c", "#1d8ef0", "#5eb8ff", "#c5ddf5"],
+              backgroundColor: [pal.a, pal.e, pal.c, pal.d],
               borderWidth: 2,
-              borderColor: "#ffffff",
+              borderColor: pal.border,
               hoverOffset: 8,
             },
           ],
@@ -97,14 +188,14 @@
             legend: {
               position: "bottom",
               labels: {
-                color: "#4d6b88",
+                color: pal.tick,
                 boxWidth: 12,
                 padding: 12,
                 font: { size: 11, family: "Outfit, sans-serif" },
               },
             },
             tooltip: {
-              backgroundColor: "rgba(4, 18, 33, 0.92)",
+              backgroundColor: pal.tooltipBg,
               bodyFont: { family: "Outfit, sans-serif", size: 12 },
               padding: 10,
               cornerRadius: 10,
@@ -117,7 +208,7 @@
     var barEl = document.getElementById("chartBarras");
     if (barEl && !barEl.dataset.rendered) {
       barEl.dataset.rendered = "1";
-      new Chart(barEl, {
+      charts.chartBarras = new Chart(barEl, {
         type: "bar",
         data: {
           labels: ["Descubrimiento", "Modelo mínimo", "Endurecimiento", "Adopción"],
@@ -125,7 +216,7 @@
             {
               label: "Horas % (demo)",
               data: [22, 34, 28, 16],
-              backgroundColor: ["#0a4a7c", "#1d8ef0", "#5eb8ff", "#c5ddf5"],
+              backgroundColor: [pal.a, pal.e, pal.c, pal.d],
               borderRadius: 10,
               borderSkipped: false,
               barThickness: 18,
@@ -151,9 +242,9 @@
             x: {
               beginAtZero: true,
               max: 100,
-              grid: { color: "rgba(10, 74, 124, 0.08)" },
+              grid: { color: pal.grid },
               ticks: {
-                color: "#4d6b88",
+                color: pal.tick,
                 font: { size: 11, family: "Outfit, sans-serif" },
                 callback: function (v) {
                   return v + "%";
@@ -163,7 +254,7 @@
             y: {
               grid: { display: false },
               ticks: {
-                color: "#4d6b88",
+                color: pal.tick,
                 font: { size: 11, family: "Outfit, sans-serif" },
               },
             },
@@ -175,7 +266,7 @@
     var funnelEl = document.getElementById("chartKpiFunnel");
     if (funnelEl && !funnelEl.dataset.rendered) {
       funnelEl.dataset.rendered = "1";
-      new Chart(funnelEl, {
+      charts.chartKpiFunnel = new Chart(funnelEl, {
         type: "bar",
         data: {
           labels: ["Sesiones", "Vistas clave", "Leads", "Ventas"],
@@ -183,7 +274,7 @@
             {
               label: "Volumen (demo)",
               data: [12000, 4200, 680, 120],
-              backgroundColor: ["#5eb8ff", "#1d8ef0", "#0a4a7c", "#062a4a"],
+              backgroundColor: [pal.c, pal.e, pal.a, pal.b],
               borderRadius: 12,
               borderSkipped: false,
               barThickness: 22,
@@ -197,7 +288,7 @@
           plugins: {
             legend: { display: false },
             tooltip: {
-              backgroundColor: "rgba(4, 18, 33, 0.92)",
+              backgroundColor: pal.tooltipBg,
               titleFont: { family: "Outfit, sans-serif", size: 12 },
               bodyFont: { family: "Outfit, sans-serif", size: 13 },
               padding: 10,
@@ -207,13 +298,13 @@
           scales: {
             x: {
               grid: { display: false },
-              ticks: { color: "#4d6b88", font: { size: 11, family: "Outfit, sans-serif" } },
+              ticks: { color: pal.tick, font: { size: 11, family: "Outfit, sans-serif" } },
             },
             y: {
               beginAtZero: true,
-              grid: { color: "rgba(10, 74, 124, 0.08)" },
+              grid: { color: pal.grid },
               ticks: {
-                color: "#4d6b88",
+                color: pal.tick,
                 font: { size: 11, family: "Outfit, sans-serif" },
               },
             },
@@ -225,16 +316,16 @@
     var chEl = document.getElementById("chartKpiChannels");
     if (chEl && !chEl.dataset.rendered) {
       chEl.dataset.rendered = "1";
-      new Chart(chEl, {
+      charts.chartKpiChannels = new Chart(chEl, {
         type: "doughnut",
         data: {
           labels: ["Orgánico", "Ads", "Referidos", "Email/CRM", "Directo"],
           datasets: [
             {
               data: [34, 26, 18, 12, 10],
-              backgroundColor: ["#0a4a7c", "#1d8ef0", "#5eb8ff", "#c5ddf5", "#062a4a"],
+              backgroundColor: [pal.a, pal.e, pal.c, pal.d, pal.b],
               borderWidth: 2,
-              borderColor: "#ffffff",
+              borderColor: pal.border,
               hoverOffset: 8,
             },
           ],
@@ -248,14 +339,14 @@
             legend: {
               position: "bottom",
               labels: {
-                color: "#4d6b88",
+                color: pal.tick,
                 boxWidth: 12,
                 padding: 12,
                 font: { size: 11, family: "Outfit, sans-serif" },
               },
             },
             tooltip: {
-              backgroundColor: "rgba(4, 18, 33, 0.92)",
+              backgroundColor: pal.tooltipBg,
               bodyFont: { family: "Outfit, sans-serif", size: 12 },
               padding: 10,
               cornerRadius: 10,
@@ -267,6 +358,13 @@
 
     return true;
   }
+
+  // Si cambia el tema (lunita), re-colorear charts existentes.
+  try {
+    window.addEventListener("p2bi:theme", function () {
+      updateExistingCharts();
+    });
+  } catch (_) {}
 
   function svgWrap(svg) {
     return (

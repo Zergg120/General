@@ -115,6 +115,40 @@ body.p2bi-dark .nav__link:hover {
   color: rgba(241, 245, 255, 0.96);
   box-shadow: 0 0 0 1px rgba(167, 139, 250, 0.16) inset;
 }
+
+/* Evitar “texto apagado” por usar --blue-deep en componentes clave (Luna) */
+body.p2bi-dark .hero-home h1 em {
+  color: var(--luna-violet);
+}
+body.p2bi-dark .kpi-mini__v,
+body.p2bi-dark .detail-metric__v,
+body.p2bi-dark .value-lg h3 {
+  color: rgba(241, 245, 255, 0.96);
+}
+body.p2bi-dark .back-top {
+  background: rgba(16, 19, 40, 0.88);
+  color: rgba(241, 245, 255, 0.94);
+  border-color: rgba(166, 132, 255, 0.18);
+}
+body.p2bi-dark .back-top:hover {
+  background: rgba(22, 26, 56, 0.92);
+  border-color: rgba(166, 132, 255, 0.36);
+  color: rgba(241, 245, 255, 0.96);
+}
+body.p2bi-dark .nav-toggle:hover {
+  border-color: rgba(166, 132, 255, 0.36);
+  color: rgba(241, 245, 255, 0.96);
+}
+body.p2bi-dark html[data-page="index"] .nav__link[href="index.html"],
+body.p2bi-dark html[data-page="nosotros"] .nav__link[href="nosotros.html"],
+body.p2bi-dark html[data-page="soluciones"] .nav__link[href="soluciones.html"],
+body.p2bi-dark html[data-page="portafolio"] .nav__link[href="portafolio.html"],
+body.p2bi-dark html[data-page="valores"] .nav__link[href="valores.html"],
+body.p2bi-dark html[data-page="ecosistema"] .nav__link[href="ecosistema.html"],
+body.p2bi-dark html[data-page="contacto"] .nav__link[href="contacto.html"] {
+  color: rgba(241, 245, 255, 0.96);
+  background: rgba(167, 139, 250, 0.12);
+}
 body.p2bi-dark .btn--ghost {
   background: rgba(16, 19, 40, 0.78);
   color: rgba(234, 242, 255, 0.92);

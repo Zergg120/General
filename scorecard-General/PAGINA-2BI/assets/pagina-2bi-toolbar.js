@@ -65,6 +65,13 @@
     try {
       localStorage.setItem(THEME_KEY, dark ? 'dark' : 'light');
     } catch (_) {}
+    try {
+      window.dispatchEvent(
+        new CustomEvent('p2bi:theme', {
+          detail: { mode: dark ? 'dark' : 'light' },
+        })
+      );
+    } catch (_) {}
     var b = document.getElementById('p2bi-btn-theme');
     if (b) {
       b.setAttribute('aria-pressed', dark ? 'true' : 'false');
