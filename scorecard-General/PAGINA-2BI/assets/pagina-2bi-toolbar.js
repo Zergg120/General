@@ -182,10 +182,6 @@
       '<a class="explore-chip" href="' +
       href('#chat-demo-heading') +
       '"><span class="explore-chip__icon" aria-hidden="true">💬</span> Chat demo</a>' +
-      '<a class="explore-chip" href="soluciones.html"><span class="explore-chip__icon" aria-hidden="true">◎</span> 6 soluciones + ejemplos</a>' +
-      '<a class="explore-chip" href="ecosistema.html"><span class="explore-chip__icon" aria-hidden="true">⬡</span> Ecosistema técnico</a>' +
-      '<a class="explore-chip" href="nosotros.html"><span class="explore-chip__icon" aria-hidden="true">◇</span> Quiénes somos</a>' +
-      '<a class="explore-chip explore-chip--accent" href="contacto.html"><span class="explore-chip__icon" aria-hidden="true">→</span> Agendar llamada</a>' +
       '</div>';
 
     // Inserta justo debajo de la barra principal
