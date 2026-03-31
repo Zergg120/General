@@ -1305,6 +1305,11 @@ a.card.card--link:hover .card__more::after {
   border: 1px solid var(--line);
   box-shadow: var(--shadow-sm);
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.6), rgba(228, 240, 251, 0.6));
+  /* Evita que “empuje” demasiado el contenido: se ve como arte, no como sección gigante */
+  max-height: 340px;
+  aspect-ratio: 980 / 560;
+  object-fit: cover;
+  pointer-events: none;
 }
 body.p2bi-dark .p2bi-illu {
   border-color: rgba(138, 208, 255, 0.18);
@@ -1315,6 +1320,12 @@ body.p2bi-dark .p2bi-illu {
 .p2bi-illu-wrap {
   margin-top: clamp(1.25rem, 3vw, 2rem);
   margin-bottom: clamp(1.25rem, 3vw, 2rem);
+}
+
+@media (max-width: 520px) {
+  .p2bi-illu {
+    max-height: 240px;
+  }
 }
 
 /* Quick links home */
