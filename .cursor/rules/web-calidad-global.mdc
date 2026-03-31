@@ -1,0 +1,41 @@
+---
+description: Web global: estándares para páginas hermosas y consistentes
+globs:
+  - "**/*.html"
+  - "**/*.css"
+  - "**/*.js"
+  - "**/*.ts"
+  - "**/*.tsx"
+alwaysApply: true
+---
+
+# Estándares globales — proyectos web
+
+## Regla madre
+
+- **No romper el esqueleto aprobado**: si una página ya tiene controles (botones, iconos, CTAs, widgets), no “limpiar” eliminándolos. Ajustar estilos/orden/copy **sin perder funciones**.
+
+## Calidad visual (UI/UX)
+
+- **Jerarquía clara**: título dominante, subtítulo útil, CTAs visibles, espaciado consistente.
+- **Consistencia**: mismos tamaños de botones, radios, sombras y tipografías en todo el sitio.
+- **Responsive real**: debe verse bien en móvil (320–430px) y desktop; evitar desbordes horizontales.
+- **Accesibilidad mínima**: contraste suficiente, foco visible, `aria-label` en icon buttons, navegación con teclado.
+
+## Interacciones
+
+- **Tooltips** en iconos que no sean obvios.
+- **Escape** debe cerrar modales/overlays; no dejar overlays “pegados”.
+- **Atajos** (si hay comandos): no dispararlos cuando el foco está en `input/textarea/contenteditable`.
+
+## Rendimiento / estabilidad
+
+- Evitar librerías pesadas si no son necesarias.
+- Evitar reflows innecesarios; animaciones respetando `prefers-reduced-motion`.
+- Assets versionados cuando haya caché (`?v=`) si aplica.
+
+## Contenido (copy)
+
+- Nada de placeholders tipo `example.com`/`hola@...example` en producción.
+- Botones y secciones deben decir **qué gana el usuario** y **qué sigue** (acción clara).
+
