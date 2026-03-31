@@ -268,6 +268,97 @@
     return true;
   }
 
+  function svgWrap(svg) {
+    return (
+      '<div class="p2bi-svg-fallback" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center">' +
+      svg +
+      "</div>"
+    );
+  }
+
+  function renderFallbacks() {
+    // Fallback visual (sin Chart.js). Mantiene la estética 2BI.
+    function setSvg(id, svg) {
+      var c = document.getElementById(id);
+      if (!c || c.dataset.rendered) return;
+      var wrap = c.parentElement;
+      if (!wrap) return;
+      wrap.innerHTML = svgWrap(svg);
+      c.dataset.rendered = "1";
+    }
+
+    setSvg(
+      "chartVentas",
+      '<svg viewBox="0 0 640 260" width="100%" height="100%" preserveAspectRatio="none" aria-hidden="true">' +
+        '<defs>' +
+        '<linearGradient id="l1" x1="0" y1="0" x2="1" y2="0">' +
+        '<stop offset="0" stop-color="#0a4a7c"/><stop offset="1" stop-color="#5eb8ff"/>' +
+        "</linearGradient>" +
+        '<linearGradient id="a1" x1="0" y1="0" x2="0" y2="1">' +
+        '<stop offset="0" stop-color="#1d8ef0" stop-opacity="0.22"/><stop offset="1" stop-color="#1d8ef0" stop-opacity="0"/>' +
+        "</linearGradient>" +
+        "</defs>" +
+        '<path d="M40,190 C110,150 150,110 210,125 C270,140 300,92 360,105 C420,118 450,70 505,86 C560,102 585,74 600,78" fill="none" stroke="url(#l1)" stroke-width="4" stroke-linecap="round"/>' +
+        '<path d="M40,190 C110,150 150,110 210,125 C270,140 300,92 360,105 C420,118 450,70 505,86 C560,102 585,74 600,78 L600,230 L40,230 Z" fill="url(#a1)"/>' +
+        "</svg>"
+    );
+
+    setSvg(
+      "chartMix",
+      '<svg viewBox="0 0 320 260" width="100%" height="100%" aria-hidden="true">' +
+        '<g transform="translate(160 130)">' +
+        '<circle r="86" fill="none" stroke="#c5ddf5" stroke-width="26"/>' +
+        '<circle r="86" fill="none" stroke="#0a4a7c" stroke-width="26" stroke-dasharray="165 375" stroke-linecap="round" transform="rotate(-90)"/>' +
+        '<circle r="86" fill="none" stroke="#1d8ef0" stroke-width="26" stroke-dasharray="120 420" stroke-linecap="round" transform="rotate(68)"/>' +
+        '<circle r="86" fill="none" stroke="#5eb8ff" stroke-width="26" stroke-dasharray="80 460" stroke-linecap="round" transform="rotate(155)"/>' +
+        '<circle r="62" fill="#ffffff" fill-opacity="0.92"/>' +
+        "</g>" +
+        "</svg>"
+    );
+
+    setSvg(
+      "chartBarras",
+      '<svg viewBox="0 0 640 220" width="100%" height="100%" aria-hidden="true">' +
+        '<g fill="none" stroke="rgba(10,74,124,0.10)" stroke-width="1">' +
+        '<path d="M110 40H610"/><path d="M110 80H610"/><path d="M110 120H610"/><path d="M110 160H610"/>' +
+        "</g>" +
+        '<g fill="#0a4a7c" fill-opacity="0.95">' +
+        '<rect x="110" y="34" width="190" height="18" rx="9"/>' +
+        '<rect x="110" y="74" width="290" height="18" rx="9" fill="#1d8ef0"/>' +
+        '<rect x="110" y="114" width="240" height="18" rx="9" fill="#5eb8ff"/>' +
+        '<rect x="110" y="154" width="140" height="18" rx="9" fill="#c5ddf5"/>' +
+        "</g>" +
+        "</svg>"
+    );
+
+    setSvg(
+      "chartKpiFunnel",
+      '<svg viewBox="0 0 640 240" width="100%" height="100%" aria-hidden="true">' +
+        '<g fill="rgba(10,74,124,0.10)"><rect x="40" y="210" width="560" height="1"/></g>' +
+        '<g>' +
+        '<rect x="90" y="70" width="90" height="140" rx="12" fill="#5eb8ff"/>' +
+        '<rect x="210" y="110" width="90" height="100" rx="12" fill="#1d8ef0"/>' +
+        '<rect x="330" y="160" width="90" height="50" rx="12" fill="#0a4a7c"/>' +
+        '<rect x="450" y="182" width="90" height="28" rx="12" fill="#062a4a"/>' +
+        "</g>" +
+        "</svg>"
+    );
+
+    setSvg(
+      "chartKpiChannels",
+      '<svg viewBox="0 0 320 260" width="100%" height="100%" aria-hidden="true">' +
+        '<g transform="translate(160 130)">' +
+        '<circle r="86" fill="none" stroke="#c5ddf5" stroke-width="26"/>' +
+        '<circle r="86" fill="none" stroke="#0a4a7c" stroke-width="26" stroke-dasharray="140 400" stroke-linecap="round" transform="rotate(-90)"/>' +
+        '<circle r="86" fill="none" stroke="#1d8ef0" stroke-width="26" stroke-dasharray="110 430" stroke-linecap="round" transform="rotate(45)"/>' +
+        '<circle r="86" fill="none" stroke="#5eb8ff" stroke-width="26" stroke-dasharray="85 455" stroke-linecap="round" transform="rotate(120)"/>' +
+        '<circle r="86" fill="none" stroke="#062a4a" stroke-width="26" stroke-dasharray="60 480" stroke-linecap="round" transform="rotate(185)"/>' +
+        '<circle r="62" fill="#ffffff" fill-opacity="0.92"/>' +
+        "</g>" +
+        "</svg>"
+    );
+  }
+
   function initObservers() {
     // Render diferido: se activa al ver Gráficos o al ver KPIs.
     var mounts = [];
@@ -277,7 +368,7 @@
     if (m2) mounts.push(m2);
 
     if (mounts.length === 0) {
-      makeCharts();
+      if (!makeCharts()) renderFallbacks();
       return;
     }
 
@@ -285,7 +376,7 @@
       function (entries) {
         entries.forEach(function (e) {
           if (!e.isIntersecting) return;
-          makeCharts();
+          if (!makeCharts()) renderFallbacks();
         });
         if (allRendered()) io.disconnect();
       },
@@ -298,14 +389,14 @@
     // Si llegamos por hash (anchor), forzar un intento rápido.
     if (location && typeof location.hash === "string" && /section-kpis|section-dashboard/i.test(location.hash)) {
       setTimeout(function () {
-        makeCharts();
+        if (!makeCharts()) renderFallbacks();
       }, 60);
     }
 
     // BFCache / volver atrás: reintenta.
     window.addEventListener("pageshow", function () {
       setTimeout(function () {
-        makeCharts();
+        if (!makeCharts()) renderFallbacks();
       }, 60);
     });
   }
@@ -316,7 +407,8 @@
       return;
     }
     if (Date.now() - START > MAX_WAIT_MS) {
-      // Último intento: si nunca cargó Chart.js, no rompemos el sitio.
+      // Último intento: si nunca cargó Chart.js, mostramos fallbacks (no vacío).
+      renderFallbacks();
       return;
     }
     setTimeout(waitForChartThenInit, 90);
