@@ -1,0 +1,3 @@
+# Ajusta la URL del sitemap cuando tengas dominio de producción.
+User-agent: *
+Allow: /

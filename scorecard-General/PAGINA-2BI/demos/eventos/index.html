@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="es" data-app="2bi-orquesta-eventos" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0a080c" />
+  <meta name="description" content="2BI-Orquesta: salón de eventos para bodas y XV con galería, paquetes, cotizador orientativo, Copiloto conversacional y checklist — decisión informada, estándar premium." />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="es_MX" />
+  <meta property="og:title" content="2BI-Orquesta — Salón de eventos para bodas y XV" />
+  <meta property="og:description" content="Plataforma de decisión para parejas y familias: galería, paquetes, cotizador orientativo y Copiloto 2BI. Transparencia operativa con estándar premium." />
+  <meta property="og:image" content="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1200&amp;h=630&amp;fit=crop&amp;q=85" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="2BI-Orquesta — Bodas y quinceañeras" />
+  <meta name="twitter:description" content="Información clara, cotizador y asistente conversacional para elegir salón con respaldo." />
+  <meta name="format-detection" content="telephone=no" />
+  <title>2BI-Orquesta — Salón de eventos · Bodas y XV con criterio</title>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "name": "2BI-Orquesta",
+        "description": "Plataforma demo para salones premium: bodas, quinceañeras, cotizador orientativo y Copiloto conversacional.",
+        "inLanguage": "es-MX"
+      },
+      {
+        "@type": "EventVenue",
+        "name": "2BI-Orquesta — Demostración salón de eventos",
+        "description": "Salón de eventos para bodas y XV: galería, paquetes, visita y coordinación con estándar premium (sitio demostrativo).",
+        "image": "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1200&h=630&fit=crop&q=85",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Ciudad de México",
+          "addressRegion": "CDMX",
+          "addressCountry": "MX"
+        },
+        "priceRange": "$$$",
+        "amenityFeature": [
+          { "@type": "LocationFeatureSpecification", "name": "Coordinación bodas y quinceañeras" },
+          { "@type": "LocationFeatureSpecification", "name": "Cotizador y checklist digital" }
+        ]
+      }
+    ]
+  }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="dns-prefetch" href="https://images.unsplash.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Outfit:wght@300..800&display=swap" rel="stylesheet" />
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="./assets/eventos.css" />
+</head>
+<body class="page-enter page-alive">
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+  <div class="ambient" aria-hidden="true">
+    <div class="ambient__mesh"></div>
+    <div class="ambient__grid"></div>
+    <div class="ambient__orb"></div>
+    <div class="ambient__orb ambient__orb--b"></div>
+  </div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="site-header js-site-header">
+    <div class="scroll-progress js-scroll-progress" aria-hidden="true"></div>
+    <div class="site-header__inner">
+      <a class="logo" href="index.html" data-nav="index">
+        <span class="logo__mark">2BI-</span>
+        <span class="logo__sub">Orquesta</span>
+      </a>
+      <nav class="nav nav--desktop" aria-label="Principal">
+        <ul class="nav__list">
+          <li><a class="nav__link is-active" href="index.html" data-nav="index">Inicio</a></li>
+          <li><a class="nav__link" href="galeria.html" data-nav="galeria">Galería</a></li>
+          <li><a class="nav__link" href="experiencia.html" data-nav="experiencia">Experiencia</a></li>
+          <li><a class="nav__link" href="paquetes.html" data-nav="paquetes">Paquetes</a></li>
+          <li><a class="nav__link" href="index.html#ia" data-nav="comando" title="Asistente conversacional 2BI">Copiloto</a></li>
+          <li><a class="nav__link" href="contacto.html" data-nav="contacto">Contacto</a></li>
+        </ul>
+      </nav>
+      <button type="button" class="theme-toggle js-theme-toggle" aria-label="Cambiar a tema claro" title="Tema claro / oscuro" aria-pressed="false">
+        <span class="theme-toggle__sun" aria-hidden="true">☀</span>
+        <span class="theme-toggle__moon" aria-hidden="true">☽</span>
+      </button>
+      <a class="btn btn--primary btn--sm" href="contacto.html">Agendar visita</a>
+      <button class="nav-toggle js-nav-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-drawer">
+        <span class="nav-toggle__bars" aria-hidden="true"><span></span><span></span><span></span></span>
+      </button>
+    </div>
+    <div class="nav-panel js-nav-panel">
+      <div class="nav-drawer js-nav-drawer" id="nav-drawer" role="dialog" aria-modal="true" aria-label="Menú">
+        <nav class="nav nav--drawer" aria-label="Móvil">
+          <ul class="nav__list">
+            <li><a class="nav__link" href="index.html">Inicio</a></li>
+            <li><a class="nav__link" href="galeria.html">Galería</a></li>
+            <li><a class="nav__link" href="experiencia.html">Experiencia</a></li>
+            <li><a class="nav__link" href="paquetes.html">Paquetes</a></li>
+            <li><a class="nav__link" href="index.html#ia">Copiloto</a></li>
+            <li><a class="nav__link" href="index.html#pipeline">Pipeline</a></li>
+            <li><a class="nav__link" href="index.html#finanzas">Cotizador</a></li>
+            <li><a class="nav__link" href="contacto.html">Contacto</a></li>
+            <li><a class="nav__link" href="aviso-privacidad.html">Privacidad</a></li>
+            <li><a class="nav__link" href="terminos.html">Términos</a></li>
+          </ul>
+        </nav>
+        <div class="nav-drawer__cta">
+          <a class="btn btn--primary nav-drawer__cta-btn" href="contacto.html">Agendar visita</a>
+          <a class="btn btn--ghost nav-drawer__cta-btn" href="galeria.html">Ver galería</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <nav class="anchor-rail wrap js-anchor-rail" aria-label="Secciones de esta página">
+    <span class="anchor-rail__label">En esta página</span>
+    <a href="#camino">Tu camino</a>
+    <a href="#explora-title">Explorar</a>
+    <a href="#sensorial">Ambiente</a>
+    <a href="#operaciones">2BI contigo</a>
+    <a href="#ia">Copiloto</a>
+    <a href="#finanzas">Cotizar</a>
+    <a href="#checklist">Checklist</a>
+    <a href="#contacto">Siguiente paso</a>
+  </nav>
+
+  <div class="fab" aria-label="Acciones rápidas">
+    <a class="btn btn--primary" href="contacto.html">Agendar</a>
+    <a class="btn btn--ghost fab__mini" href="index.html#ia" title="Copiloto 2BI" aria-label="Copiloto 2BI"><span class="fab__mini-text" aria-hidden="true">IA</span></a>
+    <a class="btn btn--ghost fab__mini" href="https://wa.me/5255123456789" rel="noopener noreferrer" target="_blank" title="WhatsApp" aria-label="WhatsApp"><span class="fab__mini-text" aria-hidden="true">WA</span></a>
+  </div>
+
+  <main id="contenido">
+    <section class="hero wrap hero--alive js-hero-zone" id="inicio" aria-labelledby="hero-title">
+      <div class="hero__fx" aria-hidden="true">
+        <svg class="hero__particles" viewBox="0 0 1000 560" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" focusable="false">
+          <g class="hero__particle-group" fill="currentColor">
+            <circle class="hero__p" cx="90" cy="100" r="1.8" />
+            <circle class="hero__p" cx="240" cy="60" r="1.2" />
+            <circle class="hero__p" cx="400" cy="140" r="2.2" />
+            <circle class="hero__p" cx="520" cy="40" r="1.4" />
+            <circle class="hero__p" cx="680" cy="120" r="1.6" />
+            <circle class="hero__p" cx="820" cy="70" r="1.3" />
+            <circle class="hero__p" cx="940" cy="180" r="2" />
+            <circle class="hero__p" cx="120" cy="220" r="1.5" />
+            <circle class="hero__p" cx="310" cy="280" r="1.8" />
+            <circle class="hero__p" cx="470" cy="320" r="1.2" />
+            <circle class="hero__p" cx="630" cy="240" r="2.1" />
+            <circle class="hero__p" cx="780" cy="300" r="1.4" />
+            <circle class="hero__p" cx="910" cy="380" r="1.7" />
+            <circle class="hero__p" cx="55" cy="380" r="1.3" />
+            <circle class="hero__p" cx="190" cy="450" r="1.9" />
+            <circle class="hero__p" cx="360" cy="480" r="1.2" />
+            <circle class="hero__p" cx="550" cy="420" r="2" />
+            <circle class="hero__p" cx="720" cy="500" r="1.5" />
+            <circle class="hero__p" cx="870" cy="460" r="1.6" />
+            <circle class="hero__p" cx="990" cy="520" r="1.1" />
+            <circle class="hero__p" cx="160" cy="520" r="1.4" />
+            <circle class="hero__p" cx="440" cy="200" r="1.3" />
+          </g>
+        </svg>
+      </div>
+      <div class="hero__grid">
+        <div class="hero__copy">
+          <p class="hero__eyebrow">Salón de eventos · Bodas y quinceañeras</p>
+          <h1 id="hero-title" class="display hero__title">Decide tu salón con <em>criterio, no con dudas</em></h1>
+          <p class="hero__lead">
+            Imaginen llegar al salón y que todo —desde la luz sobre las mesas hasta el ritmo del protocolo— respire la misma promesa. <strong>2BI-Orquesta</strong> cuenta esa historia en capas: imagen que emociona, <strong>cotización orientativa</strong> que ordena la conversación y un <strong>Copiloto</strong> que traduce dudas en respuestas. Así comparan <strong>bodas</strong> y <strong>quinceañeras</strong> con el mismo rigor que pondrían en el vestido, el vals o el brindis.
+          </p>
+          <div class="hero__actions hero__actions--primary">
+            <a class="btn btn--primary btn--lg" href="contacto.html">Agendar visita</a>
+            <a class="btn btn--ghost btn--lg" href="#camino">Ver cómo te guiamos</a>
+          </div>
+          <div class="hero__badges" aria-label="Compromisos de servicio">
+            <span class="badge badge--live">Asistencia inmediata vía Copiloto</span>
+            <span class="badge">Cotizador y checklist documentados</span>
+            <span class="badge">Recorrido digital previo a la visita</span>
+          </div>
+          <details class="hero__more">
+            <summary class="hero__more-summary">Mapa rápido del sitio</summary>
+            <nav class="hero__more-nav" aria-label="Accesos rápidos">
+              <a href="galeria.html">Galería</a>
+              <a href="experiencia.html">Experiencia</a>
+              <a href="paquetes.html">Paquetes</a>
+              <a href="index.html#pipeline">Pipeline</a>
+              <a href="index.html#finanzas">Cotizador</a>
+              <a href="contacto.html">Contacto</a>
+            </nav>
+          </details>
+          <div class="hero__mosaic" role="group" aria-label="Tres momentos: ceremonia, recepción y XV — abrir galería completa">
+            <a class="hero__mosaic-item" href="galeria.html">
+              <img src="https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=600&q=88" alt="Ceremonia de boda al aire libre" width="600" height="400" loading="lazy" decoding="async" />
+            </a>
+            <a class="hero__mosaic-item" href="galeria.html">
+              <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=600&q=88" alt="Recepción nupcial con mesas iluminadas y invitados" width="600" height="400" loading="lazy" decoding="async" />
+            </a>
+            <a class="hero__mosaic-item" href="galeria.html">
+              <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=600&q=88" alt="Quinceañera celebra con vestido y ramo en el salón" width="600" height="400" loading="lazy" decoding="async" />
+            </a>
+          </div>
+        </div>
+        <div class="hero-panel reveal">
+          <p class="hero-panel__kicker">Señales de tranquilidad <span class="hero-panel__kicker-note">(demo)</span></p>
+          <div class="kpi-row">
+            <div class="kpi">
+              <div class="kpi__l">Familias que repiten o recomiendan</div>
+              <div class="kpi__v js-count-up" data-target="78" data-suffix="%">0%</div>
+              <div class="kpi__d">Referidos y segunda generación</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi__l">Eventos bodas &amp; XV</div>
+              <div class="kpi__v"><span class="js-count-up" data-target="42" data-prefix="$" data-suffix="k">$0k</span></div>
+              <div class="kpi__d">Inversión media referencial</div>
+            </div>
+          </div>
+          <div class="chart-bars" id="chart-bars" aria-hidden="true"></div>
+          <p class="hero-panel__fineprint">Cifras ilustrativas — el salón puede enlazar datos reales para que compares con total transparencia.</p>
+          <div class="hero-panel__img">
+            <img
+              src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1200&q=90"
+              alt="Salón de eventos decorado con iluminación cálida"
+              width="1200"
+              height="750"
+              loading="eager"
+              decoding="async"
+              fetchpriority="high"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="trust-strip trust-strip--alive wrap" role="region" aria-label="Estándares de atención">
+      <ul class="trust-strip__list">
+        <li class="trust-strip__item"><span class="trust-strip__icon" aria-hidden="true">✓</span> Visitas con cita confirmada</li>
+        <li class="trust-strip__item"><span class="trust-strip__icon" aria-hidden="true">✓</span> Propuestas y paquetes por escrito</li>
+        <li class="trust-strip__item"><span class="trust-strip__icon" aria-hidden="true">✓</span> Respuesta en &lt; 24 h hábiles</li>
+        <li class="trust-strip__item"><span class="trust-strip__icon" aria-hidden="true">✓</span> Coordinación bodas y XV homologada</li>
+      </ul>
+    </div>
+
+    <div class="marquee-wrap" aria-hidden="true">
+      <div class="marquee js-marquee">
+        <div class="marquee__group">
+          <div class="marquee__item"><img src="https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=640&q=85" alt="Ceremonia de boda al aire libre" width="500" height="320" loading="lazy" /></div>
+          <div class="marquee__item"><img src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=640&q=85" alt="Salón de eventos con mesas vestidas" width="500" height="320" loading="lazy" /></div>
+          <div class="marquee__item"><img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=640&q=85" alt="Pastel de celebración" width="500" height="320" loading="lazy" /></div>
+          <div class="marquee__item"><img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=640&q=85" alt="Ambiente de fiesta y música en vivo" width="500" height="320" loading="lazy" /></div>
+          <div class="marquee__item"><img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?w=640&q=85" alt="Coctel al aire libre con invitados" width="500" height="320" loading="lazy" /></div>
+          <div class="marquee__item"><img src="https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=640&q=85" alt="Arreglo floral para mesa" width="500" height="320" loading="lazy" /></div>
+        </div>
+        <div class="marquee__group" aria-hidden="true">
+          <div class="marquee__item"><img src="https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=640&q=85" alt="Ceremonia de boda al aire libre" width="500" height="320" loading="lazy" /></div>
+          <div class="marquee__item"><img src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=640&q=85" alt="Salón de eventos con mesas vestidas" width="500" height="320" loading="lazy" /></div>
+          <div class="marquee__item"><img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=640&q=85" alt="Pastel de celebración" width="500" height="320" loading="lazy" /></div>
+          <div class="marquee__item"><img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=640&q=85" alt="Ambiente de fiesta y música en vivo" width="500" height="320" loading="lazy" /></div>
+          <div class="marquee__item"><img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?w=640&q=85" alt="Coctel al aire libre con invitados" width="500" height="320" loading="lazy" /></div>
+          <div class="marquee__item"><img src="https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=640&q=85" alt="Arreglo floral para mesa" width="500" height="320" loading="lazy" /></div>
+        </div>
+      </div>
+    </div>
+
+    <section class="section section--journey wrap" id="camino" aria-labelledby="camino-title">
+      <div class="section__head reveal">
+        <p class="section__kicker">Metodología de decisión</p>
+        <h2 id="camino-title">Cuatro etapas, un solo criterio: encaje real con su evento</h2>
+        <p>
+          Hay noches que se recuerdan por una canción, un brindis o el vestido en la puerta del salón. Elegir dónde pasará eso no debería ser una apuesta. Para <strong>boda</strong> o <strong>XV</strong>, <strong>2BI-Orquesta</strong> ordena lo emocional y lo práctico: primero se enamoran de la imagen, luego entienden números y protocolo, despejan dudas con el Copiloto y llegan a la visita con una lista que defienden frente a familia y proveedores — sin sensación de haber cerrado a ciegas.
+        </p>
+        <blockquote class="narrative-quote reveal">
+          <p>Lo que buscan no es el salón más viral: es el que, al apagar las luces, cumplió lo que prometió cuando aún era solo una pantalla.</p>
+        </blockquote>
+      </div>
+      <ol class="journey-strip reveal-stagger js-reveal-stagger" aria-label="Pasos para decidir con 2BI">
+        <li class="journey-step">
+          <span class="journey-step__n" aria-hidden="true">1</span>
+          <h3 class="journey-step__title">Inspírate sin prisa</h3>
+          <p class="journey-step__text">Galería y recorrido en <a href="experiencia.html">Experiencia</a>: ves luces, mesas y ritmo como si ya fuera tu noche.</p>
+        </li>
+        <li class="journey-step">
+          <span class="journey-step__n" aria-hidden="true">2</span>
+          <h3 class="journey-step__title">Números que entiendes</h3>
+          <p class="journey-step__text">El <a href="#finanzas">cotizador</a> y los <a href="paquetes.html">paquetes</a> te dan un rango honesto — bodas y XV con el mismo lenguaje claro.</p>
+        </li>
+        <li class="journey-step">
+          <span class="journey-step__n" aria-hidden="true">3</span>
+          <h3 class="journey-step__title">Pregunta lo que te frena</h3>
+          <p class="journey-step__text">El <a href="#ia">Copiloto 2BI</a> responde protocolo, tiempos, proveedores o &ldquo;¿y si…?&rdquo; sin formularios eternos.</p>
+        </li>
+        <li class="journey-step">
+          <span class="journey-step__n" aria-hidden="true">4</span>
+          <h3 class="journey-step__title">Visita con certeza</h3>
+          <p class="journey-step__text"><a href="contacto.html">Agenda</a> cuando ya sabes qué buscas. El <a href="#checklist">checklist</a> lleva tu avance guardado.</p>
+        </li>
+      </ol>
+    </section>
+
+    <section class="section wrap" aria-labelledby="explora-title">
+      <div class="section__head reveal">
+        <p class="section__kicker">Navegación</p>
+        <h2 id="explora-title">Cada clic acerca a la misma pregunta: ¿aquí queremos celebrar?</h2>
+        <p>
+          La galería muestra el <em>cuándo fotografiaron esto</em>; la experiencia cuenta <em>cómo se vive el día</em>; los paquetes dicen <em>qué está incluido sin letra pequeña invisible</em>; el contacto abre la puerta real. En <strong>boda</strong> o <strong>XV</strong>, el objetivo es que nada quede en vago: la promesa del salón se vuelve <strong>comprobable</strong> antes de firmar.
+        </p>
+      </div>
+      <div class="bento reveal-stagger js-reveal-stagger">
+        <a class="link-card bento__cell--wide" href="galeria.html">
+          <div class="link-card__bg"><img src="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=1200&q=85" alt="Mesa imperial con centro de mesa floral en salón" width="1200" height="700" loading="lazy" /></div>
+          <div class="link-card__overlay"></div>
+          <div class="link-card__body">
+            <p class="link-card__eyebrow">Lo que ven antes de visitar</p>
+            <h3 class="link-card__title">Galería inmersiva</h3>
+            <span class="link-card__arrow">→</span>
+          </div>
+        </a>
+        <a class="link-card" href="experiencia.html">
+          <div class="link-card__bg"><img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=800&q=85" alt="Invitados celebrando en pista de baile" width="800" height="600" loading="lazy" /></div>
+          <div class="link-card__overlay"></div>
+          <div class="link-card__body">
+            <p class="link-card__eyebrow">Del vals a la hora feliz</p>
+            <h3 class="link-card__title">Experiencia del día</h3>
+            <span class="link-card__arrow">→</span>
+          </div>
+        </a>
+        <a class="link-card bento__cell--tall" href="paquetes.html">
+          <div class="link-card__bg"><img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800&q=85" alt="Montaje de salón con mesas listas para evento formal" width="800" height="1000" loading="lazy" /></div>
+          <div class="link-card__overlay"></div>
+          <div class="link-card__body">
+            <p class="link-card__eyebrow">Servicio por capas</p>
+            <h3 class="link-card__title">Paquetes claros</h3>
+            <span class="link-card__arrow">→</span>
+          </div>
+        </a>
+        <a class="link-card" href="contacto.html">
+          <div class="link-card__bg"><img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=85" alt="Atención cercana — reservar visita al salón" width="800" height="600" loading="lazy" /></div>
+          <div class="link-card__overlay"></div>
+          <div class="link-card__body">
+            <p class="link-card__eyebrow">Reserven su recorrido</p>
+            <h3 class="link-card__title">Agenda &amp; contacto</h3>
+            <span class="link-card__arrow">→</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <section class="section wrap" id="sensorial">
+      <div class="split-showcase">
+        <div class="split-showcase__img reveal">
+          <img src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=1000&q=85" alt="Salón con mesas bajo guirnaldas de luces cálidas" width="1000" height="750" loading="lazy" />
+        </div>
+        <div class="reveal">
+          <p class="hero__eyebrow" style="margin-bottom:0.75rem">Cuando la luz abraza la mesa</p>
+          <h2 class="display" style="font-size:clamp(1.75rem,3vw,2.35rem)">Ambiente de verdad: se ve en el brillo de las copas y el silencio antes del vals.</h2>
+          <p class="prose-muted">
+            Las fotos del Instagram del salón son solo el prólogo. Lo que importa es que, al plantarse ahí, las familias reconozcan <strong>la misma calidez</strong> que vieron en pantalla: pasillos claros, iluminación que favorece fotos y video, mesas donde cabe el protocolo de <strong>boda</strong> o la dinámica de <strong>XV</strong> sin triunfar sobre el baile. 2BI muestra ese cruce entre <strong>belleza</strong> y <strong>función</strong>.
+          </p>
+          <div class="split-showcase__actions">
+            <a class="btn btn--primary" href="experiencia.html">Ver recorrido completo</a>
+            <a class="btn btn--ghost" href="galeria.html">Más fotos</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--accent wrap" id="operaciones" aria-labelledby="ops-title">
+      <div class="section__head reveal">
+        <p class="section__kicker">Capacidades</p>
+        <h2 id="ops-title">Experiencia de cliente y operación interna en la misma capa</h2>
+        <p>
+          Para <strong>clientes</strong>: tiempos de respuesta, cotizaciones comprensibles y seguimiento visible. Para <strong>dirección de venue</strong>: embudo, checklist y exportación para comité o mesa de ventas. Resultado: promesa de marca respaldada por proceso.
+        </p>
+      </div>
+      <div class="deck deck--3 reveal-stagger js-reveal-stagger">
+        <article class="card card--media">
+          <div class="card__media"><img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=720&q=88" alt="Equipo de hospitalidad atendiendo consulta del cliente" width="600" height="400" loading="lazy" /></div>
+          <div class="card__icon" aria-hidden="true">◎</div>
+          <h3>Copiloto IA</h3>
+          <p>Como tener a alguien del salón al teléfono, pero disponible 24/7 en la web: <strong>boda</strong> o <strong>XV</strong>, protocolo, proveedores y tiempos en lenguaje natural. En producción se conecta al conocimiento real del venue.</p>
+        </article>
+        <article class="card card--media">
+          <div class="card__media"><img src="https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=720&q=88" alt="Equipo revisando tablero de seguimiento de eventos" width="600" height="400" loading="lazy" /></div>
+          <div class="card__icon" aria-hidden="true">▣</div>
+          <h3>Seguimiento transparente</h3>
+          <p>Visibilidad del estado de la reserva, de primer contacto a fecha ejecutada — trazabilidad para cliente y equipo comercial.</p>
+        </article>
+        <article class="card card--media">
+          <div class="card__media"><img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=720&q=88" alt="Cotización y presupuesto de evento" width="600" height="400" loading="lazy" /></div>
+          <div class="card__icon" aria-hidden="true">◈</div>
+          <h3>Cotizador &amp; escenarios</h3>
+          <p>Parámetros unificados: aforo, tipo de celebración y nivel de paquete — base homogénea para comparar propuestas.</p>
+        </article>
+        <article class="card card--media">
+          <div class="card__media"><img src="https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=720&q=88" alt="Planeación de evento con notas y lista de pendientes" width="600" height="400" loading="lazy" /></div>
+          <div class="card__icon" aria-hidden="true">✦</div>
+          <h3>Checklist maestro</h3>
+          <p>Pensado para quien organiza una <strong>boda</strong> o una <strong>quinceañera</strong> entre trabajo y familia: cada ítem despeja una duda real; el avance queda en tu dispositivo para retomar después del café con la suegra.</p>
+        </article>
+        <article class="card card--media">
+          <div class="card__media"><img src="https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=720&q=88" alt="Micrófono para notas por voz" width="600" height="400" loading="lazy" /></div>
+          <div class="card__icon" aria-hidden="true">⌁</div>
+          <h3>Entrada por voz</h3>
+          <p>Dictado en navegadores compatibles (p. ej. Chrome, Edge) para consultas manos libres.</p>
+        </article>
+        <article class="card card--media">
+          <div class="card__media"><img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=720&q=88" alt="Documentos listos para imprimir o exportar" width="600" height="400" loading="lazy" /></div>
+          <div class="card__icon" aria-hidden="true">⎔</div>
+          <h3>Exportación</h3>
+          <p>Impresión o PDF desde el navegador para compartir la misma versión con familia o wedding planner.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section wrap" id="ia" aria-labelledby="ia-title">
+      <div class="section__head reveal">
+        <p class="section__kicker">Asistente conversacional</p>
+        <h2 id="ia-title">Copiloto 2BI — consultas operativas en lenguaje natural</h2>
+        <p>
+          Alcance de servicios, protocolo de <strong>quinceañera</strong>, preparación de visita o comparación de escenarios. En esta demostración el motor responde con reglas locales en el navegador; en producción el venue sustituye <code class="code-inline">replyAI()</code> en <code class="code-inline">eventos.js</code> por un endpoint seguro alineado a políticas y precios vigentes.
+        </p>
+      </div>
+      <div class="ai-hub">
+        <div class="chat-window reveal">
+          <div class="chat-window__head">
+            <span class="chat-window__title"><span class="pulse-dot" aria-hidden="true"></span> Copiloto 2BI</span>
+            <button type="button" class="btn btn--ghost btn--sm js-voice-btn" title="Entrada por voz (navegador compatible)">Dictar</button>
+          </div>
+          <div class="chat-messages js-chat-messages" role="log" aria-live="polite" aria-relevant="additions"></div>
+          <div class="quick-prompts" aria-label="Atajos">
+            <button type="button" data-prompt="¿Por qué este salón puede ser mejor opción que otros para mi boda?">¿Mejor para mi boda?</button>
+            <button type="button" data-prompt="Qué preguntar en la visita al salón para mis XV años">Preguntas clave XV</button>
+            <button type="button" data-prompt="¿Qué checklist recomiendas para una boda en 6 meses?">Checklist boda 6m</button>
+            <button type="button" data-prompt="Ideas de timeline día B para 150 invitados">Timeline 150 pax</button>
+            <button type="button" data-prompt="Cómo comparar paquetes de salón sin perderme">Comparar paquetes</button>
+            <button type="button" data-prompt="Plan B si llueve el día de la boda en salón con jardín">Plan B climático</button>
+            <button type="button" data-prompt="Qué negociar al firmar contrato de salón para XV">Contrato XV</button>
+          </div>
+          <div class="chat-input-row">
+            <label class="visually-hidden" for="chat-input">Escribe al copiloto 2BI</label>
+            <input type="text" id="chat-input" class="js-chat-input" placeholder="Ej.: ¿Qué incluye el paquete? ¿Cómo es el día de mi XV?" autocomplete="off" />
+            <button type="button" class="btn btn--primary js-chat-send">Enviar</button>
+          </div>
+        </div>
+        <aside class="ai-side reveal">
+          <div class="ai-stat">
+            <div class="ai-stat__v"><span class="js-count-up" data-target="24">0</span></div>
+            <div class="ai-stat__l">Familias en conversación (demo)</div>
+          </div>
+          <div class="ai-stat">
+            <div class="ai-stat__v"><span class="js-count-up" data-target="31" data-suffix="%">0%</span></div>
+            <div class="ai-stat__l">Novias y XV que cierran tras la visita</div>
+          </div>
+          <div class="ai-stat">
+            <div class="ai-stat__v" style="font-size:1.25rem;line-height:1.4;color:var(--champagne)">Calendario · WhatsApp · CRM</div>
+            <div class="ai-stat__l">El salón conecta lo que ya usa</div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section wrap" id="pipeline" aria-labelledby="pipe-title">
+      <div class="section__head reveal">
+        <p class="section__kicker">Embudo comercial</p>
+        <h2 id="pipe-title">Del primer contacto a la fecha confirmada</h2>
+        <p>
+          Vista kanban ilustrativa del recorrido <strong>lead → visita → propuesta → contrato → evento</strong> para <strong>bodas</strong> y <strong>XV</strong>. Demostración con persistencia local; integrable a CRM.
+        </p>
+      </div>
+      <div class="pipeline reveal" id="pipeline-board"></div>
+    </section>
+
+    <section class="section wrap" id="finanzas" aria-labelledby="fin-title">
+      <div class="section__head reveal">
+        <p class="section__kicker">Estimación</p>
+        <h2 id="fin-title">Cotizador orientativo</h2>
+        <p>
+          Rango de inversión en función de tipo de evento, aforo y paquete. Cifras <strong>demostrativas</strong> (MXN); el salón parametriza tarifas y multiplicadores en código o backend.
+        </p>
+      </div>
+      <div class="card reveal" style="max-width:720px">
+        <div class="calc-grid">
+          <div class="field">
+            <label for="calc-tipo">Tipo de evento</label>
+            <select id="calc-tipo">
+              <option value="boda">Boda</option>
+              <option value="xv">Quinceañera</option>
+              <option value="corpo">Corporativo / gala</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="calc-pax">Invitados (aprox.)</label>
+            <input type="number" id="calc-pax" min="20" max="800" value="150" />
+          </div>
+          <div class="field">
+            <label for="calc-paquete">Paquete</label>
+            <select id="calc-paquete">
+              <option value="esencial">Esencial</option>
+              <option value="signature" selected>Signature</option>
+              <option value="imperial">Imperial</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="calc-extras">Extras (0–100)</label>
+            <input type="range" id="calc-extras" min="0" max="100" value="35" />
+          </div>
+        </div>
+        <div class="calc-result" id="calc-live" aria-live="polite" aria-atomic="true">
+          <p class="calc-result__label">Rango estimado (MXN · demostración)</p>
+          <div class="calc-result__big" id="calc-resultado">$ 0 — $ 0</div>
+          <p class="calc-result__note" id="calc-nota"></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section wrap" id="checklist" aria-labelledby="chk-title">
+      <div class="section__head reveal">
+        <p class="section__kicker">Planeación</p>
+        <h2 id="chk-title">Checklist — boda o quinceañera</h2>
+        <p>
+          Listas de verificación por tipo de celebración. El progreso se almacena en el navegador (local); no sustituye el acta de servicio firmada con el venue.
+        </p>
+      </div>
+      <div class="checklist-type-row reveal">
+        <button type="button" class="btn btn--primary btn--sm js-chk-type" data-type="boda">Boda</button>
+        <button type="button" class="btn btn--ghost btn--sm js-chk-type" data-type="xv">Quinceañera</button>
+      </div>
+      <ul class="checklist card reveal" id="checklist-root" style="max-width:720px;padding:1.25rem 1.5rem"></ul>
+    </section>
+
+    <section class="section wrap" id="contacto" aria-labelledby="contact-title">
+      <div class="section__head reveal">
+        <p class="section__kicker">Cierre</p>
+        <h2 id="contact-title">Siguiente paso: agenda y canales oficiales</h2>
+        <p>
+          Tras revisar activos digitales, el cierre se realiza por los canales autorizados del salón. A continuación: enlaces de demostración — reemplazar por datos productivos.
+        </p>
+      </div>
+      <div class="deck deck--contact">
+        <div class="card card--cta reveal">
+          <h3 class="card-cta__title">Contacto (demostración)</h3>
+          <p class="card-cta__lead">Sustituya por datos oficiales del venue.</p>
+          <div class="cta-actions" role="group" aria-label="Canales de contacto">
+            <div class="cta-actions__pair">
+              <a class="btn btn--primary" href="https://wa.me/5255123456789?text=Hola%202BI-Orquesta%2C%20quiero%20agendar%20una%20visita%20al%20sal%C3%B3n." rel="noopener noreferrer" target="_blank">WhatsApp</a>
+              <a class="btn btn--ghost" href="mailto:eventos@salon.ejemplo?subject=Consulta%202BI-Orquesta">Correo</a>
+            </div>
+            <a class="btn btn--ghost btn--block" href="contacto.html">Página contacto →</a>
+          </div>
+        </div>
+        <div class="card card--cta reveal">
+          <h3 class="card-cta__title">Documento para comité</h3>
+          <p class="card-cta__lead">Salida a PDF vía función de impresión del navegador.</p>
+          <div class="cta-actions">
+            <button type="button" class="btn btn--ghost btn--block js-print">Imprimir vista</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="site-footer site-footer--pro wrap">
+      <div class="site-footer__grid site-footer__grid--4">
+        <div>
+          <div class="site-footer__brand">2BI-Orquesta</div>
+          <p class="site-footer__tag">Suite digital para venues premium: experiencia de cliente, cotización orientativa y asistente conversacional bajo marca 2BI-Orquesta.</p>
+        </div>
+        <div class="site-footer__col">
+          <h4>Explorar</h4>
+          <ul class="site-footer__links">
+            <li><a href="galeria.html">Galería</a></li>
+            <li><a href="experiencia.html">Experiencia</a></li>
+            <li><a href="paquetes.html">Paquetes</a></li>
+            <li><a href="index.html#camino">Metodología</a></li>
+            <li><a href="index.html#operaciones">Capacidades</a></li>
+          </ul>
+        </div>
+        <div class="site-footer__col">
+          <h4>Acción</h4>
+          <ul class="site-footer__links">
+            <li><a href="index.html#ia">Copiloto</a></li>
+            <li><a href="contacto.html">Contacto</a></li>
+            <li><a href="https://wa.me/5255123456789" rel="noopener noreferrer" target="_blank">WhatsApp</a></li>
+          </ul>
+        </div>
+        <div class="site-footer__col">
+          <h4>Legal</h4>
+          <ul class="site-footer__links">
+            <li><a href="aviso-privacidad.html">Aviso de privacidad</a></li>
+            <li><a href="terminos.html">Términos de uso</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="site-footer__bottom">
+        <p class="site-footer__legal">© Demo 2BI-Orquesta · Google Fonts · Unsplash · Ilustrativo. <a href="aviso-privacidad.html">Privacidad</a> · <a href="terminos.html">Términos</a></p>
+      </div>
+    </footer>
+  </main>
+
+  <div class="consent-strip js-consent-strip" role="region" aria-label="Privacidad del sitio demo" hidden>
+    <p class="consent-strip__text">Esta demo usa <strong>almacenamiento local</strong> para el checklist y el pipeline. Sin cookies de terceros configuradas aquí. <a href="aviso-privacidad.html">Aviso de privacidad</a></p>
+    <button type="button" class="btn btn--primary btn--sm js-consent-ok">Entendido</button>
+  </div>
+
+  <button type="button" class="back-top js-back-top" aria-label="Volver arriba" title="Volver arriba">
+    <span class="back-top__icon" aria-hidden="true">↑</span>
+  </button>
+
+  <script src="./assets/eventos.js" defer></script>
+</body>
+</html>
