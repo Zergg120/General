@@ -1,6 +1,8 @@
 (function () {
   "use strict";
-  if (typeof Chart === "undefined") return;
+  // Chart.js puede tardar en estar listo (red lenta / cache). No abortar: reintentar.
+  var MAX_WAIT_MS = 3500;
+  var START = Date.now();
 
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -15,6 +17,7 @@
   }
 
   function makeCharts() {
+    if (typeof Chart === "undefined") return false;
     var lineEl = document.getElementById("chartVentas");
     if (lineEl && !lineEl.dataset.rendered) {
       lineEl.dataset.rendered = "1";
@@ -261,31 +264,61 @@
         },
       });
     }
+
+    return true;
   }
 
-  // Render diferido: se activa al ver Gráficos o al ver KPIs.
-  var mounts = [];
-  var m1 = document.querySelector(".js-charts-mount");
-  if (m1) mounts.push(m1);
-  var m2 = document.getElementById("section-kpis");
-  if (m2) mounts.push(m2);
+  function initObservers() {
+    // Render diferido: se activa al ver Gráficos o al ver KPIs.
+    var mounts = [];
+    var m1 = document.querySelector(".js-charts-mount");
+    if (m1) mounts.push(m1);
+    var m2 = document.getElementById("section-kpis");
+    if (m2) mounts.push(m2);
 
-  if (mounts.length === 0) {
-    makeCharts();
-    return;
-  }
+    if (mounts.length === 0) {
+      makeCharts();
+      return;
+    }
 
-  var io = new IntersectionObserver(
-    function (entries) {
-      entries.forEach(function (e) {
-        if (!e.isIntersecting) return;
+    var io = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          makeCharts();
+        });
+        if (allRendered()) io.disconnect();
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+    );
+    mounts.forEach(function (m) {
+      io.observe(m);
+    });
+
+    // Si llegamos por hash (anchor), forzar un intento rápido.
+    if (location && typeof location.hash === "string" && /section-kpis|section-dashboard/i.test(location.hash)) {
+      setTimeout(function () {
         makeCharts();
-      });
-      if (allRendered()) io.disconnect();
-    },
-    { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
-  );
-  mounts.forEach(function (m) {
-    io.observe(m);
-  });
+      }, 60);
+    }
+
+    // BFCache / volver atrás: reintenta.
+    window.addEventListener("pageshow", function () {
+      setTimeout(function () {
+        makeCharts();
+      }, 60);
+    });
+  }
+
+  (function waitForChartThenInit() {
+    if (typeof Chart !== "undefined") {
+      initObservers();
+      return;
+    }
+    if (Date.now() - START > MAX_WAIT_MS) {
+      // Último intento: si nunca cargó Chart.js, no rompemos el sitio.
+      return;
+    }
+    setTimeout(waitForChartThenInit, 90);
+  })();
 })();

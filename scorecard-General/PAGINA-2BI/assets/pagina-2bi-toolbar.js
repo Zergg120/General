@@ -192,6 +192,20 @@
     header.appendChild(bar);
   }
 
+  var EXPLORE_OPEN_KEY = 'p2bi_explore_open';
+  function getExploreOpen() {
+    try {
+      return sessionStorage.getItem(EXPLORE_OPEN_KEY) === '1';
+    } catch (_) {
+      return false;
+    }
+  }
+  function setExploreOpenPref(open) {
+    try {
+      sessionStorage.setItem(EXPLORE_OPEN_KEY, open ? '1' : '0');
+    } catch (_) {}
+  }
+
   function setExploreOpen(open) {
     var bar = document.getElementById('p2bi-explorebar');
     if (!bar) return;
@@ -199,6 +213,7 @@
     bar.setAttribute('aria-hidden', open ? 'false' : 'true');
     var b = document.getElementById('p2bi-nav-explore');
     if (b) b.setAttribute('aria-expanded', open ? 'true' : 'false');
+    setExploreOpenPref(open);
   }
 
   function wireButtons() {
@@ -274,6 +289,13 @@
     ensureDialogs();
     ensureExploreBar();
     wireButtons();
+
+    // Si veníamos navegando con Explorar abierto, mantenerlo abierto.
+    if (getExploreOpen()) {
+      setTimeout(function () {
+        setExploreOpen(true);
+      }, 0);
+    }
   }
 
   if (document.readyState === 'loading') {
