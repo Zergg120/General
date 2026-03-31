@@ -24,6 +24,10 @@
   var MIGRATE_FLAG = 'scorecard_audio_prefs_v3';
   /** '1' = panel volumen visible, '0' = colapsado (solo bocina + flecha) */
   var STORAGE_VOL_UI_EXPANDED = 'scorecard_audio_vol_ui_expanded';
+  /** Persistencia de posición entre páginas (multi-page) */
+  var STORAGE_TIME = 'scorecard_audio_time_s';
+  var STORAGE_TIME_AT = 'scorecard_audio_time_at_ms';
+  var STORAGE_WAS_PLAYING = 'scorecard_audio_was_playing';
 
   var cfg = window.SCORECARD_AUDIO || {};
   var userSrc = cfg.src != null ? String(cfg.src) : null;
@@ -39,10 +43,12 @@
   /** Paso de volumen con teclado numérico (alineado a ±10% de los botones). */
   var NUMPAD_VOL_STEP = 10;
   var fileOk = false;
+  var restoredTime = false;
+  var lastSavedAt = 0;
 
   // Nota importante: en Scorecard el portal navega por páginas HTML distintas (no SPA).
   // En móviles, intentar “sincronizar” tiempo/estado entre páginas suele causar trabas.
-  // Estrategia estable (como David, pero multi-página): Audio simple + gesto para desbloquear + play() en visible/pageshow.
+  // Estrategia estable (multi-página): Audio simple + gesto para desbloquear + guardar tiempo + reanudar suave al cambiar de módulo.
 
   function defaultMusicPercent() {
     if (cfg.volume != null) return Math.min(100, Math.max(0, Math.round(Number(cfg.volume) * 100)));
@@ -162,6 +168,61 @@
         audioEl.pause();
       } catch (_) {}
     }
+    try {
+      localStorage.setItem(STORAGE_WAS_PLAYING, '0');
+    } catch (_) {}
+  }
+
+  function savePlaybackState(force) {
+    if (!audioEl) return;
+    var now = Date.now();
+    if (!force && now - lastSavedAt < 1200) return;
+    lastSavedAt = now;
+    try {
+      if (!isFinite(audioEl.currentTime)) return;
+      localStorage.setItem(STORAGE_TIME, String(Math.max(0, audioEl.currentTime)));
+      localStorage.setItem(STORAGE_TIME_AT, String(now));
+      localStorage.setItem(STORAGE_WAS_PLAYING, audioEl.paused ? '0' : '1');
+    } catch (_) {}
+  }
+
+  function restorePlaybackTimeOnce() {
+    if (restoredTime) return;
+    restoredTime = true;
+    if (!audioEl) return;
+    var tRaw = null;
+    var atRaw = null;
+    var wasPlaying = false;
+    try {
+      tRaw = localStorage.getItem(STORAGE_TIME);
+      atRaw = localStorage.getItem(STORAGE_TIME_AT);
+      wasPlaying = localStorage.getItem(STORAGE_WAS_PLAYING) === '1';
+    } catch (_) {}
+    if (tRaw == null) return;
+    var t = parseFloat(tRaw);
+    if (!isFinite(t) || t < 0) return;
+
+    // Si estaba reproduciendo, avanzamos aproximado por el tiempo transcurrido entre páginas.
+    var at = atRaw != null ? parseInt(atRaw, 10) : NaN;
+    if (wasPlaying && isFinite(at) && at > 0) {
+      var drift = (Date.now() - at) / 1000;
+      if (isFinite(drift) && drift > 0 && drift < 60 * 60) t += drift;
+    }
+
+    // Espera a tener metadata para saber duration y evitar seek inválido.
+    var apply = function () {
+      if (!audioEl || !isFinite(audioEl.duration) || audioEl.duration <= 0) return;
+      // Deja un pequeño margen antes del final para evitar ended.
+      var safeT = Math.min(Math.max(0, t), Math.max(0, audioEl.duration - 0.25));
+      // Solo seek si hay diferencia material (evita micro-trabas).
+      if (isFinite(audioEl.currentTime) && Math.abs(audioEl.currentTime - safeT) < 0.5) return;
+      try {
+        audioEl.currentTime = safeT;
+      } catch (_) {}
+    };
+
+    if (audioEl.readyState >= 1) apply();
+    else audioEl.addEventListener('loadedmetadata', apply, { once: true });
   }
 
   function ensureAudioOnce() {
@@ -174,6 +235,20 @@
     a.src = src;
     audioEl = a;
     fileOk = true;
+
+    // Persistencia suave: reanuda donde ibas (sin “saltos” constantes).
+    a.addEventListener('loadedmetadata', function () {
+      restorePlaybackTimeOnce();
+    });
+    a.addEventListener('timeupdate', function () {
+      savePlaybackState(false);
+    });
+    a.addEventListener('pause', function () {
+      savePlaybackState(true);
+    });
+    a.addEventListener('playing', function () {
+      savePlaybackState(true);
+    });
   }
 
   function tryPlay(reason) {
@@ -182,6 +257,7 @@
     if (!audioEl || !fileOk) return;
     audioEl.muted = false;
     audioEl.volume = getMusicVolume();
+    restorePlaybackTimeOnce();
     var p = audioEl.play();
     if (p && p.catch) p.catch(function () {});
     applyMusicVolumeToOutputs();
@@ -241,14 +317,12 @@
         setMutedPref(false);
         userWantsSound = true;
         updateBtn();
-        startPlayback();
-        startTick();
+        tryPlay('toggle_on');
       } else {
         setMutedPref(true);
         userWantsSound = false;
         updateBtn();
         onUserMute();
-        stopTick();
       }
     });
 
@@ -318,6 +392,22 @@
     window.addEventListener('pageshow', function () {
       tryPlay('pageshow');
     });
+
+    // Guardar estado al salir/cambiar de página (multi-page tabs).
+    window.addEventListener(
+      'pagehide',
+      function () {
+        savePlaybackState(true);
+      },
+      { capture: true }
+    );
+    window.addEventListener(
+      'beforeunload',
+      function () {
+        savePlaybackState(true);
+      },
+      { capture: true }
+    );
   }
 
   if (document.readyState === 'loading') {
