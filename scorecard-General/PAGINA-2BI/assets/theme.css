@@ -149,6 +149,28 @@ body.p2bi-dark html[data-page="contacto"] .nav__link[href="contacto.html"] {
   color: rgba(241, 245, 255, 0.96);
   background: rgba(167, 139, 250, 0.12);
 }
+
+/* Stats en Luna: no usar --white como texto (en Luna es superficie) */
+body.p2bi-dark .stats {
+  color: rgba(241, 245, 255, 0.96);
+  background:
+    radial-gradient(120% 160% at 18% 0%, rgba(167, 139, 250, 0.24), transparent 58%),
+    radial-gradient(100% 140% at 92% 6%, rgba(217, 70, 239, 0.16), transparent 56%),
+    linear-gradient(135deg, rgba(10, 10, 24, 0.96) 0%, rgba(16, 19, 40, 0.92) 55%, rgba(10, 10, 24, 0.98) 100%);
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.55);
+}
+body.p2bi-dark .stats::after {
+  background:
+    radial-gradient(ellipse 90% 60% at 100% 0%, rgba(167, 139, 250, 0.22), transparent 60%),
+    radial-gradient(ellipse 70% 60% at 10% 100%, rgba(73, 167, 255, 0.12), transparent 62%);
+}
+body.p2bi-dark .stat__label {
+  opacity: 0.92;
+  color: rgba(210, 222, 255, 0.9);
+}
+body.p2bi-dark .stats--interactive .stat:hover {
+  background: rgba(241, 245, 255, 0.08);
+}
 body.p2bi-dark .btn--ghost {
   background: rgba(16, 19, 40, 0.78);
   color: rgba(234, 242, 255, 0.92);
