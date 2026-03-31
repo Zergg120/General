@@ -4,6 +4,16 @@
 
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  var CHART_IDS = ["chartVentas", "chartMix", "chartBarras", "chartKpiFunnel", "chartKpiChannels"];
+
+  function allRendered() {
+    for (var i = 0; i < CHART_IDS.length; i++) {
+      var el = document.getElementById(CHART_IDS[i]);
+      if (el && !el.dataset.rendered) return false;
+    }
+    return true;
+  }
+
   function makeCharts() {
     var lineEl = document.getElementById("chartVentas");
     if (lineEl && !lineEl.dataset.rendered) {
@@ -253,21 +263,29 @@
     }
   }
 
-  var mount = document.querySelector(".js-charts-mount");
-  if (!mount) {
+  // Render diferido: se activa al ver Gráficos o al ver KPIs.
+  var mounts = [];
+  var m1 = document.querySelector(".js-charts-mount");
+  if (m1) mounts.push(m1);
+  var m2 = document.getElementById("section-kpis");
+  if (m2) mounts.push(m2);
+
+  if (mounts.length === 0) {
     makeCharts();
     return;
   }
+
   var io = new IntersectionObserver(
     function (entries) {
       entries.forEach(function (e) {
-        if (e.isIntersecting) {
-          makeCharts();
-          io.disconnect();
-        }
+        if (!e.isIntersecting) return;
+        makeCharts();
       });
+      if (allRendered()) io.disconnect();
     },
     { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
   );
-  io.observe(mount);
+  mounts.forEach(function (m) {
+    io.observe(m);
+  });
 })();
