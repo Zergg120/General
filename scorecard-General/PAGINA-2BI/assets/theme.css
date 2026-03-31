@@ -139,15 +139,26 @@ body.p2bi-dark .nav-toggle:hover {
   border-color: rgba(166, 132, 255, 0.36);
   color: rgba(241, 245, 255, 0.96);
 }
-body.p2bi-dark html[data-page="index"] .nav__link[href="index.html"],
-body.p2bi-dark html[data-page="nosotros"] .nav__link[href="nosotros.html"],
-body.p2bi-dark html[data-page="soluciones"] .nav__link[href="soluciones.html"],
-body.p2bi-dark html[data-page="portafolio"] .nav__link[href="portafolio.html"],
-body.p2bi-dark html[data-page="valores"] .nav__link[href="valores.html"],
-body.p2bi-dark html[data-page="ecosistema"] .nav__link[href="ecosistema.html"],
-body.p2bi-dark html[data-page="contacto"] .nav__link[href="contacto.html"] {
+/* Nav activo en Luna (fix selector: html es padre de body) */
+html[data-page="index"] body.p2bi-dark .nav__link[href="index.html"],
+html[data-page="nosotros"] body.p2bi-dark .nav__link[href="nosotros.html"],
+html[data-page="soluciones"] body.p2bi-dark .nav__link[href="soluciones.html"],
+html[data-page="portafolio"] body.p2bi-dark .nav__link[href="portafolio.html"],
+html[data-page="valores"] body.p2bi-dark .nav__link[href="valores.html"],
+html[data-page="ecosistema"] body.p2bi-dark .nav__link[href="ecosistema.html"],
+html[data-page="contacto"] body.p2bi-dark .nav__link[href="contacto.html"] {
   color: rgba(241, 245, 255, 0.96);
   background: rgba(167, 139, 250, 0.12);
+}
+html[data-page="index"] body.p2bi-dark .nav__link[href="index.html"]::after,
+html[data-page="nosotros"] body.p2bi-dark .nav__link[href="nosotros.html"]::after,
+html[data-page="soluciones"] body.p2bi-dark .nav__link[href="soluciones.html"]::after,
+html[data-page="portafolio"] body.p2bi-dark .nav__link[href="portafolio.html"]::after,
+html[data-page="valores"] body.p2bi-dark .nav__link[href="valores.html"]::after,
+html[data-page="ecosistema"] body.p2bi-dark .nav__link[href="ecosistema.html"]::after,
+html[data-page="contacto"] body.p2bi-dark .nav__link[href="contacto.html"]::after {
+  background: linear-gradient(90deg, rgba(167, 139, 250, 0.95), rgba(73, 167, 255, 0.95));
+  opacity: 0.75;
 }
 
 /* Stats en Luna: no usar --white como texto (en Luna es superficie) */
@@ -170,6 +181,34 @@ body.p2bi-dark .stat__label {
 }
 body.p2bi-dark .stats--interactive .stat:hover {
   background: rgba(241, 245, 255, 0.08);
+}
+
+/* KPI band y KPIs (Luna): asegurar legibilidad */
+body.p2bi-dark .kpi-band__title {
+  color: rgba(241, 245, 255, 0.96);
+}
+body.p2bi-dark .kpi-band__hint {
+  color: rgba(210, 222, 255, 0.9);
+}
+body.p2bi-dark .kpi-col__h {
+  color: rgba(241, 245, 255, 0.96);
+}
+body.p2bi-dark .kpi-col__list {
+  color: rgba(210, 222, 255, 0.92);
+}
+body.p2bi-dark .kpi-col__list li::before {
+  background: linear-gradient(135deg, rgba(167, 139, 250, 0.9), rgba(73, 167, 255, 0.9));
+}
+
+/* Chat demo pills (Luna) */
+body.p2bi-dark .chat-demo__pill {
+  background: rgba(16, 19, 40, 0.78);
+  border-color: rgba(166, 132, 255, 0.18);
+  color: rgba(241, 245, 255, 0.92);
+}
+body.p2bi-dark .chat-demo__pill:hover {
+  border-color: rgba(166, 132, 255, 0.36);
+  background: rgba(22, 26, 56, 0.86);
 }
 body.p2bi-dark .btn--ghost {
   background: rgba(16, 19, 40, 0.78);
