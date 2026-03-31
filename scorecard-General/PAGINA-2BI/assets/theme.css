@@ -92,6 +92,82 @@ body.p2bi-dark .site-header {
   }
 }
 
+/* Luna WOW: micro-glow y glass premium (solo en modo Luna) */
+body.p2bi-dark .nav__link {
+  color: rgba(234, 242, 255, 0.92);
+}
+body.p2bi-dark .nav__link:hover {
+  background: rgba(73, 167, 255, 0.08);
+  color: var(--blue-glow);
+}
+body.p2bi-dark .btn--ghost {
+  background: rgba(13, 27, 42, 0.75);
+  color: rgba(234, 242, 255, 0.92);
+  border-color: rgba(138, 208, 255, 0.18);
+}
+body.p2bi-dark .btn--ghost:hover {
+  border-color: rgba(138, 208, 255, 0.35);
+  color: var(--blue-glow);
+}
+body.p2bi-dark .card,
+body.p2bi-dark .chart-card,
+body.p2bi-dark .quick-card,
+body.p2bi-dark .info-card,
+body.p2bi-dark .testimonial,
+body.p2bi-dark .faq-item,
+body.p2bi-dark .detail-example,
+body.p2bi-dark .kpi-card {
+  background: linear-gradient(180deg, rgba(13, 27, 42, 0.78), rgba(7, 20, 35, 0.88));
+  border-color: rgba(138, 208, 255, 0.14);
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.55);
+}
+body.p2bi-dark .card:hover,
+body.p2bi-dark .chart-card:hover,
+body.p2bi-dark .quick-card:hover,
+body.p2bi-dark .kpi-card:hover {
+  border-color: rgba(138, 208, 255, 0.28);
+  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.62), 0 0 0 1px rgba(73, 167, 255, 0.12);
+}
+body.p2bi-dark .chart-card::before {
+  opacity: 0.7;
+}
+body.p2bi-dark .site-footer {
+  background: rgba(7, 20, 35, 0.82);
+  border-top-color: rgba(138, 208, 255, 0.12);
+}
+body.p2bi-dark .site-footer a {
+  color: rgba(234, 242, 255, 0.86);
+}
+body.p2bi-dark .site-footer a:hover {
+  color: var(--blue-glow);
+}
+body.p2bi-dark .chat-widget__panel {
+  background: rgba(13, 27, 42, 0.92);
+  border-color: rgba(138, 208, 255, 0.18);
+}
+body.p2bi-dark .chat-widget__body {
+  background: rgba(7, 20, 35, 0.85);
+}
+body.p2bi-dark .chat-bubble--bot {
+  background: rgba(13, 27, 42, 0.78);
+  color: rgba(234, 242, 255, 0.92);
+  border-color: rgba(138, 208, 255, 0.14);
+}
+body.p2bi-dark .chat-widget__foot {
+  background: rgba(13, 27, 42, 0.92);
+}
+body.p2bi-dark .chat-widget__foot input {
+  background: rgba(7, 20, 35, 0.75);
+  color: rgba(234, 242, 255, 0.92);
+  border-color: rgba(138, 208, 255, 0.18);
+}
+body.p2bi-dark .chat-widget__foot input::placeholder {
+  color: rgba(155, 180, 214, 0.85);
+}
+body.p2bi-dark .chat-widget__fab {
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.62), 0 0 0 4px rgba(73, 167, 255, 0.12);
+}
+
 ::selection {
   background: rgba(29, 142, 240, 0.22);
   color: var(--ink);

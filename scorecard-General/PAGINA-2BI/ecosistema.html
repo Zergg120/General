@@ -228,6 +228,23 @@
     </div>
     <div class="wrap site-footer__legal">© <span id="year"></span> 2BI Intelligence Solutions.</div>
   </footer>
+
+  <div class="chat-widget js-chat-widget">
+    <div class="chat-widget__panel" id="chat-widget-panel" role="dialog" aria-modal="false" aria-label="Asistente 2BI Intelligence Solutions">
+      <div class="chat-widget__head">
+        <strong>2BI Intelligence Solutions</strong>
+        <button type="button" class="chat-widget__close js-chat-widget-close" aria-label="Cerrar chat">×</button>
+      </div>
+      <div class="chat-widget__body js-chat-widget-messages" id="chat-widget-messages"></div>
+      <div class="chat-widget__foot">
+        <label class="visually-hidden" for="chat-widget-input">Mensaje al asistente</label>
+        <input id="chat-widget-input" class="js-chat-widget-input" type="text" autocomplete="off" placeholder="Escribe aquí…" maxlength="500">
+        <button type="button" class="js-chat-widget-send">Enviar</button>
+      </div>
+    </div>
+    <button type="button" class="chat-widget__fab js-chat-widget-fab" aria-label="Abrir asistente" aria-expanded="false" aria-controls="chat-widget-panel"><img src="../Animated-Gifts/IA-face2.svg" alt="" width="36" height="36" /></button>
+  </div>
+
   <script>
     window.SCORECARD_AUDIO = { src: '../audio/Music-Background.mp3' };
   </script>
