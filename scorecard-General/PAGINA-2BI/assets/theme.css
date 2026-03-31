@@ -2444,7 +2444,7 @@ body.p2bi-dark .trust-strip--capsule span {
   height: 14px;
   border-radius: 999px;
   pointer-events: none;
-  z-index: 40;
+  z-index: 160;
   opacity: 0.0;
   transform: translate3d(-100px, -100px, 0);
   background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.9), rgba(94, 184, 255, 0.55) 38%, rgba(29, 142, 240, 0.0) 72%);
@@ -2473,6 +2473,9 @@ body.p2bi-dark .p2bi-firefly {
   gap: 0.45rem;
   pointer-events: none;
 }
+
+/* Usuario pidió quitar el FAB global (abajo-izquierda) */
+.fab { display: none !important; }
 .fab a { pointer-events: auto; }
 .fab .btn--primary { box-shadow: 0 10px 32px rgba(10, 74, 124, 0.22); }
 .fab__mini {
