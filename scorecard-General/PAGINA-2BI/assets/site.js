@@ -134,6 +134,23 @@
         "error",
         function () {
           try {
+            // En rails/strips, quita el item para que quede centrado (sin “bloque roto”).
+            var railItem = img.closest && img.closest(".photo-rail__item");
+            if (railItem && railItem.parentNode) {
+              railItem.parentNode.removeChild(railItem);
+              return;
+            }
+            var fig = img.closest && img.closest(".detail-photo-strip__fig");
+            if (fig && fig.parentNode) {
+              fig.parentNode.removeChild(fig);
+              return;
+            }
+            var banner = img.closest && img.closest(".detail-example__banner");
+            if (banner && banner.parentNode) {
+              banner.parentNode.removeChild(banner);
+              return;
+            }
+
             if (img.dataset) img.dataset.fallbackApplied = "1";
             img.classList.add("is-img-fallback");
             img.src = svgDataUri(img.alt || "Imagen no disponible");
@@ -144,6 +161,21 @@
     }
 
     document.querySelectorAll("img.js-ext-img, img[src*='images.unsplash.com']").forEach(apply);
+  })();
+
+  /* Barras demo en panel hero (como 2BI ADD) */
+  (function mountHeroBars() {
+    var chartHome = document.getElementById("chart-bars-home");
+    if (!chartHome) return;
+    if (chartHome.children && chartHome.children.length) return;
+    var heights = [38, 55, 42, 68, 48, 82, 52, 90, 61, 74, 44, 86];
+    heights.forEach(function (h) {
+      var d = document.createElement("div");
+      d.className = "chart-bars__item";
+      d.style.height = h + "%";
+      d.title = "Serie ilustrativa";
+      chartHome.appendChild(d);
+    });
   })();
 
   var header = document.querySelector(".site-header");

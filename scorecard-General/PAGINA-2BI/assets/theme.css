@@ -2257,6 +2257,44 @@ body.p2bi-dark .hero-home__more-nav a {
   gap: 0.85rem;
   margin-bottom: 1.1rem;
 }
+
+.chart-bars--hero {
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+  height: 88px;
+  padding: 0.35rem 0 0.15rem;
+  margin-bottom: 0.35rem;
+}
+.chart-bars--hero .chart-bars__item {
+  flex: 1;
+  border-radius: 5px 5px 2px 2px;
+  min-height: 6px;
+  background: linear-gradient(180deg, var(--blue-bright), rgba(29, 142, 240, 0.18));
+  transition: height 0.65s var(--ease);
+  transform-origin: bottom center;
+}
+body.p2bi-dark .chart-bars--hero .chart-bars__item {
+  background: linear-gradient(180deg, rgba(167, 139, 250, 0.92), rgba(73, 167, 255, 0.16));
+}
+@media (prefers-reduced-motion: no-preference) {
+  .chart-bars--hero .chart-bars__item { animation: chartBarThrob 2.2s ease-in-out infinite; }
+  .chart-bars--hero .chart-bars__item:nth-child(2) { animation-delay: 0.09s; }
+  .chart-bars--hero .chart-bars__item:nth-child(3) { animation-delay: 0.18s; }
+  .chart-bars--hero .chart-bars__item:nth-child(4) { animation-delay: 0.27s; }
+  .chart-bars--hero .chart-bars__item:nth-child(5) { animation-delay: 0.36s; }
+  .chart-bars--hero .chart-bars__item:nth-child(6) { animation-delay: 0.45s; }
+  .chart-bars--hero .chart-bars__item:nth-child(7) { animation-delay: 0.54s; }
+  .chart-bars--hero .chart-bars__item:nth-child(8) { animation-delay: 0.63s; }
+  .chart-bars--hero .chart-bars__item:nth-child(9) { animation-delay: 0.72s; }
+  .chart-bars--hero .chart-bars__item:nth-child(10) { animation-delay: 0.81s; }
+  .chart-bars--hero .chart-bars__item:nth-child(11) { animation-delay: 0.9s; }
+  .chart-bars--hero .chart-bars__item:nth-child(12) { animation-delay: 0.99s; }
+}
+@keyframes chartBarThrob {
+  0%, 100% { transform: scaleY(1); filter: brightness(1); }
+  50% { transform: scaleY(0.88); filter: brightness(1.12); }
+}
 .kpi-mini {
   background: var(--white);
   border-radius: 12px;
@@ -2314,6 +2352,7 @@ body.p2bi-dark .hero-home__more-nav a {
   mask-image: linear-gradient(90deg, transparent, #000 2%, #000 98%, transparent);
   scrollbar-width: thin;
   scrollbar-color: rgba(10, 74, 124, 0.35) transparent;
+  justify-content: flex-start;
 }
 .photo-rail::-webkit-scrollbar { height: 7px; }
 .photo-rail::-webkit-scrollbar-track {
@@ -2358,6 +2397,22 @@ body.p2bi-dark .hero-home__more-nav a {
   transition: transform 0.65s var(--ease);
 }
 .photo-rail__item:hover img { transform: scale(1.05); }
+
+/* En desktop: que queden centradas/alineadas (sin huecos raros) */
+@media (min-width: 900px) {
+  .photo-rail {
+    flex-wrap: wrap;
+    justify-content: center;
+    overflow-x: visible;
+    scroll-snap-type: none;
+    mask-image: none;
+    margin: 0 auto;
+    width: min(1120px, 100%);
+    max-width: calc(100% - 2.5rem);
+    padding: 0 0 1.25rem;
+  }
+  .photo-rail__item { flex: 0 1 260px; }
+}
 
 .trust-strip--capsule {
   padding: 0.75rem 0.9rem 2.25rem;
