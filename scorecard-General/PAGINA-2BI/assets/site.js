@@ -1,6 +1,105 @@
 (function () {
   "use strict";
 
+  document.documentElement.classList.add("js");
+
+  /* Spotlight que sigue al puntero (como 2BI ADD) */
+  try {
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      document.documentElement.style.setProperty("--pointer-x", "22%");
+      document.documentElement.style.setProperty("--pointer-y", "28%");
+      var ptrBusy = false;
+      document.addEventListener(
+        "pointermove",
+        function (e) {
+          if (ptrBusy) return;
+          if (e && e.pointerType === "touch") return;
+          ptrBusy = true;
+          window.requestAnimationFrame(function () {
+            var iw = Math.max(window.innerWidth, 1);
+            var ih = Math.max(window.innerHeight, 1);
+            document.documentElement.style.setProperty("--pointer-x", ((e.clientX / iw) * 100).toFixed(2) + "%");
+            document.documentElement.style.setProperty("--pointer-y", ((e.clientY / ih) * 100).toFixed(2) + "%");
+            ptrBusy = false;
+          });
+        },
+        { passive: true }
+      );
+    }
+  } catch (_) {}
+
+  /* “Luciérnaga” (un punto de luz que sigue el cursor con inercia) */
+  (function mountFirefly() {
+    try {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    } catch (_) {}
+    if (!document.body) return;
+    var el = document.querySelector(".p2bi-firefly");
+    if (!el) {
+      el = document.createElement("div");
+      el.className = "p2bi-firefly";
+      el.setAttribute("aria-hidden", "true");
+      document.body.appendChild(el);
+    }
+    var tx = -100,
+      ty = -100,
+      x = -100,
+      y = -100,
+      raf = 0,
+      active = false;
+    function tick() {
+      raf = 0;
+      x += (tx - x) * 0.14;
+      y += (ty - y) * 0.14;
+      el.style.transform = "translate3d(" + (x - 7) + "px," + (y - 7) + "px,0)";
+      if (Math.abs(tx - x) + Math.abs(ty - y) > 0.5) raf = requestAnimationFrame(tick);
+    }
+    function onMove(e) {
+      if (e && e.pointerType === "touch") return;
+      tx = e.clientX || 0;
+      ty = e.clientY || 0;
+      if (!active) {
+        active = true;
+        el.style.opacity = "1";
+      }
+      if (!raf) raf = requestAnimationFrame(tick);
+    }
+    function onLeave() {
+      active = false;
+      el.style.opacity = "0";
+    }
+    window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("pointerleave", onLeave, { passive: true });
+    document.addEventListener("mouseleave", onLeave, { passive: true });
+  })();
+
+  /* CTAs “magnéticos”: acercan el botón al cursor (suave, cap ~10px) */
+  (function mountMagnetic() {
+    try {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    } catch (_) {}
+    var nodes = document.querySelectorAll("a.btn--primary, button.btn--primary, a.btn--ghost.btn--lg");
+    if (!nodes || !nodes.length) return;
+    nodes.forEach(function (btn) {
+      btn.classList.add("js-magnetic");
+      function onMagMove(e) {
+        if (e && e.pointerType === "touch") return;
+        var r = btn.getBoundingClientRect();
+        var x = ((e.clientX - r.left) / r.width - 0.5) * 2;
+        var y = ((e.clientY - r.top) / r.height - 0.5) * 2;
+        var cap = 10;
+        btn.style.setProperty("--mag-x", (x * cap).toFixed(2) + "px");
+        btn.style.setProperty("--mag-y", (y * cap).toFixed(2) + "px");
+      }
+      function onMagLeave() {
+        btn.style.removeProperty("--mag-x");
+        btn.style.removeProperty("--mag-y");
+      }
+      btn.addEventListener("pointermove", onMagMove);
+      btn.addEventListener("pointerleave", onMagLeave);
+    });
+  })();
+
   var header = document.querySelector(".site-header");
   var toggle = document.querySelector(".js-nav-toggle");
   var panel = document.querySelector(".js-nav-panel");

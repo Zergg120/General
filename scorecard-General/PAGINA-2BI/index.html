@@ -87,6 +87,7 @@
 
   <main id="contenido">
     <section class="hero-home wrap">
+      <div class="hero-spotlight" aria-hidden="true"></div>
       <div class="hero-home__grid">
         <div class="hero-entrance">
           <p class="hero-home__eyebrow">Data · BI · Performance</p>
@@ -95,6 +96,28 @@
           <div class="hero-home__actions">
             <a class="btn btn--primary btn--lg btn--pulse" href="contacto.html">Agendar conversación</a>
             <a class="btn btn--ghost btn--lg" href="soluciones.html">Explorar soluciones</a>
+          </div>
+          <details class="hero-home__more">
+            <summary class="hero-home__more-summary">Accesos rápidos del sitio</summary>
+            <nav class="hero-home__more-nav" aria-label="Accesos rápidos">
+              <a href="nosotros.html">Nosotros</a>
+              <a href="soluciones.html">Soluciones</a>
+              <a href="portafolio.html">Portafolio</a>
+              <a href="valores.html">Valores</a>
+              <a href="ecosistema.html">Ecosistema</a>
+              <a href="contacto.html">Contacto</a>
+            </nav>
+          </details>
+          <div class="hero-home__mosaic" role="group" aria-label="Tres puertas de entrada: catálogo, stack y primera conversación">
+            <a class="hero-home__mosaic-item" href="soluciones.html">
+              <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&amp;q=85" alt="Tableros y KPIs: enlace al catálogo de soluciones" width="600" height="400" fetchpriority="high" decoding="async" />
+            </a>
+            <a class="hero-home__mosaic-item" href="ecosistema.html">
+              <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&amp;q=85" alt="Hardware y conectividad: metáfora del stack que integramos" width="600" height="400" loading="lazy" decoding="async" />
+            </a>
+            <a class="hero-home__mosaic-item" href="contacto.html">
+              <img src="https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=600&amp;q=85" alt="Escritorio listo para acordar siguiente paso — contacto" width="600" height="400" loading="lazy" decoding="async" />
+            </a>
           </div>
           <p class="hero-home__hint"><a href="#explora">↓ Explorar la página</a></p>
         </div>
@@ -126,11 +149,29 @@
             <path class="chart-line js-chart-line" d="M0,85 C40,90 60,40 100,55 C140,70 160,25 200,40 C240,55 260,15 300,30 C340,45 360,20 400,35"/>
           </svg>
           <p style="font-size:0.8rem;color:var(--muted);margin-top:0.5rem;font-weight:650;">Indicadores ilustrativos — bajo tus definiciones y tu stack.</p>
+          <div class="hero-panel__img">
+            <img
+              src="https://images.unsplash.com/photo-1542744173-8e7e5348bb03?w=1200&amp;q=88"
+              alt="Sala de dirección revisando presentación con métricas en pantalla"
+              width="1200"
+              height="750"
+              fetchpriority="high"
+              decoding="async"
+            />
+          </div>
         </div>
       </div>
     </section>
 
-    <div class="wrap trust-strip trust-strip--pulse" aria-hidden="true">
+    <div class="photo-rail photo-rail--home reveal-stagger js-reveal-stagger" aria-label="Historia en cinco fotogramas: descubrimiento, plataforma, gobierno del dato, integración y negocio">
+      <div class="photo-rail__item"><img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=640&amp;q=82" alt="Descubrimiento: taller con pizarra y acuerdos de alcance" width="640" height="400" loading="lazy" decoding="async" /></div>
+      <div class="photo-rail__item"><img src="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=640&amp;q=82" alt="Fundamentos: racks y almacenamiento donde vive el modelo" width="640" height="400" loading="lazy" decoding="async" /></div>
+      <div class="photo-rail__item"><img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?w=640&amp;q=82" alt="Gobierno: acceso seguro y políticas sobre los mismos datos" width="640" height="400" loading="lazy" decoding="async" /></div>
+      <div class="photo-rail__item"><img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=640&amp;q=82" alt="Integración: código y despliegue que conecta orígenes con el almacén" width="640" height="400" loading="lazy" decoding="async" /></div>
+      <div class="photo-rail__item"><img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=640&amp;q=82" alt="Cierre de ciclo: negocio alineado tras ver las mismas cifras" width="640" height="400" loading="lazy" decoding="async" /></div>
+    </div>
+
+    <div class="wrap trust-strip trust-strip--pulse trust-strip--capsule" aria-hidden="true">
       <span>Gobernanza</span>
       <span>Modelo estrella</span>
       <span>Seguridad por diseño</span>
