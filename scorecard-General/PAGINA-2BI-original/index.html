@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<!-- Sitio estático: index.html y la carpeta assets deben quedar en el MISMO directorio al copiar o descomprimir el ZIP. -->
+<html lang="es" data-page="index">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a4a7c">
+  <meta name="description" content="2BI Intelligence Solutions — Business Intelligence, datos y performance. Partner estratégico para decisiones con respaldo.">
+  <meta name="application-name" content="2BI Intelligence Solutions">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="2BI Intelligence Solutions — Data, inteligencia y performance">
+  <meta property="og:description" content="Arquitectura analítica, tableros con sentido de negocio y cultura de medición. BI, datos y automatización.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="2BI Intelligence Solutions">
+  <title>2BI Intelligence Solutions — Data, inteligencia y performance</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..900&family=Outfit:wght@300..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/theme.css">
+  <link rel="preload" href="../audio/Music-Background.mp3" as="audio" type="audio/mpeg" />
+  <link rel="stylesheet" href="../scorecard-status.css?v=20250324f" />
+  <link rel="stylesheet" href="../scorecard-audio.css?v=20260330f" />
+  <link rel="stylesheet" href="../pagina-2bi-scorecard-patch.css?v=20260330" />
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+  <div class="ambient ambient--rich" aria-hidden="true">
+    <div class="ambient__mesh" aria-hidden="true"></div>
+    <div class="ambient__grid" aria-hidden="true"></div>
+    <div class="ambient__shimmer" aria-hidden="true"></div>
+    <div class="ambient__orb ambient__orb--a" aria-hidden="true"></div>
+    <div class="ambient__blob ambient__blob--1"></div>
+    <div class="ambient__blob ambient__blob--2"></div>
+    <div class="ambient__blob ambient__blob--3"></div>
+    <div class="ambient__blob ambient__blob--4"></div>
+  </div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="logo" href="index.html">
+        <span class="logo__mark">2BI</span>
+        <span class="logo__stack">
+          <span class="logo__stack-line">Intelligence</span>
+          <span class="logo__stack-line">Solutions</span>
+        </span>
+      </a>
+      <nav class="nav nav--desktop" aria-label="Principal">
+        <ul class="nav__list">
+          <li><a class="nav__link" href="index.html">Inicio</a></li>
+          <li><a class="nav__link" href="nosotros.html">Nosotros</a></li>
+          <li><a class="nav__link" href="soluciones.html">Soluciones</a></li>
+          <li><a class="nav__link" href="valores.html">Valores</a></li>
+          <li><a class="nav__link" href="ecosistema.html">Ecosistema</a></li>
+        </ul>
+      </nav>
+      <div class="site-header__scorecard-tools" aria-label="Tablero e indicadores">
+        <div id="scorecard-status-mount" class="sr-live"></div>
+        <div id="scorecard-audio-mount" class="scorecard-audio-mount" aria-label="Música"></div>
+        <a class="btn btn--ghost site-header__tablero" href="../executive.html">Tablero</a>
+      </div>
+      <a class="btn btn--primary" href="contacto.html">Hablemos</a>
+      <button class="nav-toggle js-nav-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-drawer">
+        <span class="nav-toggle__bars" aria-hidden="true"><span></span><span></span><span></span></span>
+      </button>
+    </div>
+    <div class="nav-panel js-nav-panel">
+      <div class="nav-drawer js-nav-drawer" id="nav-drawer" role="dialog" aria-modal="true" aria-label="Menú">
+        <nav class="nav nav--drawer" aria-label="Móvil">
+          <ul class="nav__list">
+            <li><a class="nav__link" href="index.html">Inicio</a></li>
+            <li><a class="nav__link" href="nosotros.html">Nosotros</a></li>
+            <li><a class="nav__link" href="soluciones.html">Soluciones</a></li>
+            <li><a class="nav__link" href="valores.html">Valores</a></li>
+            <li><a class="nav__link" href="ecosistema.html">Ecosistema</a></li>
+            <li><a class="nav__link" href="../executive.html">Tablero</a></li>
+          </ul>
+        </nav>
+        <div class="nav-drawer__cta">
+          <a class="btn btn--primary btn--lg" href="contacto.html" style="width:100%">Hablemos</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <section class="hero-home wrap">
+      <div class="hero-home__grid">
+        <div class="hero-entrance">
+          <p class="hero-home__eyebrow">Data · BI · Performance</p>
+          <h1 class="display">Convertimos <em>datos</em> en decisiones que escalan contigo.</h1>
+          <p class="hero-home__lead">Arquitectura analítica, tableros con sentido de negocio y cultura de medición — sin humo, con trazabilidad y ROI claro.</p>
+          <div class="hero-home__actions">
+            <a class="btn btn--primary btn--lg btn--pulse" href="contacto.html">Agendar conversación</a>
+            <a class="btn btn--ghost btn--lg" href="soluciones.html">Explorar soluciones</a>
+          </div>
+          <p class="hero-home__hint"><a href="#explora">↓ Explorar la página</a></p>
+        </div>
+        <div class="hero-panel reveal hero-panel--float">
+          <div class="hero-panel__grid">
+            <div class="kpi-mini">
+              <div class="kpi-mini__l">Confianza modelo</div>
+              <div class="kpi-mini__v">94.2%</div>
+              <div class="kpi-mini__d">↑ vs. trimestre anterior</div>
+            </div>
+            <div class="kpi-mini">
+              <div class="kpi-mini__l">Tiempo a insight</div>
+              <div class="kpi-mini__v">−38%</div>
+              <div class="kpi-mini__d">Automatización + gobernanza</div>
+            </div>
+          </div>
+          <svg class="chart-svg" viewBox="0 0 400 120" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="gradArea" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#1d8ef0" stop-opacity="0.35"/>
+                <stop offset="100%" stop-color="#1d8ef0" stop-opacity="0"/>
+              </linearGradient>
+              <linearGradient id="gradLine" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#0a4a7c"/>
+                <stop offset="100%" stop-color="#5eb8ff"/>
+              </linearGradient>
+            </defs>
+            <path class="chart-area" d="M0,100 L0,85 C40,90 60,40 100,55 C140,70 160,25 200,40 C240,55 260,15 300,30 C340,45 360,20 400,35 L400,120 L0,120 Z"/>
+            <path class="chart-line js-chart-line" d="M0,85 C40,90 60,40 100,55 C140,70 160,25 200,40 C240,55 260,15 300,30 C340,45 360,20 400,35"/>
+          </svg>
+          <p style="font-size:0.8rem;color:var(--muted);margin-top:0.5rem;font-weight:650;">Indicadores ilustrativos — bajo tus definiciones y tu stack.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="wrap trust-strip trust-strip--pulse" aria-hidden="true">
+      <span>Gobernanza</span>
+      <span>Modelo estrella</span>
+      <span>Seguridad por diseño</span>
+      <span>Entregables accionables</span>
+    </div>
+
+    <div class="wrap reveal marquee-wrap marquee-wrap--soft" aria-label="Tecnologías">
+      <p class="marquee-wrap__label">Stack que domamos día a día · pasa el cursor para pausar</p>
+      <div class="marquee" role="presentation">
+        <div class="marquee__group">
+          <span class="marquee__item">Power BI</span>
+          <span class="marquee__dot" aria-hidden="true">◆</span>
+          <span class="marquee__item">Microsoft Fabric</span>
+          <span class="marquee__dot" aria-hidden="true">◆</span>
+          <span class="marquee__item">SQL Server</span>
+          <span class="marquee__dot" aria-hidden="true">◆</span>
+          <span class="marquee__item">Firebird</span>
+          <span class="marquee__dot" aria-hidden="true">◆</span>
+          <span class="marquee__item">Azure</span>
+          <span class="marquee__dot" aria-hidden="true">◆</span>
+          <span class="marquee__item">Python</span>
+          <span class="marquee__dot" aria-hidden="true">◆</span>
+          <span class="marquee__item">n8n</span>
+          <span class="marquee__dot" aria-hidden="true">◆</span>
+          <span class="marquee__item">Airflow</span>
+          <span class="marquee__dot" aria-hidden="true">◆</span>
+          <span class="marquee__item">DAX &amp; Power Query</span>
+        </div>
+        <div class="marquee__group" aria-hidden="true">
+          <span class="marquee__item">Power BI</span>
+          <span class="marquee__dot" aria-hidden="true">◆</span>
+          <span class="marquee__item">Microsoft Fabric</span>
+          <span class="marquee__dot" aria-hidden="true">◆</span>
+          <span class="marquee__item">SQL Server</span>
+          <span class="marquee__dot" aria-hidden="true">◆</span>
+          <span class="marquee__item">Firebird</span>
+          <span class="marquee__dot" aria-hidden="true">◆</span>
+          <span class="marquee__item">Azure</span>
+          <span class="marquee__dot" aria-hidden="true">◆</span>
+          <span class="marquee__item">Python</span>
+          <span class="marquee__dot" aria-hidden="true">◆</span>
+          <span class="marquee__item">n8n</span>
+          <span class="marquee__dot" aria-hidden="true">◆</span>
+          <span class="marquee__item">Airflow</span>
+          <span class="marquee__dot" aria-hidden="true">◆</span>
+          <span class="marquee__item">DAX &amp; Power Query</span>
+        </div>
+      </div>
+    </div>
+
+    <section class="section wrap">
+      <div class="section__head reveal">
+        <h2>Todo el recorrido, en páginas dedicadas</h2>
+        <p>Navegación clara: profundiza donde necesites sin perder el hilo de marca ni la consistencia visual.</p>
+      </div>
+      <div class="quick-grid quick-grid--stagger">
+        <a class="quick-card reveal js-tilt-card" href="nosotros.html">
+          <span class="quick-card__icon" aria-hidden="true">◇</span>
+          <span class="quick-card__title">Nosotros</span>
+          <span class="quick-card__meta">Historia, misión y cómo trabajamos</span>
+        </a>
+        <a class="quick-card reveal js-tilt-card" href="soluciones.html">
+          <span class="quick-card__icon" aria-hidden="true">◎</span>
+          <span class="quick-card__title">Soluciones</span>
+          <span class="quick-card__meta">6 módulos · cada uno con ejemplo clickeable</span>
+        </a>
+        <a class="quick-card reveal js-tilt-card" href="valores.html">
+          <span class="quick-card__icon" aria-hidden="true">✦</span>
+          <span class="quick-card__title">Valores</span>
+          <span class="quick-card__meta">Lo que no negociamos</span>
+        </a>
+        <a class="quick-card reveal js-tilt-card" href="ecosistema.html">
+          <span class="quick-card__icon" aria-hidden="true">⬡</span>
+          <span class="quick-card__title">Ecosistema</span>
+          <span class="quick-card__meta">Stack y partners técnicos</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="explore-rail wrap reveal" id="explora" aria-labelledby="explore-title">
+      <div class="explore-rail__head">
+        <h2 id="explore-title" class="explore-rail__title display">Sigue explorando</h2>
+        <p class="explore-rail__lead">Atajos para quien quiere ver datos, demo y rutas — sin perder el ritmo.</p>
+      </div>
+      <div class="explore-rail__chips">
+        <a class="explore-chip" href="#section-dashboard"><span class="explore-chip__icon" aria-hidden="true">📊</span> Gráficos interactivos</a>
+        <a class="explore-chip" href="#chat-demo-heading"><span class="explore-chip__icon" aria-hidden="true">💬</span> Chat demo</a>
+        <a class="explore-chip" href="soluciones.html"><span class="explore-chip__icon" aria-hidden="true">◎</span> 6 soluciones + ejemplos</a>
+        <a class="explore-chip" href="ecosistema.html"><span class="explore-chip__icon" aria-hidden="true">⬡</span> Ecosistema técnico</a>
+        <a class="explore-chip" href="nosotros.html"><span class="explore-chip__icon" aria-hidden="true">◇</span> Quiénes somos</a>
+        <a class="explore-chip explore-chip--accent" href="contacto.html"><span class="explore-chip__icon" aria-hidden="true">→</span> Agendar llamada</a>
+      </div>
+    </section>
+
+    <section class="dash-section wrap js-charts-mount reveal" id="section-dashboard" aria-labelledby="dash-heading">
+      <div class="section__head">
+        <h2 id="dash-heading">Vista rápida con datos de ejemplo</h2>
+        <p>Tendencia ilustrativa y mix de fuentes típico en proyectos BI — los números son demo; en entrega real van anclados a tus definiciones y tu modelo.</p>
+      </div>
+      <div class="dash-grid">
+        <article class="chart-card">
+          <div class="chart-card__head">
+            <h3 class="chart-card__title">Ventas netas (índice)</h3>
+            <span class="chart-card__badge">Demo Chart.js</span>
+          </div>
+          <div class="chart-card__canvas-wrap">
+            <canvas id="chartVentas" aria-label="Gráfico de línea: evolución mensual ilustrativa"></canvas>
+          </div>
+          <p class="chart-card__note">Curva de ejemplo; sin conexión a backend.</p>
+        </article>
+        <article class="chart-card">
+          <div class="chart-card__head">
+            <h3 class="chart-card__title">Origen del consumo analítico</h3>
+            <span class="chart-card__badge">Mix</span>
+          </div>
+          <div class="chart-card__canvas-wrap chart-card__canvas-wrap--sm">
+            <canvas id="chartMix" aria-label="Gráfico de dona: distribución ilustrativa por tipo de fuente"></canvas>
+          </div>
+          <p class="chart-card__note">Proporciones orientativas para storytelling ejecutivo.</p>
+        </article>
+        <article class="chart-card chart-card--span-full chart-card--glow">
+          <div class="chart-card__head">
+            <h3 class="chart-card__title">Esfuerzo por fase del proyecto (horas % demo)</h3>
+            <span class="chart-card__badge">Barras</span>
+          </div>
+          <div class="chart-card__canvas-wrap chart-card__canvas-wrap--bars">
+            <canvas id="chartBarras" aria-label="Gráfico de barras horizontales ilustrativo por fase"></canvas>
+          </div>
+          <p class="chart-card__note">Distribución típica de un primer ciclo; se ajusta a tu contexto.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="journey wrap reveal" aria-labelledby="journey-title">
+      <div class="section__head section__head--center">
+        <h2 id="journey-title">Cómo avanzamos contigo</h2>
+        <p>Cuatro hitos claros. Cada uno con entregables que puedes enseñar en comité.</p>
+      </div>
+      <ol class="journey__track">
+        <li class="journey__step">
+          <span class="journey__n">1</span>
+          <div class="journey__body">
+            <strong>Descubrimiento</strong>
+            <span>Fuentes, dolor del decisor y KPIs candidatos.</span>
+          </div>
+        </li>
+        <li class="journey__step">
+          <span class="journey__n">2</span>
+          <div class="journey__body">
+            <strong>Modelo mínimo</strong>
+            <span>Semántica y primer tablero con datos reales.</span>
+          </div>
+        </li>
+        <li class="journey__step">
+          <span class="journey__n">3</span>
+          <div class="journey__body">
+            <strong>Endurecimiento</strong>
+            <span>RLS, refrescos, pruebas y documentación.</span>
+          </div>
+        </li>
+        <li class="journey__step">
+          <span class="journey__n">4</span>
+          <div class="journey__body">
+            <strong>Adopción</strong>
+            <span>Handoff, office hours y mejora continua.</span>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <div class="wrap">
+      <div class="stats reveal js-stats stats--interactive" style="margin-bottom:clamp(3rem,7vw,4.5rem)">
+        <div class="stats__grid">
+          <div class="stat">
+            <div class="stat__num"><span class="js-counter" data-target="20">0</span><span class="suffix">+</span></div>
+            <div class="stat__label">Años de experiencia combinada</div>
+          </div>
+          <div class="stat">
+            <div class="stat__num"><span class="js-counter" data-target="120">0</span><span class="suffix">+</span></div>
+            <div class="stat__label">Especialistas y aliados</div>
+          </div>
+          <div class="stat">
+            <div class="stat__num"><span class="js-counter" data-target="350">0</span><span class="suffix">+</span></div>
+            <div class="stat__label">Proyectos y entregables</div>
+          </div>
+          <div class="stat">
+            <div class="stat__num"><span class="js-counter" data-target="1000">0</span><span class="suffix">+</span></div>
+            <div class="stat__label">Fuentes y conectores</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="wrap reveal" aria-labelledby="chat-demo-heading">
+      <div class="chat-demo">
+        <div class="chat-demo__inner">
+          <div class="chat-demo__copy">
+            <h2 id="chat-demo-heading">Asistente en la web (demo)</h2>
+            <p>Así se vería un chat orientado a visitantes: respuestas por reglas, enlaces a tus páginas y, cuando quieras, conexión a un LLM con datos propios.</p>
+            <div class="chat-demo__pills" role="group" aria-label="Sugerencias de mensaje">
+              <button type="button" class="chat-demo__pill js-chat-suggest" data-msg="¿Qué hacen con Power BI y Fabric?">Power BI</button>
+              <button type="button" class="chat-demo__pill js-chat-suggest" data-msg="Necesitamos pipelines ETL desde Firebird">ETL</button>
+              <button type="button" class="chat-demo__pill js-chat-suggest" data-msg="Quiero agendar una llamada">Contacto</button>
+              <button type="button" class="chat-demo__pill js-chat-suggest" data-msg="¿Cómo cotizan un proyecto?">Precios</button>
+            </div>
+          </div>
+          <div class="chat-demo__screen" role="region" aria-label="Demo de conversación">
+            <div class="chat-demo__screen-h"><span class="dot" aria-hidden="true"></span> 2BI IS · Asistente demo</div>
+            <div class="chat-demo__msgs" id="js-chat-demo-msgs"></div>
+            <div class="chat-demo__input-row">
+              <label class="visually-hidden" for="js-chat-demo-input">Escribe un mensaje</label>
+              <input id="js-chat-demo-input" type="text" autocomplete="off" placeholder="Ej.: ¿Hacen tableros en Power BI?" maxlength="500">
+              <button type="button" id="js-chat-demo-send">Enviar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section wrap">
+      <div class="section__head reveal">
+        <h2>Lo que dicen quienes ya miden mejor</h2>
+        <p>Testimonios de ejemplo para dar textura a la landing; sustituye por citas reales cuando las tengas.</p>
+      </div>
+      <div class="testimonials-scroller">
+        <div class="testimonials-scroller__inner">
+        <blockquote class="testimonial reveal">
+          <div class="testimonial__stars" aria-hidden="true">★★★★★</div>
+          <p>«Pasamos de reportes en silos a un modelo único. El tablero ejecutivo ahora es la misma verdad para finanzas y operaciones.»</p>
+          <footer class="testimonial__who">
+            <div class="testimonial__avatar" aria-hidden="true">MR</div>
+            <div>
+              <div class="testimonial__name">María R.</div>
+              <div class="testimonial__role">CFO · retail regional</div>
+            </div>
+          </footer>
+        </blockquote>
+        <blockquote class="testimonial reveal">
+          <div class="testimonial__stars" aria-hidden="true">★★★★★</div>
+          <p>«El refresco bajó de horas a minutos y dejamos de pelearnos con versiones de Excel. La gobernanza quedó documentada.»</p>
+          <footer class="testimonial__who">
+            <div class="testimonial__avatar" aria-hidden="true">JL</div>
+            <div>
+              <div class="testimonial__name">Jorge L.</div>
+              <div class="testimonial__role">IT Lead · manufactura</div>
+            </div>
+          </footer>
+        </blockquote>
+        <blockquote class="testimonial reveal">
+          <div class="testimonial__stars" aria-hidden="true">★★★★★</div>
+          <p>«Nos ayudaron a priorizar: primero KPIs críticos, luego profundidad. Se nota que entienden negocio, no solo herramienta.»</p>
+          <footer class="testimonial__who">
+            <div class="testimonial__avatar" aria-hidden="true">AC</div>
+            <div>
+              <div class="testimonial__name">Ana C.</div>
+              <div class="testimonial__role">Operaciones · logística</div>
+            </div>
+          </footer>
+        </blockquote>
+        </div>
+      </div>
+      <p class="testimonials-scroller__hint" aria-hidden="true">Desliza en móvil · tres voces</p>
+    </section>
+
+    <section class="section wrap">
+      <div class="section__head reveal">
+        <h2>Preguntas frecuentes</h2>
+        <p>Respuestas cortas; el detalle vive en cada página del sitio.</p>
+      </div>
+      <div class="faq-list reveal">
+        <details class="faq-item">
+          <summary>¿Trabajan solo Power BI o también otros stacks?</summary>
+          <div class="faq-item__body">Power BI y Microsoft Fabric son nuestro foco fuerte, pero integramos SQL Server, Firebird, APIs, lakes y orquestadores. En <a href="ecosistema.html">Ecosistema</a> está el mapa típico.</div>
+        </details>
+        <details class="faq-item">
+          <summary>¿Cuánto tarda un primer tablero útil?</summary>
+          <div class="faq-item__body">Depende de calidad de datos y alcance. Suele haber una fase de descubrimiento, modelo mínimo viable y luego iteración. Lo acotamos en la primera conversación.</div>
+        </details>
+        <details class="faq-item">
+          <summary>¿Pueden ayudarnos con gobernanza y seguridad?</summary>
+          <div class="faq-item__body">Sí: espacios de trabajo, RLS, certificación de datasets y documentación para que IT y negocio confíen en los mismos números.</div>
+        </details>
+        <details class="faq-item">
+          <summary>¿El chat de esta página es un bot real?</summary>
+          <div class="faq-item__body">Es una demo de 2BI Intelligence Solutions con respuestas fijas en el navegador. Sirve para mostrar UX; en producción se puede conectar a servicios de IA o a tu base de conocimiento.</div>
+        </details>
+      </div>
+    </section>
+
+    <section class="section wrap">
+      <div class="cta-band reveal cta-band--animated">
+        <div class="cta-band__glow" aria-hidden="true"></div>
+        <div class="cta-band__inner">
+          <h2>¿Listo para el siguiente nivel de BI?</h2>
+          <p>Cuéntanos volumen de datos, herramientas actuales y qué decisor necesita claridad. Te respondemos con una ruta concreta.</p>
+          <div class="cta-band__actions">
+            <a class="btn btn--primary btn--lg btn--pulse" href="contacto.html">Ir a contacto</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap site-footer__grid">
+      <div class="site-footer__brand">
+        <div class="footer-brand">
+          <span class="footer-brand__mark">2BI</span>
+          <span class="footer-brand__full">Intelligence Solutions</span>
+        </div>
+        <p>Inteligencia de negocio con criterio: del dato a la acción, con gobernanza y diseño centrado en decisiones.</p>
+      </div>
+      <div>
+        <h4>Sitio</h4>
+        <ul>
+          <li><a href="nosotros.html">Nosotros</a></li>
+          <li><a href="soluciones.html">Soluciones</a></li>
+          <li><a href="valores.html">Valores</a></li>
+          <li><a href="ecosistema.html">Ecosistema</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contacto</h4>
+        <ul>
+          <li><a href="contacto.html">Formulario y correo</a></li>
+          <li><a href="mailto:hola@2bi.example">hola@2bi.example</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="wrap site-footer__legal">
+      © <span id="year"></span> 2BI Intelligence Solutions. Referencia de estructura: <a href="https://www.dataventure.com/es/sobre-dataventure-group" target="_blank" rel="noopener noreferrer">Dataventure Group</a>.
+    </div>
+  </footer>
+
+  <div class="chat-widget js-chat-widget">
+    <div class="chat-widget__panel" id="chat-widget-panel" role="dialog" aria-modal="false" aria-label="Asistente 2BI Intelligence Solutions">
+      <div class="chat-widget__head">
+        <strong>2BI Intelligence Solutions</strong>
+        <button type="button" class="chat-widget__close js-chat-widget-close" aria-label="Cerrar chat">×</button>
+      </div>
+      <div class="chat-widget__body js-chat-widget-messages" id="chat-widget-messages"></div>
+      <div class="chat-widget__foot">
+        <label class="visually-hidden" for="chat-widget-input">Mensaje al asistente</label>
+        <input id="chat-widget-input" class="js-chat-widget-input" type="text" autocomplete="off" placeholder="Escribe aquí…" maxlength="500">
+        <button type="button" class="js-chat-widget-send">Enviar</button>
+      </div>
+    </div>
+    <button type="button" class="chat-widget__fab js-chat-widget-fab" aria-label="Abrir asistente" aria-expanded="false" aria-controls="chat-widget-panel"><img src="../Animated-Gifts/IA-face2.svg" alt="" width="36" height="36" /></button>
+  </div>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    "name": "2BI Intelligence Solutions",
+    "description": "Business Intelligence, ingeniería de datos, performance y automatización. Del dato a la decisión con gobernanza.",
+    "email": "hola@2bi.example",
+    "areaServed": "MX",
+    "knowsAbout": ["Power BI", "Microsoft Fabric", "SQL Server", "Firebird", "ETL", "DAX"]
+  }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+  <script src="./assets/home-charts.js" defer></script>
+  <script>
+    window.SCORECARD_AUDIO = { src: '../audio/Music-Background.mp3' };
+  </script>
+  <script src="../scorecard-status.js?v=20250324f" defer></script>
+  <script src="../scorecard-live.js?v=20250324f" defer></script>
+  <script src="../scorecard-audio.js?v=20260330f" defer></script>
+  <script src="./assets/site.js" defer></script>
+</body>
+</html>
