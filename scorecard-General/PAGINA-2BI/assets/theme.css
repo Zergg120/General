@@ -2796,6 +2796,18 @@ body.p2bi-dark .chart-bars--hero .chart-bars__item {
   .photo-rail__item { flex: 0 1 260px; }
 }
 
+/* Variante “grid” para Ecosistema: mantener fila centrada y consistente */
+.photo-rail.photo-rail--grid {
+  padding-bottom: 0.75rem;
+}
+@media (min-width: 900px) {
+  .photo-rail.photo-rail--grid {
+    width: min(1120px, 100%);
+    max-width: calc(100% - 2.5rem);
+    padding-bottom: 0.95rem;
+  }
+}
+
 .trust-strip--capsule {
   padding: 0.75rem 0.9rem 2.25rem;
 }
