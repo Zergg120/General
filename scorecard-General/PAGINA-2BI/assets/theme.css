@@ -1257,6 +1257,115 @@ body.p2bi-dark .link-card__overlay {
 .card--media .card__media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.75s var(--ease); }
 .card--media:hover .card__media img { transform: scale(1.06); }
 .card--media .card__body { padding: 1.2rem 1.35rem 1.4rem; }
+
+/* Señales / checklist editorial (home) — traído de 2BI ADD */
+.readiness-block {
+  margin: clamp(2.25rem, 5vw, 3.5rem) 0;
+}
+.readiness-block__intro {
+  max-width: 58ch;
+  color: var(--muted);
+  font-size: 1.02rem;
+  line-height: 1.62;
+  margin-bottom: 1.5rem;
+}
+.readiness-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 780px) {
+  .readiness-list {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.1rem;
+  }
+}
+.readiness-item {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  padding: 1.2rem 1.35rem;
+  border-radius: calc(var(--radius-sm) + 2px);
+  background: var(--white);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.25s var(--ease), box-shadow 0.25s var(--ease);
+}
+body.p2bi-dark .readiness-item {
+  background: rgba(16, 19, 40, 0.74);
+  border-color: rgba(138, 208, 255, 0.14);
+}
+.readiness-item:hover {
+  border-color: rgba(29, 142, 240, 0.2);
+  box-shadow: var(--shadow);
+}
+body.p2bi-dark .readiness-item:hover {
+  border-color: rgba(167, 139, 250, 0.22);
+}
+.readiness-item__mark {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--white);
+  background: linear-gradient(145deg, var(--blue-deep), var(--blue-bright));
+  box-shadow: 0 4px 14px rgba(10, 74, 124, 0.22);
+}
+body.p2bi-dark .readiness-item__mark {
+  background: linear-gradient(145deg, rgba(167, 139, 250, 0.95), rgba(73, 167, 255, 0.9));
+  box-shadow: 0 8px 22px rgba(167, 139, 250, 0.18);
+}
+.readiness-item__body { min-width: 0; }
+.readiness-item__body h3 {
+  font-family: var(--font-display);
+  font-size: 1.08rem;
+  color: var(--blue-deep);
+  margin-bottom: 0.35rem;
+  line-height: 1.25;
+}
+body.p2bi-dark .readiness-item__body h3 { color: rgba(226, 232, 255, 0.96); }
+.readiness-item__body p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.52;
+}
+.readiness-item__body a {
+  color: var(--blue-bright);
+  font-weight: 650;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.readiness-item__body a:hover { color: var(--blue-deep); }
+
+/* Footer strap (home) */
+.site-footer__strap {
+  margin-top: 1.75rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(120deg, rgba(29, 142, 240, 0.07), rgba(228, 240, 251, 0.65));
+  border: 1px solid rgba(29, 142, 240, 0.14);
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+  max-width: min(52ch, 100%);
+}
+body.p2bi-dark .site-footer__strap {
+  background: linear-gradient(120deg, rgba(167, 139, 250, 0.10), rgba(73, 167, 255, 0.08));
+  border-color: rgba(167, 139, 250, 0.16);
+  color: rgba(226, 232, 255, 0.84);
+}
+.site-footer__strap strong { color: var(--blue-deep); font-weight: 650; }
+body.p2bi-dark .site-footer__strap strong { color: rgba(226, 232, 255, 0.96); }
 .page-hero::before {
   content: "";
   position: absolute;
