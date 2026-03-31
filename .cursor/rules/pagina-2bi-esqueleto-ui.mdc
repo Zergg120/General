@@ -1,0 +1,46 @@
+---
+description: PAGINA-2BI (esqueleto): no romper header, robot, bocina, tour y comandos
+globs:
+  - scorecard-General/PAGINA-2BI/**/*.html
+  - scorecard-General/PAGINA-2BI/assets/**/*.js
+  - scorecard-General/PAGINA-2BI/assets/**/*.css
+alwaysApply: true
+---
+
+# PAGINA-2BI — Reglas UI (esqueleto)
+
+## Principio base
+
+- **Esta carpeta es el esqueleto**: no “reinterpretar” el layout ni simplificar quitando controles. La meta es **rellenar con contenido coherente** sin perder botones/funciones ya aprobadas.
+
+## Header (orden y elementos obligatorios)
+
+- **Izquierda del logo** (sin estorbar, profesional): **fecha y hora** siempre actualizadas desde el navegador (zona horaria del usuario). No hardcodear offsets.
+- **Botón “Hablemos”**: debe usar `mailto:` con **estos correos** (equipo) como destinatarios:
+  - `guillermorc44@gmail.com`
+  - `alvaropalma87@gmail.com`
+  - `chdominiel@gmail.com`
+- **A la derecha de “Hablemos”** y en este orden, siempre visibles en desktop:
+  1. **Bocina** (música/BGM)
+  2. **Tour** (explica funciones de la web)
+  3. **Comandos** (accesos rápidos/shortcuts)
+- **No eliminar** estos iconos aunque se refactorice CSS/JS del header.
+
+## Contacto (contenido y placeholders)
+
+- En `contacto.html` y en el formulario, **no usar** `hola@2bi.example` ni correos fake.
+- El formulario debe abrir correo dirigido al mailto del equipo (puede incluir subject/body).
+
+## Robot / IA (asistente)
+
+- El “robotsito” (FAB/imagen del asistente) debe existir y ser visible.
+- Si se cambia el asset (svg/gif/png), respetar:
+  - **posición** (no tapar contenido)
+  - **tamaño/contraste** profesional
+  - **click target** cómodo en móvil
+
+## Cambios permitidos vs no permitidos
+
+- **Permitido**: ajustar estilos finos, mejorar accesibilidad, mejorar copy, optimizar responsive, corregir bugs.
+- **No permitido**: quitar/ocultar bocina, tour, comandos, “Hablemos”, o el robot por “limpieza” o “simplificación”.
+
