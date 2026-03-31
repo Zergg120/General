@@ -597,6 +597,16 @@ main {
   position: relative;
   transition: color 0.25s var(--ease), background 0.25s var(--ease), transform 0.25s var(--ease);
 }
+.nav__link.nav__link--btn {
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  cursor: pointer;
+}
+.nav__link.nav__link--btn:focus-visible {
+  outline: 2px solid var(--blue-bright);
+  outline-offset: 2px;
+}
 .nav__link::after {
   content: "";
   position: absolute;

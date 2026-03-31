@@ -40,7 +40,7 @@
       <nav class="nav nav--desktop" aria-label="Principal">
         <ul class="nav__list">
           <li><a class="nav__link" href="index.html">Inicio</a></li>
-          <li><a class="nav__link" href="index.html#section-kpis">KPIs</a></li>
+          <li><button class="nav__link nav__link--btn" type="button" id="p2bi-nav-explore" aria-expanded="false" aria-controls="p2bi-explorebar">Explorar ▾</button></li>
           <li><a class="nav__link" href="nosotros.html">Nosotros</a></li>
           <li><a class="nav__link" href="soluciones.html">Soluciones</a></li>
           <li><a class="nav__link" href="valores.html">Valores</a></li>
@@ -65,7 +65,7 @@
         <nav class="nav nav--drawer" aria-label="Móvil">
           <ul class="nav__list">
             <li><a class="nav__link" href="index.html">Inicio</a></li>
-            <li><a class="nav__link" href="index.html#section-kpis">KPIs</a></li>
+            <li><a class="nav__link" href="index.html#explora">Explorar</a></li>
             <li><a class="nav__link" href="nosotros.html">Nosotros</a></li>
             <li><a class="nav__link" href="soluciones.html">Soluciones</a></li>
             <li><a class="nav__link" href="valores.html">Valores</a></li>
@@ -156,6 +156,38 @@
             <span class="pill">CRM / ERP APIs</span>
           </p>
         </article>
+      </div>
+    </section>
+
+    <section class="section wrap reveal" aria-labelledby="eco-kpi-title">
+      <div class="detail-example">
+        <span class="detail-example__tag">KPIs + Stack</span>
+        <h2 id="eco-kpi-title">Medir no es “poner gráficas”: es conectar definiciones</h2>
+        <div class="detail-example__body">
+          <p>Power BI, Python o APIs son el “cómo”. El KPI es el “para qué” y el “con qué reglas”. Por eso en 2BI cerramos el triángulo: <strong>definición</strong> (semántica), <strong>dato</strong> (pipeline) y <strong>consumo</strong> (tablero / alertas).</p>
+        </div>
+        <div class="detail-metrics">
+          <div class="detail-metric">
+            <div class="detail-metric__v">RLS</div>
+            <div class="detail-metric__l">Seguridad</div>
+          </div>
+          <div class="detail-metric">
+            <div class="detail-metric__v">Linaje</div>
+            <div class="detail-metric__l">Trazabilidad</div>
+          </div>
+          <div class="detail-metric">
+            <div class="detail-metric__v">SLA</div>
+            <div class="detail-metric__l">Refrescos</div>
+          </div>
+          <div class="detail-metric">
+            <div class="detail-metric__v">Alertas</div>
+            <div class="detail-metric__l">Acción</div>
+          </div>
+        </div>
+        <div style="margin-top:1.25rem;display:flex;gap:0.65rem;flex-wrap:wrap">
+          <a class="btn btn--primary" href="index.html#section-kpis">Ver KPIs + gráficas</a>
+          <a class="btn btn--ghost" href="soluciones.html">Ver catálogo</a>
+        </div>
       </div>
     </section>
 

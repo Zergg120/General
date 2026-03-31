@@ -153,10 +153,59 @@
     });
   }
 
+  function ensureExploreBar() {
+    if (document.getElementById('p2bi-explorebar')) return;
+    var header = document.querySelector('.site-header');
+    if (!header) return;
+
+    var bar = document.createElement('div');
+    bar.id = 'p2bi-explorebar';
+    bar.className = 'p2bi-explorebar';
+    bar.hidden = true;
+    bar.setAttribute('aria-hidden', 'true');
+
+    var base = (document.documentElement && document.documentElement.getAttribute('data-page')) || '';
+    // Links: en otras páginas apuntamos a index.html con hash.
+    var isIndex = base === 'index';
+    function href(hash) {
+      return isIndex ? hash : 'index.html' + hash;
+    }
+
+    bar.innerHTML =
+      '<div class="p2bi-explorebar__inner" role="navigation" aria-label="Explorar">' +
+      '<a class="explore-chip" href="' +
+      href('#section-dashboard') +
+      '"><span class="explore-chip__icon" aria-hidden="true">📊</span> Gráficos interactivos</a>' +
+      '<a class="explore-chip" href="' +
+      href('#section-kpis') +
+      '"><span class="explore-chip__icon" aria-hidden="true">📈</span> KPIs y ejemplos</a>' +
+      '<a class="explore-chip" href="' +
+      href('#chat-demo-heading') +
+      '"><span class="explore-chip__icon" aria-hidden="true">💬</span> Chat demo</a>' +
+      '<a class="explore-chip" href="soluciones.html"><span class="explore-chip__icon" aria-hidden="true">◎</span> 6 soluciones + ejemplos</a>' +
+      '<a class="explore-chip" href="ecosistema.html"><span class="explore-chip__icon" aria-hidden="true">⬡</span> Ecosistema técnico</a>' +
+      '<a class="explore-chip" href="nosotros.html"><span class="explore-chip__icon" aria-hidden="true">◇</span> Quiénes somos</a>' +
+      '<a class="explore-chip explore-chip--accent" href="contacto.html"><span class="explore-chip__icon" aria-hidden="true">→</span> Agendar llamada</a>' +
+      '</div>';
+
+    // Inserta justo debajo de la barra principal
+    header.appendChild(bar);
+  }
+
+  function setExploreOpen(open) {
+    var bar = document.getElementById('p2bi-explorebar');
+    if (!bar) return;
+    bar.hidden = !open;
+    bar.setAttribute('aria-hidden', open ? 'false' : 'true');
+    var b = document.getElementById('p2bi-nav-explore');
+    if (b) b.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+
   function wireButtons() {
     var bt = document.getElementById('p2bi-btn-tour');
     var bc = document.getElementById('p2bi-btn-cmd');
     var th = document.getElementById('p2bi-btn-theme');
+    var ex = document.getElementById('p2bi-nav-explore');
     if (bt) {
       bt.addEventListener('click', function () {
         var c = document.getElementById('p2bi-overlay-cmd');
@@ -177,10 +226,18 @@
         applyTheme(isDark ? 'light' : 'dark');
       });
     }
+    if (ex) {
+      ex.addEventListener('click', function () {
+        var bar = document.getElementById('p2bi-explorebar');
+        var open = !!(bar && !bar.hidden);
+        setExploreOpen(!open);
+      });
+    }
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') {
         closeDialog('p2bi-overlay-tour');
         closeDialog('p2bi-overlay-cmd');
+        setExploreOpen(false);
       }
       var k = e.key && e.key.toLowerCase();
       if (k === 'k' && (e.metaKey || e.ctrlKey)) {
@@ -191,6 +248,21 @@
         openDialog('p2bi-overlay-cmd');
       }
     });
+
+    // Clic fuera cierra Explorar
+    document.addEventListener(
+      'click',
+      function (e) {
+        var bar = document.getElementById('p2bi-explorebar');
+        if (!bar || bar.hidden) return;
+        var exBtn = document.getElementById('p2bi-nav-explore');
+        var t = e.target;
+        if (exBtn && (t === exBtn || (t && exBtn.contains && exBtn.contains(t)))) return;
+        if (t && t.closest && t.closest('#p2bi-explorebar')) return;
+        setExploreOpen(false);
+      },
+      true
+    );
   }
 
   function init() {
@@ -200,6 +272,7 @@
     else applyTheme('light');
     mountDatetime();
     ensureDialogs();
+    ensureExploreBar();
     wireButtons();
   }
 

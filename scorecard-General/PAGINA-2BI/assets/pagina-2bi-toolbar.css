@@ -78,6 +78,45 @@
   outline-offset: 2px;
 }
 
+/* Explorar bar (dropdown horizontal bajo header) */
+.p2bi-explorebar {
+  position: sticky;
+  top: var(--header-h);
+  z-index: 99;
+  border-bottom: 1px solid var(--line);
+  background: rgba(244, 249, 253, 0.92);
+  backdrop-filter: blur(14px) saturate(1.1);
+  -webkit-backdrop-filter: blur(14px) saturate(1.1);
+}
+body.p2bi-dark .p2bi-explorebar {
+  background: rgba(7, 20, 35, 0.7);
+  border-bottom-color: rgba(138, 208, 255, 0.12);
+}
+.p2bi-explorebar[hidden] {
+  display: none !important;
+}
+.p2bi-explorebar__inner {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0.65rem clamp(1rem, 4vw, 1.5rem);
+  display: flex;
+  gap: 0.55rem;
+  align-items: center;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-color: rgba(10, 74, 124, 0.25) transparent;
+}
+.p2bi-explorebar__inner::-webkit-scrollbar {
+  height: 8px;
+}
+.p2bi-explorebar__inner::-webkit-scrollbar-thumb {
+  background: rgba(10, 74, 124, 0.18);
+  border-radius: 999px;
+}
+body.p2bi-dark .p2bi-explorebar__inner::-webkit-scrollbar-thumb {
+  background: rgba(138, 208, 255, 0.18);
+}
+
 /* Modo oscuro (Luna) — primera versión simple */
 body.p2bi-dark .site-header__datetime {
   background: rgba(13, 27, 42, 0.68);
