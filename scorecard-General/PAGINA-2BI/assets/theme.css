@@ -904,6 +904,57 @@ body.p2bi-dark .site-header .btn--primary {
 body.p2bi-dark .site-header .btn--primary:hover {
   box-shadow: 0 20px 62px rgba(0, 0, 0, 0.56), 0 0 0 4px rgba(217, 70, 239, 0.16);
 }
+
+/* ===== UI viva (modo normal + Luna) ===== */
+html {
+  --mx: 60vw;
+  --my: 18vh;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.55;
+  mix-blend-mode: screen;
+  background:
+    radial-gradient(520px 520px at var(--mx) var(--my), rgba(94, 184, 255, 0.16), transparent 62%),
+    radial-gradient(680px 520px at calc(var(--mx) - 26vw) calc(var(--my) + 18vh), rgba(29, 142, 240, 0.10), transparent 64%);
+  transition: opacity 0.35s var(--ease);
+}
+body.p2bi-dark::before {
+  opacity: 0.62;
+  mix-blend-mode: screen;
+  background:
+    radial-gradient(560px 560px at var(--mx) var(--my), rgba(167, 139, 250, 0.16), transparent 62%),
+    radial-gradient(720px 560px at calc(var(--mx) - 26vw) calc(var(--my) + 18vh), rgba(217, 70, 239, 0.10), transparent 64%),
+    radial-gradient(660px 520px at calc(var(--mx) + 24vw) calc(var(--my) + 10vh), rgba(73, 167, 255, 0.10), transparent 66%);
+}
+@media (prefers-reduced-motion: reduce) {
+  body::before { display: none; }
+}
+
+/* Hover glow más "vivo" */
+.card,
+.chart-card,
+.kpi-card,
+.explore-chip {
+  will-change: transform, box-shadow;
+}
+.card:hover,
+.chart-card:hover,
+.kpi-card:hover {
+  box-shadow: 0 18px 60px rgba(10, 74, 124, 0.16), 0 0 0 1px rgba(29, 142, 240, 0.16);
+}
+body.p2bi-dark .card:hover,
+body.p2bi-dark .chart-card:hover,
+body.p2bi-dark .kpi-card:hover {
+  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.62), 0 0 0 1px rgba(167, 139, 250, 0.16);
+}
+.explore-chip:hover {
+  transform: translateY(-1px);
+}
 .btn--ghost {
   background: var(--white);
   color: var(--blue-deep);
