@@ -54,21 +54,33 @@ body {
 
 /* Tema Luna (oscuro) — versión 1: misma UI, paleta oscura */
 body.p2bi-dark {
-  --ink: #eaf2ff;
-  --ink-soft: #cfe2ff;
+  /* Base */
+  --ink: rgba(241, 245, 255, 0.94);
+  --ink-soft: rgba(210, 222, 255, 0.92);
+  --muted: rgba(165, 183, 224, 0.92);
+  --snow: #070a16;
+  --white: rgba(16, 19, 40, 0.92);
+
+  /* Azul 2BI como acento (se mantiene) */
   --blue-abyss: #0a2036;
   --blue-deep: #0d2b47;
   --blue-mid: #2d77c7;
   --blue-bright: #49a7ff;
   --blue-glow: #8ad0ff;
-  --ice: #0f253d;
-  --ice-2: #13304f;
-  --snow: #071423;
-  --white: #0d1b2a;
-  --muted: #9bb4d6;
+
+  /* Nuevo acento Luna (template morado) */
+  --luna-violet: #a78bfa;
+  --luna-magenta: #ff4fd8;
+  --luna-fuchsia: #d946ef;
+  --luna-indigo: #3b82f6;
+
+  --ice: rgba(22, 26, 56, 0.9);
+  --ice-2: rgba(30, 36, 78, 0.88);
   --success: #2bd4a6;
-  --line: rgba(138, 208, 255, 0.16);
-  --line-strong: rgba(138, 208, 255, 0.24);
+
+  /* Líneas/bordes pensados para púrpura (más parecidos al template) */
+  --line: rgba(166, 132, 255, 0.14);
+  --line-strong: rgba(166, 132, 255, 0.22);
   --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.28);
   --shadow: 0 20px 60px rgba(0, 0, 0, 0.42);
   --shadow-lg: 0 32px 90px rgba(0, 0, 0, 0.55);
@@ -76,19 +88,21 @@ body.p2bi-dark {
   background-color: var(--snow);
   background-image:
     url("moon-bg.svg"),
-    radial-gradient(ellipse 120% 80% at 100% -10%, rgba(73, 167, 255, 0.12), transparent 52%),
-    radial-gradient(ellipse 90% 70% at -5% 50%, rgba(45, 119, 199, 0.1), transparent 50%),
-    radial-gradient(ellipse 70% 50% at 50% 100%, rgba(15, 37, 61, 0.9), transparent 55%),
-    linear-gradient(180deg, #06101c 0%, var(--snow) 40%, #081a2d 100%);
+    radial-gradient(ellipse 120% 80% at 55% -10%, rgba(167, 139, 250, 0.22), transparent 56%),
+    radial-gradient(ellipse 95% 70% at 18% 45%, rgba(217, 70, 239, 0.14), transparent 58%),
+    radial-gradient(ellipse 80% 55% at 72% 62%, rgba(73, 167, 255, 0.12), transparent 58%),
+    radial-gradient(ellipse 70% 50% at 50% 100%, rgba(13, 16, 40, 0.92), transparent 62%),
+    linear-gradient(180deg, #050612 0%, var(--snow) 46%, #080a1a 100%);
 }
 
 body.p2bi-dark .site-header {
-  background: rgba(7, 20, 35, 0.92);
-  border-bottom-color: rgba(138, 208, 255, 0.12);
+  background: rgba(10, 10, 24, 0.92);
+  border-bottom-color: rgba(166, 132, 255, 0.14);
+  box-shadow: 0 12px 42px rgba(0, 0, 0, 0.34), 0 0 0 1px rgba(167, 139, 250, 0.06);
 }
 @supports (backdrop-filter: blur(12px)) {
   body.p2bi-dark .site-header {
-    background: rgba(7, 20, 35, 0.65);
+    background: rgba(10, 10, 24, 0.6);
   }
 }
 
@@ -97,17 +111,18 @@ body.p2bi-dark .nav__link {
   color: rgba(234, 242, 255, 0.92);
 }
 body.p2bi-dark .nav__link:hover {
-  background: rgba(73, 167, 255, 0.08);
-  color: var(--blue-glow);
+  background: rgba(167, 139, 250, 0.12);
+  color: rgba(241, 245, 255, 0.96);
+  box-shadow: 0 0 0 1px rgba(167, 139, 250, 0.16) inset;
 }
 body.p2bi-dark .btn--ghost {
-  background: rgba(13, 27, 42, 0.75);
+  background: rgba(16, 19, 40, 0.78);
   color: rgba(234, 242, 255, 0.92);
-  border-color: rgba(138, 208, 255, 0.18);
+  border-color: rgba(166, 132, 255, 0.18);
 }
 body.p2bi-dark .btn--ghost:hover {
-  border-color: rgba(138, 208, 255, 0.35);
-  color: var(--blue-glow);
+  border-color: rgba(166, 132, 255, 0.36);
+  color: rgba(241, 245, 255, 0.96);
 }
 body.p2bi-dark .card,
 body.p2bi-dark .chart-card,
@@ -117,55 +132,58 @@ body.p2bi-dark .testimonial,
 body.p2bi-dark .faq-item,
 body.p2bi-dark .detail-example,
 body.p2bi-dark .kpi-card {
-  background: linear-gradient(180deg, rgba(13, 27, 42, 0.78), rgba(7, 20, 35, 0.88));
-  border-color: rgba(138, 208, 255, 0.14);
+  background:
+    radial-gradient(120% 140% at 10% 0%, rgba(167, 139, 250, 0.08), transparent 55%),
+    radial-gradient(120% 140% at 100% 20%, rgba(73, 167, 255, 0.06), transparent 52%),
+    linear-gradient(180deg, rgba(16, 19, 40, 0.78), rgba(8, 10, 26, 0.92));
+  border-color: rgba(166, 132, 255, 0.14);
   box-shadow: 0 18px 55px rgba(0, 0, 0, 0.55);
 }
 body.p2bi-dark .card:hover,
 body.p2bi-dark .chart-card:hover,
 body.p2bi-dark .quick-card:hover,
 body.p2bi-dark .kpi-card:hover {
-  border-color: rgba(138, 208, 255, 0.28);
-  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.62), 0 0 0 1px rgba(73, 167, 255, 0.12);
+  border-color: rgba(166, 132, 255, 0.28);
+  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.62), 0 0 0 1px rgba(167, 139, 250, 0.12);
 }
 body.p2bi-dark .chart-card::before {
   opacity: 0.7;
 }
 body.p2bi-dark .site-footer {
-  background: rgba(7, 20, 35, 0.82);
-  border-top-color: rgba(138, 208, 255, 0.12);
+  background: rgba(10, 10, 24, 0.84);
+  border-top-color: rgba(166, 132, 255, 0.14);
 }
 body.p2bi-dark .site-footer a {
   color: rgba(234, 242, 255, 0.86);
 }
 body.p2bi-dark .site-footer a:hover {
-  color: var(--blue-glow);
+  color: rgba(241, 245, 255, 0.96);
 }
 body.p2bi-dark .chat-widget__panel {
-  background: rgba(13, 27, 42, 0.92);
-  border-color: rgba(138, 208, 255, 0.18);
+  background: rgba(16, 19, 40, 0.92);
+  border-color: rgba(166, 132, 255, 0.18);
 }
 body.p2bi-dark .chat-widget__body {
-  background: rgba(7, 20, 35, 0.85);
+  background: rgba(10, 10, 24, 0.86);
 }
 body.p2bi-dark .chat-bubble--bot {
-  background: rgba(13, 27, 42, 0.78);
+  background: rgba(16, 19, 40, 0.78);
   color: rgba(234, 242, 255, 0.92);
-  border-color: rgba(138, 208, 255, 0.14);
+  border-color: rgba(166, 132, 255, 0.14);
 }
 body.p2bi-dark .chat-widget__foot {
-  background: rgba(13, 27, 42, 0.92);
+  background: rgba(16, 19, 40, 0.92);
 }
 body.p2bi-dark .chat-widget__foot input {
-  background: rgba(7, 20, 35, 0.75);
+  background: rgba(10, 10, 24, 0.78);
   color: rgba(234, 242, 255, 0.92);
-  border-color: rgba(138, 208, 255, 0.18);
+  border-color: rgba(166, 132, 255, 0.18);
 }
 body.p2bi-dark .chat-widget__foot input::placeholder {
   color: rgba(155, 180, 214, 0.85);
 }
 body.p2bi-dark .chat-widget__fab {
-  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.62), 0 0 0 4px rgba(73, 167, 255, 0.12);
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.62), 0 0 0 4px rgba(167, 139, 250, 0.12);
 }
 
 ::selection {
