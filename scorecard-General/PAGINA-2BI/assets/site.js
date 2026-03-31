@@ -28,50 +28,7 @@
     }
   } catch (_) {}
 
-  /* “Luciérnaga” (un punto de luz que sigue el cursor con inercia) */
-  (function mountFirefly() {
-    try {
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    } catch (_) {}
-    if (!document.body) return;
-    var el = document.querySelector(".p2bi-firefly");
-    if (!el) {
-      el = document.createElement("div");
-      el.className = "p2bi-firefly";
-      el.setAttribute("aria-hidden", "true");
-      document.body.appendChild(el);
-    }
-    var tx = -100,
-      ty = -100,
-      x = -100,
-      y = -100,
-      raf = 0,
-      active = false;
-    function tick() {
-      raf = 0;
-      x += (tx - x) * 0.14;
-      y += (ty - y) * 0.14;
-      el.style.transform = "translate3d(" + (x - 7) + "px," + (y - 7) + "px,0)";
-      if (Math.abs(tx - x) + Math.abs(ty - y) > 0.5) raf = requestAnimationFrame(tick);
-    }
-    function onMove(e) {
-      if (e && e.pointerType === "touch") return;
-      tx = e.clientX || 0;
-      ty = e.clientY || 0;
-      if (!active) {
-        active = true;
-        el.style.opacity = "1";
-      }
-      if (!raf) raf = requestAnimationFrame(tick);
-    }
-    function onLeave() {
-      active = false;
-      el.style.opacity = "0";
-    }
-    window.addEventListener("pointermove", onMove, { passive: true });
-    window.addEventListener("pointerleave", onLeave, { passive: true });
-    document.addEventListener("mouseleave", onLeave, { passive: true });
-  })();
+  // Nota: el usuario pidió quitar el “puntito” luciérnaga. Se conserva el spotlight (fondo vivo).
 
   /* CTAs “magnéticos”: acercan el botón al cursor (suave, cap ~10px) */
   (function mountMagnetic() {
@@ -161,6 +118,35 @@
     }
 
     document.querySelectorAll("img.js-ext-img, img[src*='images.unsplash.com']").forEach(apply);
+  })();
+
+  /* Barra de progreso scroll (delgada, arriba) */
+  (function mountScrollProgress() {
+    var header = document.querySelector(".site-header");
+    if (!header) return;
+    var progress = header.querySelector(".js-scroll-progress");
+    if (!progress) {
+      progress = document.createElement("div");
+      progress.className = "scroll-progress js-scroll-progress";
+      progress.setAttribute("aria-hidden", "true");
+      header.appendChild(progress);
+    }
+    var raf = 0;
+    function sync() {
+      raf = 0;
+      var doc = document.documentElement;
+      var scrollTop = window.scrollY || doc.scrollTop || 0;
+      var scrollHeight = Math.max(1, doc.scrollHeight - doc.clientHeight);
+      var pct = Math.max(0, Math.min(1, scrollTop / scrollHeight));
+      progress.style.width = (pct * 100).toFixed(2) + "%";
+    }
+    function onScroll() {
+      if (raf) return;
+      raf = window.requestAnimationFrame(sync);
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    sync();
   })();
 
   /* Barras demo en panel hero (como 2BI ADD) */

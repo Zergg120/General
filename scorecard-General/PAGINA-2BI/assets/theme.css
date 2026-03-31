@@ -2295,6 +2295,31 @@ body.p2bi-dark .chart-bars--hero .chart-bars__item {
   0%, 100% { transform: scaleY(1); filter: brightness(1); }
   50% { transform: scaleY(0.88); filter: brightness(1.12); }
 }
+
+/* Progreso scroll (barra delgada en header) */
+.scroll-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  width: 0%;
+  max-width: 100%;
+  background: linear-gradient(90deg, var(--blue-deep), var(--blue-bright), var(--blue-glow), var(--blue-bright), var(--blue-deep));
+  background-size: 180% 100%;
+  box-shadow: 0 0 16px rgba(29, 142, 240, 0.45);
+  transition: width 0.05s linear;
+  z-index: 6;
+  pointer-events: none;
+  border-radius: 0 2px 2px 0;
+  overflow: hidden;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .scroll-progress { animation: scrollProgressFlow 2.8s linear infinite; }
+}
+@keyframes scrollProgressFlow {
+  to { background-position: 180% 0; }
+}
 .kpi-mini {
   background: var(--white);
   border-radius: 12px;
@@ -2436,45 +2461,7 @@ body.p2bi-dark .trust-strip--capsule span {
 }
 
 /* Luciérnaga del cursor (sutil, performance-friendly) */
-.p2bi-firefly {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 18px;
-  height: 18px;
-  border-radius: 999px;
-  pointer-events: none;
-  z-index: 160;
-  opacity: 0.0;
-  transform: translate3d(-100px, -100px, 0);
-  background: radial-gradient(
-    circle at 35% 35%,
-    rgba(255, 255, 255, 0.98),
-    rgba(94, 184, 255, 0.78) 34%,
-    rgba(29, 142, 240, 0.28) 58%,
-    rgba(29, 142, 240, 0.0) 76%
-  );
-  filter: blur(0.12px);
-  mix-blend-mode: screen;
-  transition: opacity 0.18s var(--ease);
-  box-shadow:
-    0 0 0 1px rgba(29, 142, 240, 0.14),
-    0 0 26px rgba(94, 184, 255, 0.45),
-    0 0 60px rgba(29, 142, 240, 0.22);
-}
-body.p2bi-dark .p2bi-firefly {
-  background: radial-gradient(
-    circle at 35% 35%,
-    rgba(255, 255, 255, 0.98),
-    rgba(217, 70, 239, 0.62) 32%,
-    rgba(167, 139, 250, 0.34) 58%,
-    rgba(217, 70, 239, 0.0) 78%
-  );
-  box-shadow:
-    0 0 0 1px rgba(167, 139, 250, 0.16),
-    0 0 28px rgba(217, 70, 239, 0.34),
-    0 0 66px rgba(73, 167, 255, 0.14);
-}
+/* La “bolita luciérnaga” fue retirada por preferencia del usuario. */
 
 .fab {
   position: fixed;
