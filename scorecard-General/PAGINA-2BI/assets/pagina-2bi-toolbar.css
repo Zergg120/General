@@ -1,0 +1,186 @@
+/* Barra 2BI: fecha/hora + herramientas (música, tour, comandos) — encaja con theme.css */
+
+.site-header__datetime {
+  flex-shrink: 0;
+  min-width: 0;
+  max-width: 11.5rem;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--blue-mid);
+  line-height: 1.25;
+  padding: 0.28rem 0.45rem;
+  border-radius: 10px;
+  border: 1px solid var(--line-strong);
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.9) inset;
+}
+
+.site-header__datetime .p2bi-d {
+  display: block;
+  color: var(--ink-soft);
+  font-weight: 800;
+}
+
+.site-header__datetime .p2bi-t {
+  display: block;
+  margin-top: 0.12rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  color: var(--blue-deep);
+}
+
+@media (max-width: 520px) {
+  .site-header__datetime {
+    max-width: 9rem;
+    font-size: 0.56rem;
+    padding: 0.22rem 0.38rem;
+  }
+}
+
+.site-header__toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.site-header__toolbar .scorecard-audio-mount {
+  margin: 0;
+}
+
+/* Botones icono al estilo nav-toggle pero compactos */
+.p2bi-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.45rem;
+  height: 2.45rem;
+  border-radius: 12px;
+  border: 1px solid var(--line-strong);
+  background: var(--white);
+  color: var(--blue-deep);
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 800;
+  transition: border-color 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+.p2bi-icon-btn:hover {
+  border-color: var(--blue-bright);
+  color: var(--blue-bright);
+  box-shadow: 0 4px 14px rgba(10, 74, 124, 0.1);
+}
+
+.p2bi-icon-btn:focus-visible {
+  outline: 3px solid var(--blue-glow);
+  outline-offset: 2px;
+}
+
+.p2bi-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: clamp(2rem, 6vh, 4rem) 1rem 2rem;
+  background: rgba(4, 18, 33, 0.42);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.p2bi-overlay[hidden] {
+  display: none !important;
+}
+
+.p2bi-dialog {
+  width: min(100%, 28rem);
+  max-height: min(78vh, 540px);
+  overflow: auto;
+  border-radius: var(--radius-sm);
+  background: var(--white);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-lg);
+  padding: 1.25rem 1.35rem 1.5rem;
+}
+
+.p2bi-dialog h2 {
+  font-family: var(--font-display);
+  font-size: 1.28rem;
+  color: var(--ink);
+  margin-bottom: 0.65rem;
+}
+
+.p2bi-dialog p,
+.p2bi-dialog li {
+  font-size: 0.92rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.p2bi-dialog ul {
+  margin: 0.5rem 0 0 1.1rem;
+  padding: 0;
+}
+
+.p2bi-dialog li + li {
+  margin-top: 0.45rem;
+}
+
+.p2bi-dialog__close {
+  float: right;
+  margin: -0.2rem 0 0 0.5rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: none;
+  border-radius: 10px;
+  background: var(--ice);
+  color: var(--ink);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.p2bi-dialog__close:hover {
+  background: var(--ice-2);
+}
+
+.p2bi-cmd-list {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+}
+
+.p2bi-cmd-list a {
+  display: block;
+  padding: 0.55rem 0.75rem;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  text-decoration: none;
+  font-weight: 600;
+  color: var(--blue-deep);
+  margin-bottom: 0.45rem;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.p2bi-cmd-list a:hover {
+  border-color: var(--blue-bright);
+  background: rgba(29, 142, 240, 0.06);
+}
+
+.chat-widget__fab img {
+  width: 2.25rem;
+  height: 2.25rem;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+}
+
+/* Carrusel stack: refuerzo centrado cuando comparte .wrap */
+.wrap.marquee-wrap.marquee-wrap--soft {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}

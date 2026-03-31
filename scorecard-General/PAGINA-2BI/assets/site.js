@@ -191,7 +191,7 @@
       var subject = encodeURIComponent(
         "Contacto 2BI Intelligence Solutions — " + (empresa && empresa.value.trim() ? empresa.value.trim() : "web")
       );
-      var mail = "hola@2bi.example";
+      var mail = "guillermorc44@gmail.com,alvaropalma87@gmail.com,chdominiel@gmail.com";
       window.location.href =
         "mailto:" + mail + "?subject=" + subject + "&body=" + encodeURIComponent(body);
     });
@@ -222,7 +222,7 @@
     if (/precio|cost|coti|propuest|cuánto/.test(t))
       return "Los alcances son a medida. Usa Contacto con volumen de datos y objetivo; respondemos con fases y una estimación orientativa.";
     if (/contact|corre|email|agendar|llamad|hablar/.test(t))
-      return "Puedes usar el formulario en contacto.html o escribir a hola@2bi.example. ¿Prefieres agendar? El botón «Hablemos» está arriba.";
+      return "Puedes usar el formulario en contacto.html o escribir a guillermorc44@gmail.com, alvaropalma87@gmail.com o chdominiel@gmail.com. ¿Prefieres agendar? El botón «Hablemos» está arriba.";
     if (/gracias|thanks|genial|perfecto/.test(t))
       return "¡Con gusto! Si quieres profundizar, abre soluciones.html — cada tarjeta lleva a un ejemplo detallado.";
     if (/quién|nosotros|equipo/.test(t))
